@@ -1,0 +1,3 @@
+rootProject.name = 'HumClient'
+
+include ':app'
