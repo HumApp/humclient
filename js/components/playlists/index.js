@@ -9,7 +9,11 @@ import {
   Text,
   Right,
   List,
-  ListItem
+  ListItem,
+  Card,
+  CardItem,
+  SwipeRow,
+  View
 } from 'native-base';
 export default class Playlists extends Component {
   goToPlaylist = playlist => {
@@ -20,150 +24,68 @@ export default class Playlists extends Component {
     return (
       <Container>
         <Content>
-          <List>
-            <ListItem itemDivider first>
-              <Text>My Playlists</Text>
-            </ListItem>
-            <ListItem onPress={() => this.goToPlaylist('Simon Mignolet')}>
+          <Card>
+            <CardItem header>
+              <Icon active name="ios-musical-notes" />
+              <Text>Playlists</Text>
+             </CardItem>
+            <CardItem>
               <Body>
-                <Text>Simon Mignolet</Text>
+                <Text>Summer</Text>
               </Body>
               <Right>
                 <Icon name="arrow-forward" />
               </Right>
-            </ListItem>
-            <ListItem>
+             </CardItem>
+             <CardItem>
               <Body>
-                <Text>Simon Mignolet</Text>
+                <Text>Vibes</Text>
               </Body>
               <Right>
                 <Icon name="arrow-forward" />
               </Right>
-            </ListItem>
-            <ListItem>
+             </CardItem>
+             <CardItem>
               <Body>
-                <Text>Simon Mignolet</Text>
+                <Text>Chill</Text>
               </Body>
               <Right>
                 <Icon name="arrow-forward" />
               </Right>
-            </ListItem>
-            <ListItem>
-              <Body>
-                <Text>Simon Mignolet</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward" />
-              </Right>
-            </ListItem>
-            <ListItem>
-              <Body>
-                <Text>Simon Mignolet</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward" />
-              </Right>
-            </ListItem>
-            <ListItem>
-              <Body>
-                <Text>Simon Mignolet</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward" />
-              </Right>
-            </ListItem>
-            <ListItem>
-              <Body>
-                <Text>Simon Mignolet</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward" />
-              </Right>
-            </ListItem>
-            <ListItem>
-              <Body>
-                <Text>Simon Mignolet</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward" />
-              </Right>
-            </ListItem>
-          </List>
-          <List>
-            <ListItem itemDivider first>
+             </CardItem>
+           </Card>
+           <Card>
+            <CardItem header>
+            <Icon active name="musical-note" />
               <Text>Shared with Me</Text>
-            </ListItem>
-            <ListItem>
+             </CardItem>
+             <SwipeRow
+                  rightOpenValue={-75}
+                  body={
+                    <CardItem>
+                    <Body>
+                      <Text>Party</Text>
+                    </Body>
+                    <Right>
+                        <Icon name="ios-checkmark-circle" />
+                    </Right>
+                    </CardItem>
+                  }
+                  right={
+                    <Button danger onPress={() => alert('Trash')}>
+                      <Icon active name="trash" />
+                    </Button>
+                  }
+                />
+            <CardItem>
               <Body>
-                <Text>Shared</Text>
-                <Text note>Owned by One June</Text>
-              </Body>
-              <Right>
-                <Body>
-                  <Left>
-                    <Icon name="ios-checkmark-circle" />
-                  </Left>
-                  <Right>
-                    <Icon name="ios-close-circle" />
-                  </Right>
-                </Body>
-              </Right>
-            </ListItem>
-            <ListItem>
-              <Body>
-                <Text>Shared</Text>
-                <Text note>Owned by One June</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward" />
-              </Right>
-            </ListItem>
-            <ListItem>
-              <Body>
-                <Text>Shared</Text>
-                <Text note>Owned by One June</Text>
+                <Text>Beets</Text>
               </Body>
               <Right>
                 <Icon name="arrow-forward" />
               </Right>
-            </ListItem>
-            <ListItem>
-              <Body>
-                <Text>Shared</Text>
-                <Text note>Owned by One June</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward" />
-              </Right>
-            </ListItem>
-            <ListItem>
-              <Body>
-                <Text>Shared</Text>
-                <Text note>Owned by One June</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward" />
-              </Right>
-            </ListItem>
-            <ListItem>
-              <Body>
-                <Text>Shared</Text>
-                <Text note>Owned by One June</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward" />
-              </Right>
-            </ListItem>
-            <ListItem>
-              <Body>
-                <Text>Shared</Text>
-                <Text note>Owned by One June</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward" />
-              </Right>
-            </ListItem>
-          </List>
+             </CardItem>
+           </Card>
         </Content>
       </Container>
     );
