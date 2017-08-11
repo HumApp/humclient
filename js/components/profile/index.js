@@ -50,7 +50,7 @@ export default class Profile extends Component {
               body={
                 <CardItem>
                   <Left>
-                    <Icon name="logo-apple" />
+                    <FAIcon name="apple" size={25} color="#FF4B63" />
                   </Left>
                   <Body>
                     <Text>Apple Music</Text>
@@ -66,17 +66,48 @@ export default class Profile extends Component {
                 </Button>
               }
             />
-            <CardItem>
-              <Left>
-                <FAIcon name="spotify" size={25} />
-              </Left>
-              <Body>
-                <Text>Spotify</Text>
-              </Body>
-              <Right>
-                <Icon name="ios-add" />
-              </Right>
-            </CardItem>
+            <SwipeRow
+              rightOpenValue={-75}
+              body={
+                <CardItem>
+                  <Left>
+                    <FAIcon name="spotify" size={25} color="#1db954" />
+                  </Left>
+                  <Body>
+                    <Text>Spotify</Text>
+                  </Body>
+                  <Right>
+                    <Icon name="ios-add" />
+                  </Right>
+                </CardItem>
+              }
+              right={
+                <Button danger onPress={() => alert('Trash')}>
+                  <Icon active name="ios-close-circle-outline" />
+                </Button>
+              }
+            />
+            <SwipeRow
+              rightOpenValue={-75}
+              body={
+                <CardItem>
+                  <Left>
+                    <FAIcon name="youtube-play" size={25} color="#FF0404" />
+                  </Left>
+                  <Body>
+                    <Text>Youtube</Text>
+                  </Body>
+                  <Right>
+                    <Icon name="ios-add" />
+                  </Right>
+                </CardItem>
+              }
+              right={
+                <Button danger onPress={() => alert('Trash')}>
+                  <Icon active name="ios-close-circle-outline" />
+                </Button>
+              }
+            />
           </Card>
           <Card>
             <CardItem header>
