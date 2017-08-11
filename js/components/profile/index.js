@@ -16,6 +16,8 @@ import {
   View
 } from 'native-base';
 
+import { default as FAIcon } from 'react-native-vector-icons/FontAwesome';
+
 export default class Profile extends Component {
 
   render() {
@@ -66,7 +68,7 @@ export default class Profile extends Component {
             />
             <CardItem>
               <Left>
-                <Icon name="logo-apple" />
+                <FAIcon name="spotify" size={25} />
               </Left>
               <Body>
                 <Text>Spotify</Text>
