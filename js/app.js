@@ -10,8 +10,10 @@ class App extends Component {
   }
   render() {
     // if (user)
-
-    return <Root />;
+    if (true) {
+    } else {
+      return <Root />;
+    }
   }
 }
 
