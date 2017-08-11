@@ -28,55 +28,55 @@ export default class Playlists extends Component {
             <CardItem header>
               <Icon active name="ios-musical-notes" />
               <Text>Playlists</Text>
-             </CardItem>
-            <CardItem>
+            </CardItem>
+            <CardItem button onPress={() => this.goToPlaylist()}>
               <Body>
                 <Text>Summer</Text>
               </Body>
               <Right>
                 <Icon name="arrow-forward" />
               </Right>
-             </CardItem>
-             <CardItem>
+            </CardItem>
+            <CardItem>
               <Body>
                 <Text>Vibes</Text>
               </Body>
               <Right>
                 <Icon name="arrow-forward" />
               </Right>
-             </CardItem>
-             <CardItem>
+            </CardItem>
+            <CardItem>
               <Body>
                 <Text>Chill</Text>
               </Body>
               <Right>
                 <Icon name="arrow-forward" />
               </Right>
-             </CardItem>
-           </Card>
-           <Card>
+            </CardItem>
+          </Card>
+          <Card>
             <CardItem header>
-            <Icon active name="musical-note" />
+              <Icon active name="musical-note" />
               <Text>Shared with Me</Text>
-             </CardItem>
-             <SwipeRow
-                  rightOpenValue={-75}
-                  body={
-                    <CardItem>
-                    <Body>
-                      <Text>Party</Text>
-                    </Body>
-                    <Right>
-                        <Icon name="ios-checkmark-circle" />
-                    </Right>
-                    </CardItem>
-                  }
-                  right={
-                    <Button danger onPress={() => alert('Trash')}>
-                      <Icon active name="trash" />
-                    </Button>
-                  }
-                />
+            </CardItem>
+            <SwipeRow
+              rightOpenValue={-75}
+              body={
+                <CardItem>
+                  <Body>
+                    <Text>Party</Text>
+                  </Body>
+                  <Right>
+                    <Icon name="ios-checkmark-circle" />
+                  </Right>
+                </CardItem>
+              }
+              right={
+                <Button danger onPress={() => alert('Trash')}>
+                  <Icon active name="trash" />
+                </Button>
+              }
+            />
             <CardItem>
               <Body>
                 <Text>Beets</Text>
@@ -84,8 +84,8 @@ export default class Playlists extends Component {
               <Right>
                 <Icon name="arrow-forward" />
               </Right>
-             </CardItem>
-           </Card>
+            </CardItem>
+          </Card>
         </Content>
       </Container>
     );
