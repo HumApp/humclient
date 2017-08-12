@@ -1,20 +1,37 @@
-import { StyleSheet } from 'react-native';
+const React = require('react-native');
 
-export default StyleSheet.create({
+const { StyleSheet, Dimensions } = React;
+
+const deviceHeight = Dimensions.get('window').height;
+
+export default {
   container: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#FBFAFA'
+  },
+  shadow: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF'
+    width: null,
+    height: null
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10
+  bg: {
+    flex: 1,
+    marginTop: deviceHeight / 1.75,
+    paddingTop: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingBottom: 30,
+    bottom: 0
   },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5
+  input: {
+    marginBottom: 20
+  },
+  btn: {
+    marginTop: 20,
+    alignSelf: 'center'
   }
-});
+};
