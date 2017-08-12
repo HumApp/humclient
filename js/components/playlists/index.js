@@ -29,7 +29,7 @@ export default class Playlists extends Component {
               <Icon active name="ios-musical-notes" />
               <Text>Playlists</Text>
             </CardItem>
-            <CardItem>
+            <CardItem button onPress={() => this.goToPlaylist()}>
               <Body>
                 <Text>Summer</Text>
               </Body>

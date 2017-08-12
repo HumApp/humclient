@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { Root } from './Routers/index';
+import { createRootNavigator } from './Routers';
 
-class App extends Component {
+export default class App extends Component {
   render() {
+    const Root = createRootNavigator(false);
     return <Root />;
   }
 }
-
-export default App;
