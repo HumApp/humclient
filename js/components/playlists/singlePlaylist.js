@@ -14,7 +14,7 @@ import {
   List,
   ListItem
 } from 'native-base';
-export default class Playlists extends Component {
+export default class SinglePlaylist extends Component {
   render() {
     return (
       <Container>
