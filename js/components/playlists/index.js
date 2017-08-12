@@ -13,7 +13,10 @@ import {
   Card,
   CardItem,
   SwipeRow,
-  View
+  View,
+  Input,
+  Header,
+  Item
 } from 'native-base';
 export default class Playlists extends Component {
   goToPlaylist = playlist => {
@@ -23,6 +26,16 @@ export default class Playlists extends Component {
   render() {
     return (
       <Container>
+        <Header searchBar rounded>
+          <Item>
+            <Icon name="ios-search" />
+            <Input placeholder="Search" />
+            <Icon name="ios-people" />
+          </Item>
+          <Button transparent>
+            <Text>Search</Text>
+          </Button>
+        </Header>
         <Content>
           <Card>
             <CardItem header>

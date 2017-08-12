@@ -12,7 +12,11 @@ import {
   Text,
   Right,
   List,
-  ListItem
+  ListItem,
+  Header,
+  Item,
+  Input,
+
 } from 'native-base';
 export default class SinglePlaylist extends Component {
   render() {
@@ -27,11 +31,14 @@ export default class SinglePlaylist extends Component {
               <Icon name="ios-share-outline" />
             </Row>
           </Grid>
-
+          <Header searchBar rounded>
+            <Item>
+              <Icon name="ios-search" />
+              <Input placeholder="Search Songs" />
+              <Icon name="musical-note" />
+            </Item>
+          </Header>
           <List>
-            <ListItem itemDivider first>
-              <Text>Songs</Text>
-            </ListItem>
             <ListItem>
               <Body>
                 <Text>Simon Mignolet</Text>
