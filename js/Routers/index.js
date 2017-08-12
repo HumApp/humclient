@@ -1,6 +1,12 @@
 import React from 'react';
 import { TabNavigator, StackNavigator } from 'react-navigation';
+import { Platform, StatusBar } from 'react-native';
 import { Icon } from 'native-base';
+
+import Login from '../components/login';
+import Signup from '../components/signup';
+import Home from '../components/home';
+
 import Playlists from '../components/playlists';
 import SinglePlaylist from '../components/playlists/singlePlaylist';
 
@@ -83,7 +89,27 @@ export const Tabs = TabNavigator({
   }
 });
 
-export const Root = StackNavigator(
+export const SignedOut = StackNavigator({
+  Home: {
+    screen: Home,
+    navigationOptions: {}
+  },
+
+  Signup: {
+    screen: Signup,
+    navigationOptions: {
+      title: 'Sign Up'
+    }
+  },
+  Login: {
+    screen: Login,
+    navigationOptions: {
+      title: 'Log In'
+    }
+  }
+});
+
+export const SignedIn = StackNavigator(
   {
     Tabs: {
       screen: Tabs
@@ -91,6 +117,33 @@ export const Root = StackNavigator(
   },
   {
     mode: 'modal',
-    headerMode: 'none'
+    headerMode: 'none',
+    style: {
+      paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0
+    }
   }
 );
+
+export const createRootNavigator = (signedIn = true) => {
+  return StackNavigator(
+    {
+      SignedIn: {
+        screen: SignedIn,
+        navigationOptions: {
+          gesturesEnabled: false
+        }
+      },
+      SignedOut: {
+        screen: SignedOut,
+        navigationOptions: {
+          gesturesEnabled: false
+        }
+      }
+    },
+    {
+      headerMode: 'none',
+      mode: 'modal',
+      initialRouteName: signedIn ? 'SignedIn' : 'SignedOut'
+    }
+  );
+};
