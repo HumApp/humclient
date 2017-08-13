@@ -33,5 +33,17 @@ export default {
   btn: {
     marginTop: 20,
     alignSelf: 'center'
+  },
+  header: {
+    color: '#484848'
+  },
+  bodytxt: {
+    color: "#595959"
+  },
+  arrow: {
+    color: "#FC642D"
+  },
+  headerIcon: {
+    color: '#484848'
   }
 };

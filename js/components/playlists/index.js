@@ -15,6 +15,7 @@ import {
   SwipeRow,
   View
 } from 'native-base';
+import styles from './styles'
 export default class Playlists extends Component {
   goToPlaylist = playlist => {
     this.props.navigation.navigate('SinglePlaylist', playlist);
@@ -26,45 +27,45 @@ export default class Playlists extends Component {
         <Content>
           <Card>
             <CardItem header>
-              <Icon active name="ios-musical-notes" />
-              <Text>Playlists</Text>
+              <Icon active name="ios-musical-notes" style={styles.headerIcon}/>
+              <Text style={styles.header}>Playlists</Text>
             </CardItem>
             <CardItem button onPress={() => this.goToPlaylist()}>
               <Body>
-                <Text>Summer</Text>
+                <Text style={styles.bodytxt}>Summer</Text>
               </Body>
               <Right>
-                <Icon name="arrow-forward" />
+                <Icon name="arrow-forward"  style={styles.arrow}/>
               </Right>
             </CardItem>
             <CardItem>
               <Body>
-                <Text>Vibes</Text>
+                <Text style={styles.bodytxt}>Vibes</Text>
               </Body>
               <Right>
-                <Icon name="arrow-forward" />
+                <Icon name="arrow-forward"  style={styles.arrow} />
               </Right>
             </CardItem>
             <CardItem>
               <Body>
-                <Text>Chill</Text>
+                <Text style={styles.bodytxt}>Chill</Text>
               </Body>
               <Right>
-                <Icon name="arrow-forward" />
+                <Icon name="arrow-forward"  style={styles.arrow}/>
               </Right>
             </CardItem>
           </Card>
           <Card>
             <CardItem header>
-              <Icon active name="musical-note" />
-              <Text>Shared with Me</Text>
+              <Icon active name="musical-note" style={styles.headerIcon}/>
+              <Text style={styles.header}>Shared with Me</Text>
             </CardItem>
             <SwipeRow
               rightOpenValue={-75}
               body={
                 <CardItem>
                   <Body>
-                    <Text>Party</Text>
+                    <Text style={styles.bodytxt}>Party</Text>
                   </Body>
                   <Right>
                     <Icon name="ios-checkmark-circle" />
@@ -79,10 +80,10 @@ export default class Playlists extends Component {
             />
             <CardItem>
               <Body>
-                <Text>Beets</Text>
+                <Text style={styles.bodytxt}>Beets</Text>
               </Body>
               <Right>
-                <Icon name="arrow-forward" />
+                <Icon name="arrow-forward" style={styles.arrow}/>
               </Right>
             </CardItem>
           </Card>

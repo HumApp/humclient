@@ -1,33 +1,47 @@
 import { StyleSheet } from 'react-native';
 
-export default {
+export default StyleSheet.create({
   container: {
-    backgroundColor: '#FBFAFA',
-    flexDirection: 'row'
-  },
-  img: {
-    alignSelf: 'center',
     flex: 1,
-    width: 300,
-    height: 300
+    justifyContent: 'center',
+    alignItems: 'center'
   },
-  bg: {
-    flex: 1,
-    paddingTop: 20,
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingBottom: 30
+  buttonContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+    marginTop: 60
   },
-  signBtn: {
-    marginTop: 20,
-    width: 300,
-    alignSelf: 'center',
-    backgroundColor: '#45535D'
+  title: {
+    fontSize: 25,
+    textAlign: 'center',
+    color: '#fff',
+    fontFamily: "PingFangTC-Light",
+    backgroundColor: 'transparent'
   },
-  loginBtn: {
-    backgroundColor: 'white',
-    marginTop: 20,
-    width: 300,
-    alignSelf: 'center'
+  subtitle: {
+    textAlign: 'center',
+    color: '#fff',
+    opacity: .9,
+    marginBottom: 5,
+    fontSize: 20,
+    fontFamily: "PingFangSC-Light",
+    backgroundColor: 'transparent'
+  },
+  signup: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  login: {
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderColor: '#fff',
+    borderStyle: 'solid',
+    borderWidth: 2,
+    borderRadius: 75,
+
   }
-};
+});
