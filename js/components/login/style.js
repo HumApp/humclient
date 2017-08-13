@@ -1,6 +1,11 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
+    container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   login: {
     backgroundColor: '#ff5a5f',
     flex: 1,

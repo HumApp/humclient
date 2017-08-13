@@ -12,91 +12,65 @@ import {
   Text,
   Right,
   List,
-  ListItem
+  ListItem,
+  Card,
+  CardItem,
+  Thumbnail
 } from 'native-base';
+import styles from './styles'
 export default class SinglePlaylist extends Component {
   render() {
     return (
-      <Container>
+          <Container>
         <Content>
-          <Grid>
-            <Row>
+          <Card>
+            <CardItem header bordered>
               <Body>
-                <Text>Summer</Text>
+                <Text style={styles.pheader}>Summer</Text>
+                <Text note style={styles.subtitle}>Playlist by Olivia Oddo</Text>
               </Body>
-              <Icon name="ios-share-outline" />
-            </Row>
-          </Grid>
+               <Right>
+                    <Icon name="ios-share-outline" style={styles.headerIcon} />
+              </Right>
+            </CardItem>
+            <CardItem header>
+              <Body>
+                <Text style={styles.songHeader}>Songs</Text>
+              </Body>
+            </CardItem>
+            <ListItem avatar bordered>
+            <Left>
+                <Thumbnail square size={80} source={{ uri: "https://images-na.ssl-images-amazon.com/images/I/71JWCAY6cvL._AC_UL115_.jpg" }} />
+                  </Left>
+              <Body>
+                <Text style={styles.bodytxt}>Simon Mignolet</Text>
+                <Text note style={styles.bodytxt}>Ice Cube</Text>
+              </Body>
 
-          <List>
-            <ListItem itemDivider first>
-              <Text>Songs</Text>
             </ListItem>
-            <ListItem>
+            <ListItem bordered avatar>
+               <Left>
+                <Thumbnail square size={80} source={{ uri: "https://images-na.ssl-images-amazon.com/images/I/71JWCAY6cvL._AC_UL115_.jpg" }} />
+                  </Left>
               <Body>
-                <Text>Simon Mignolet</Text>
+                <Text style={styles.bodytxt}>Simon Mignolet</Text>
+                <Text note style={styles.bodytxt}>Ice Cube</Text>
               </Body>
-              <Right>
-                <Icon name="arrow-forward" />
-              </Right>
+
             </ListItem>
-            <ListItem>
+            <ListItem bordered avatar>
+            <Left>
+              <Thumbnail square size={80} source={{ uri: 'https://upload.wikimedia.org/wikipedia/en/7/74/InBetweenDreams.jpg' }} />
+                  </Left>
               <Body>
-                <Text>Simon Mignolet</Text>
+                <Text style={styles.bodytxt}>Simon Mignolet</Text>
+                <Text note style={styles.bodytxt}>Ice Cube</Text>
               </Body>
-              <Right>
-                <Icon name="arrow-forward" />
-              </Right>
+
             </ListItem>
-            <ListItem>
-              <Body>
-                <Text>Simon Mignolet</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward" />
-              </Right>
-            </ListItem>
-            <ListItem>
-              <Body>
-                <Text>Simon Mignolet</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward" />
-              </Right>
-            </ListItem>
-            <ListItem>
-              <Body>
-                <Text>Simon Mignolet</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward" />
-              </Right>
-            </ListItem>
-            <ListItem>
-              <Body>
-                <Text>Simon Mignolet</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward" />
-              </Right>
-            </ListItem>
-            <ListItem>
-              <Body>
-                <Text>Simon Mignolet</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward" />
-              </Right>
-            </ListItem>
-            <ListItem>
-              <Body>
-                <Text>Simon Mignolet</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward" />
-              </Right>
-            </ListItem>
-          </List>
+             <CardItem>
+            </CardItem>
+          </Card>
         </Content>
       </Container>
     );
