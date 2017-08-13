@@ -15,9 +15,8 @@ import {
   SwipeRow,
   View
 } from 'native-base';
-
+import styles from './styles'
 import { default as FAIcon } from 'react-native-vector-icons/FontAwesome';
-
 export default class Profile extends Component {
 
   render() {
@@ -26,24 +25,24 @@ export default class Profile extends Component {
         <Content>
           <Card>
             <CardItem header>
-              <Icon active name="ios-person" />
-              <Text>Personal Information</Text>
+              <Icon active name="ios-person" style={styles.headerIcon}/>
+              <Text style={styles.header}>Personal Information</Text>
             </CardItem>
             <CardItem>
               <Body>
-                <Text>Name</Text>
+                <Text style={styles.bodytxt}>Name</Text>
               </Body>
             </CardItem>
             <CardItem>
               <Body>
-                <Text>Username</Text>
+                <Text style={styles.bodytxt}>Username</Text>
               </Body>
             </CardItem>
           </Card>
           <Card>
             <CardItem header>
-              <Icon active name="ios-musical-notes" />
-              <Text>Integrations</Text>
+              <Icon active name="ios-musical-notes" style={styles.headerIcon} />
+              <Text style={styles.header}>Integrations</Text>
             </CardItem>
             <SwipeRow
               rightOpenValue={-75}
@@ -53,10 +52,10 @@ export default class Profile extends Component {
                     <FAIcon name="apple" size={25} color="#FF4B63" />
                   </Left>
                   <Body>
-                    <Text>Apple Music</Text>
+                    <Text style={styles.bodytxt}>Apple Music</Text>
                   </Body>
                   <Right>
-                    <Icon name="ios-checkmark-circle" />
+                    <Icon name="ios-checkmark-circle" style={styles.header}/>
                   </Right>
                 </CardItem>
               }
@@ -74,10 +73,10 @@ export default class Profile extends Component {
                     <FAIcon name="spotify" size={25} color="#1db954" />
                   </Left>
                   <Body>
-                    <Text>Spotify</Text>
+                    <Text style={styles.bodytxt}>Spotify</Text>
                   </Body>
                   <Right>
-                    <Icon name="ios-add" />
+                    <Icon name="ios-add" style={styles.header} />
                   </Right>
                 </CardItem>
               }
@@ -95,10 +94,10 @@ export default class Profile extends Component {
                     <FAIcon name="youtube-play" size={25} color="#FF0404" />
                   </Left>
                   <Body>
-                    <Text>Youtube</Text>
+                    <Text style={styles.bodytxt}>Youtube</Text>
                   </Body>
                   <Right>
-                    <Icon name="ios-add" />
+                    <Icon name="ios-add" style={styles.header}/>
                   </Right>
                 </CardItem>
               }
@@ -111,31 +110,31 @@ export default class Profile extends Component {
           </Card>
           <Card>
             <CardItem header>
-              <Icon active name="ios-settings" />
-              <Text>Settings</Text>
+              <Icon active name="ios-settings" style={styles.headerIcon}/>
+              <Text style={styles.header}>Settings</Text>
             </CardItem>
             <CardItem>
               <Body>
-                <Text>Update Password</Text>
+                <Text style={styles.bodytxt}>Update Password</Text>
               </Body>
               <Right>
-                <Icon name="arrow-forward" />
+                <Icon name="arrow-forward" style={styles.arrow}/>
               </Right>
             </CardItem>
             <CardItem>
               <Body>
-                <Text>Report an Issue</Text>
+                <Text style={styles.bodytxt}>Report an Issue</Text>
               </Body>
               <Right>
-                <Icon name="arrow-forward" />
+                <Icon name="arrow-forward" style={styles.arrow}/>
               </Right>
             </CardItem>
             <CardItem>
               <Body>
-                <Text>Delete Account</Text>
+                <Text style={styles.bodytxt}>Delete Account</Text>
               </Body>
               <Right>
-                <Icon name="arrow-forward" />
+                <Icon name="arrow-forward" style={styles.arrow}/>
               </Right>
             </CardItem>
           </Card>

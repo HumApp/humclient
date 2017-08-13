@@ -31,8 +31,7 @@ export const CollabStack = StackNavigator({
   Collab: {
     screen: Collab,
     navigationOptions: {
-      title: 'Collab'
-    }
+      title: 'Collab'    }
   }
 });
 
@@ -40,8 +39,7 @@ export const FriendsStack = StackNavigator({
   Friends: {
     screen: Friends,
     navigationOptions: {
-      title: 'Friends'
-    }
+      title: 'Friends'    }
   }
 });
 
@@ -49,8 +47,7 @@ export const ProfileStack = StackNavigator({
   Profile: {
     screen: Profile,
     navigationOptions: {
-      title: 'Profile'
-    }
+      title: 'Profile'    }
   }
 });
 
@@ -60,7 +57,7 @@ export const Tabs = TabNavigator({
     navigationOptions: {
       tabBarLabel: 'Playlists',
       tabBarIcon: ({ tintColor }) =>
-        <Icon name="ios-musical-notes" size={35} color={tintColor} />
+        <Icon name="ios-musical-notes" style={{fontSize: 35, color: tintColor}} />
     }
   },
   Collab: {
@@ -68,7 +65,7 @@ export const Tabs = TabNavigator({
     navigationOptions: {
       tabBarLabel: 'Collab',
       tabBarIcon: ({ tintColor }) =>
-        <Icon name="md-headset" size={35} color={tintColor} />
+        <Icon name="md-headset" style={{fontSize: 35, color: tintColor}} />
     }
   },
   Friends: {
@@ -76,17 +73,21 @@ export const Tabs = TabNavigator({
     navigationOptions: {
       tabBarLabel: 'Friends',
       tabBarIcon: ({ tintColor }) =>
-        <Icon name="md-people" size={35} color={tintColor} />
+        <Icon name="md-people" style={{fontSize: 35, color: tintColor}} />
     }
   },
   Profile: {
     screen: ProfileStack,
     navigationOptions: {
       tabBarLabel: 'Profile',
-      tabBarIcon: ({ tintColor }) =>
-        <Icon name="md-person" size={35} color={tintColor} />
+      tabBarIcon: ({ tintColor }) => (
+      <Icon name="md-person" style={{fontSize: 35, color: tintColor}} />)
     }
-  }
+  }}, {
+  tabBarOptions: {
+    activeTintColor: '#ff5a5f',
+    inactiveTintColor: '#cecece'
+  },
 });
 
 export const SignedOut = StackNavigator({
@@ -98,13 +99,13 @@ export const SignedOut = StackNavigator({
   Signup: {
     screen: Signup,
     navigationOptions: {
-      title: 'Sign Up'
+      title: ''
     }
   },
   Login: {
     screen: Login,
     navigationOptions: {
-      title: 'Log In'
+      title: ''
     }
   }
 });

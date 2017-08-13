@@ -10,6 +10,7 @@ import {
   Text
 } from 'native-base';
 import { Image, Dimensions } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import styles from './style.js';
 
 const humLogo = require('../../../images/illegal-logo.png');
@@ -26,31 +27,31 @@ export default class Home extends Component {
 
   render() {
     return (
-      <Container>
-        <View style={styles.container}>
-          <Content>
-            <Text> Log in</Text>
-            <Image source={humLogo} style={styles.img} />
-            <View style={styles.bg}>
-              <Button
+       <LinearGradient colors={['#FF5A5F','#FC642D','#ebcbb9']} style={styles.container}>
+        <Text style={styles.subtitle}>
+          Welcome to Hum.
+        </Text>
+        <View style={styles.buttonContainer}>
+        <View style={{marginTop: 5, marginBottom: 5}}>
+        <Button
                 rounded
-                style={styles.signBtn}
+                style={styles.signup}
                 onPress={() => this.goToSignUp()}
               >
-                <Text>Sign Up</Text>
+                <Text style={{color: '#FC642D'}}>Sign Up</Text>
               </Button>
-              <Button
-                light
+        </View>
+        <View style={{marginTop: 5, marginBottom: 5}}>
+         <Button
                 rounded
-                style={styles.loginBtn}
+                style={styles.login}
                 onPress={() => this.goToLogIn()}
               >
                 <Text>Login</Text>
               </Button>
-            </View>
-          </Content>
         </View>
-      </Container>
+        </View>
+      </LinearGradient>
     );
   }
 }

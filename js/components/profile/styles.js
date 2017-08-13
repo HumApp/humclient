@@ -16,5 +16,17 @@ export default StyleSheet.create({
     textAlign: 'center',
     color: '#333333',
     marginBottom: 5
+  },
+  header: {
+    color: '#484848'
+  },
+  bodytxt: {
+    color: "#595959"
+  },
+  arrow: {
+    color: "#FC642D"
+  },
+  headerIcon: {
+    color: '#484848'
   }
 });
