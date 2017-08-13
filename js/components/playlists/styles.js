@@ -37,6 +37,17 @@ export default {
   header: {
     color: '#484848'
   },
+  pheader: {
+    color: '#484848',
+    fontSize: 25
+  },
+  songHeader: {
+    color: '#484848',
+    fontSize: 20
+  },
+  subtitle: {
+    color: '#484848'
+  },
   bodytxt: {
     color: "#595959"
   },
