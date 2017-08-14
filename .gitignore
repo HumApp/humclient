@@ -1,3 +1,7 @@
+package-lock.json
+yarn.lock
+js/components/utils/firebase.js
+
 # OSX
 #
 .DS_Store
