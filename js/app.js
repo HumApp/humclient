@@ -6,7 +6,7 @@ import Firebase from './components/utils/firebase';
 export default class App extends Component {
   constructor(props) {
     super(props);
-    Firebase.initialise();
+    Firebase.initialize();
   }
   render() {
     const AppNavigator = createRootNavigator(false);
