@@ -41,7 +41,7 @@ RCT_EXPORT_METHOD(authenticate:(RCTResponseSenderBlock)callback)
   [[SPTAuth defaultInstance] setRedirectURL:[NSURL URLWithString:@"humapplogin://"]];
 
   // The scope request for the token
-  [[SPTAuth defaultInstance] setRequestedScopes:@[SPTAuthUserReadPrivateScope, SPTAuthUserReadEmailScope, SPTAuthUserFollowReadScope]];
+  [[SPTAuth defaultInstance] setRequestedScopes:@[SPTAuthUserReadPrivateScope, SPTAuthUserReadEmailScope, SPTAuthUserFollowReadScope, SPTAuthPlaylistReadPrivateScope, SPTAuthPlaylistReadCollaborativeScope, SPTAuthPlaylistModifyPublicScope, SPTAuthPlaylistModifyPrivateScope, SPTAuthUserLibraryReadScope, SPTAuthUserLibraryModifyScope]];
 
   // OPTIONAL. Allows retrieval of refresheable tokens. If not specified, it uses the 'Implicit Grant' auth workflow
   //[[SPTAuth defaultInstance] setTokenSwapURL: [NSURL URLWithString:@"http://my-token-swap-service.tld/swap.php"]];

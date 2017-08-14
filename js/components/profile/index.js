@@ -18,9 +18,22 @@ import {
 import styles from './styles'
 import { default as FAIcon } from 'react-native-vector-icons/FontAwesome';
 import { NativeModules } from 'react-native';
+import axios from 'axios';
+import Prompt from 'react-native-prompt';
+
 const SpotifyModule = NativeModules.SpotifyModule;
+const token = '';
+const id = '';
 
 export default class Profile extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      playlist: '',
+      promptVisible: false
+    };
+  }
+
   deleteAccount = () => {
     this.props.navigation.navigate('Home');
   };
@@ -29,10 +42,57 @@ export default class Profile extends Component {
     try {
       SpotifyModule.authenticate(data => {
         console.log(data);
+        let { accessToken } = data;
+        token = accessToken;
+        this.whoamI();
       });
     } catch (err) {
       console.error('Spotify authentication failed: ', err);
     }
+  };
+
+  jsonPlaylists = () => {
+    axios.get(
+      'https://api.spotify.com/v1/me/playlists',
+      {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      }
+    )
+      .then(response => console.log(response.data))
+      .catch(error => console.log(error))
+  };
+
+  createPlaylists = () => {
+    axios.post(
+      `https://api.spotify.com/v1/users/${id}/playlists`,
+      `{\"name\":\"${this.state.playlist}\", \"public\":false}`,
+      {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      }
+    )
+      .then(response => console.log(response))
+      .catch(error => console.log(error))
+  }
+
+  whoamI = () => {
+    axios.get(
+      'https://api.spotify.com/v1/me',
+      {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      }
+    )
+      .then(response => {
+        console.log(response.data)
+        id = response.data.id
+      })
+      .catch(error => console.log(error))
   };
 
   render() {
@@ -137,9 +197,31 @@ export default class Profile extends Component {
                 <Icon name="arrow-forward" style={styles.arrow} />
               </Right>
             </CardItem>
-            <CardItem>
+            <CardItem button onPress={this.jsonPlaylists}>
               <Body>
-                <Text style={styles.bodytxt}>Report an Issue</Text>
+                <Text style={styles.bodytxt}>Show Playlists</Text>
+              </Body>
+              <Right>
+                <Icon name="arrow-forward" style={styles.arrow} />
+              </Right>
+            </CardItem>
+            <Prompt
+              title="Enter a playlist name"
+              placeholder="New playlist"
+              visible={this.state.promptVisible}
+              onCancel={() => this.setState({ promptVisible: false })}
+              onSubmit={(value) => this.setState({ promptVisible: false, playlist: `${value}` }, this.createPlaylists)} />
+            <CardItem button onPress={() => this.setState({ promptVisible: true })}>
+              <Body>
+                <Text style={styles.bodytxt}>Create a Playlist</Text>
+              </Body>
+              <Right>
+                <Icon name="arrow-forward" style={styles.arrow} />
+              </Right>
+            </CardItem>
+            <CardItem button onPress={this.whoamI}>
+              <Body>
+                <Text style={styles.bodytxt}>Who Am I?</Text>
               </Body>
               <Right>
                 <Icon name="arrow-forward" style={styles.arrow} />
