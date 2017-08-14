@@ -8,29 +8,71 @@ import {
   Form,
   Item,
   Input,
-  Label,
   Card,
   CardItem,
+  Label,
+  Toast,
   Icon
 } from 'native-base';
-import styles from './style'
+import styles from './style';
 import { Field, reduxForm } from 'redux-form';
+import firebase from 'firebase';
 
 export default class SignUp extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loaded: true,
+      email: '',
+      password: '',
+      confirmationCode: '',
+      isLoading: false
+    };
+  }
+  handleSubmit = async () => {
+    this.setState({ isLoading: true });
+    try {
+      newUser = await firebase
+        .auth()
+        .createUserWithEmailAndPassword(this.state.email, this.state.password);
+      await newUser.sendEmailVerification();
+      this.props.navigation.navigate('SignedOut');
+      Toast.show({
+        text: `Verification email sent to ${this.state.email}`,
+        position: 'top',
+        buttonText: 'Okay'
+      });
+    } catch (err) {
+      Toast.show({
+        text: `${err}`,
+        position: 'top',
+        buttonText: 'Okay'
+      });
+    }
+
+    this.setState({
+      isLoading: false
+    });
+  };
+
+  handleConfirmationSubmit = async () => {
+    this.setState({ isLoading: true });
+  };
+
   render() {
     return (
       <Container>
         <Content>
           <Card>
-            <Form style={styles.form} >
+            <Form style={styles.form}>
               <Text style={styles.header}>Sign up</Text>
               <Item floatingLabel>
                 <Label>First Name</Label>
-                <Input />
+                <Input autoCapitalize="none" />
               </Item>
               <Item floatingLabel>
                 <Label>Last Name</Label>
-                <Input />
+                <Input autoCapitalize="none" />
               </Item>
               <Item floatingLabel>
                 <Label>Username</Label>
@@ -38,20 +80,34 @@ export default class SignUp extends Component {
               </Item>
               <Item floatingLabel>
                 <Label>Email</Label>
-                <Input autoCapitalize="none" />
+                <Input
+                  autoCapitalize="none"
+                  value={this.state.email}
+                  onChangeText={text => this.setState({ email: text })}
+                />
               </Item>
               <Item floatingLabel>
                 <Label>Password</Label>
-                <Input autoCapitalize="none" secureTextEntry={true} />
+                <Input
+                  autoCapitalize="none"
+                  value={this.state.password}
+                  secureTextEntry={true}
+                  onChangeText={text => this.setState({ password: text })}
+                />
               </Item>
-              <Item floatingLabel>
+              <Item floatingLabel last>
                 <Label>Confirm Password</Label>
-                <Input autoCapitalize="none" secureTextEntry={true} />
+                <Input autoCapitalize="none" />
               </Item>
               <CardItem>
-                <Button iconRight style={styles.signup} rounded onPress={() => this.props.navigation.navigate('SignedIn')}>
+                <Button
+                  iconRight
+                  style={styles.signup}
+                  rounded
+                  onPress={this.handleSubmit}
+                >
                   <Text style={{ fontSize: 18 }}>Sign Up</Text>
-                  <Icon name='ios-arrow-forward' style={{ color: '#fff' }} />
+                  <Icon name="ios-arrow-forward" style={{ color: '#fff' }} />
                 </Button>
               </CardItem>
             </Form>
