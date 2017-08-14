@@ -22,10 +22,12 @@ export default class SignUp extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loaded: true,
+      firstName: '',
+      lastName: '',
+      userName: '',
       email: '',
       password: '',
-      confirmationCode: '',
+      confirmPassword: '',
       isLoading: false
     };
   }
@@ -34,9 +36,17 @@ export default class SignUp extends Component {
     try {
       newUser = await firebase
         .auth()
-        .createUserWithEmailAndPassword(this.state.email, this.state.password);
-      await newUser.sendEmailVerification();
-      this.props.navigation.navigate('SignedOut');
+        .createUserWithEmailAndPassword(this.state.email, this.state.password)
+        .then(user => {
+          firebase.database().ref(`users/${user.uid}`).set({
+            username: this.state.userName,
+            email: this.state.email,
+            fullname: this.state.firstName + ' ' + this.state.lastName
+          });
+        });
+      // await newUser.sendEmailVerification();
+      // const userId = await firebase.database().ref('users/').push().key;
+      this.props.navigation.navigate('SignedIn');
       Toast.show({
         text: `Verification email sent to ${this.state.email}`,
         position: 'top',
@@ -68,15 +78,27 @@ export default class SignUp extends Component {
               <Text style={styles.header}>Sign up</Text>
               <Item floatingLabel>
                 <Label>First Name</Label>
-                <Input autoCapitalize="none" />
+                <Input
+                  autoCapitalize="none"
+                  value={this.state.firstName}
+                  onChangeText={text => this.setState({ firstName: text })}
+                />
               </Item>
               <Item floatingLabel>
                 <Label>Last Name</Label>
-                <Input autoCapitalize="none" />
+                <Input
+                  autoCapitalize="none"
+                  value={this.state.lastName}
+                  onChangeText={text => this.setState({ lastName: text })}
+                />
               </Item>
               <Item floatingLabel>
                 <Label>Username</Label>
-                <Input autoCapitalize="none" />
+                <Input
+                  autoCapitalize="none"
+                  value={this.state.userName}
+                  onChangeText={text => this.setState({ userName: text })}
+                />
               </Item>
               <Item floatingLabel>
                 <Label>Email</Label>
@@ -97,7 +119,12 @@ export default class SignUp extends Component {
               </Item>
               <Item floatingLabel last>
                 <Label>Confirm Password</Label>
-                <Input autoCapitalize="none" />
+                <Input
+                  autoCapitalize="none"
+                  value={this.state.confirmPassword}
+                  onChangeText={text =>
+                    this.setState({ confirmPassword: text })}
+                />
               </Item>
               <CardItem>
                 <Button
