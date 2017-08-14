@@ -94,6 +94,14 @@ export default class Profile extends Component {
       .catch(error => console.log(error))
   };
 
+  connected = () => {
+    if (this.state.id === "") {
+      return (<Icon name="ios-add" style={styles.header} />)
+    } else {
+      return (<Icon name="ios-checkmark-circle" style={styles.header} />)
+    }
+  };
+
   render() {
     return (
       <Container>
@@ -107,11 +115,17 @@ export default class Profile extends Component {
               <Body>
                 <Text style={styles.bodytxt}>Name</Text>
               </Body>
+              <Right>
+                <Text style={styles.bodytxt}>SomeUser</Text>
+              </Right>
             </CardItem>
             <CardItem>
               <Body>
                 <Text style={styles.bodytxt}>Username</Text>
               </Body>
+              <Right>
+                <Text style={styles.bodytxt}>@SomeUser</Text>
+              </Right>
             </CardItem>
           </Card>
           <Card>
@@ -130,7 +144,7 @@ export default class Profile extends Component {
                     <Text style={styles.bodytxt}>Apple Music</Text>
                   </Body>
                   <Right>
-                    <Icon name="ios-checkmark-circle" style={styles.header} />
+                    <Icon name="ios-add" style={styles.header} />
                   </Right>
                 </CardItem>
               }
@@ -151,12 +165,12 @@ export default class Profile extends Component {
                     <Text style={styles.bodytxt}>Spotify</Text>
                   </Body>
                   <Right>
-                    <Icon name="ios-add" style={styles.header} />
+                    {this.connected()}
                   </Right>
                 </CardItem>
               }
               right={
-                <Button danger onPress={() => alert('Trash')}>
+                <Button danger onPress={() => { this.setState({ id: '', token: '' }) }}>
                   <Icon active name="ios-close-circle-outline" />
                 </Button>
               }
@@ -213,14 +227,6 @@ export default class Profile extends Component {
             <CardItem button onPress={() => this.setState({ promptVisible: true })}>
               <Body>
                 <Text style={styles.bodytxt}>Create a Playlist</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward" style={styles.arrow} />
-              </Right>
-            </CardItem>
-            <CardItem button onPress={this.whoamI}>
-              <Body>
-                <Text style={styles.bodytxt}>Who Am I?</Text>
               </Body>
               <Right>
                 <Icon name="arrow-forward" style={styles.arrow} />
