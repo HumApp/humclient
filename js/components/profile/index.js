@@ -115,11 +115,17 @@ export default class Profile extends Component {
               <Body>
                 <Text style={styles.bodytxt}>Name</Text>
               </Body>
+              <Right>
+                <Text style={styles.bodytxt}>SomeUser</Text>
+              </Right>
             </CardItem>
             <CardItem>
               <Body>
                 <Text style={styles.bodytxt}>Username</Text>
               </Body>
+              <Right>
+                <Text style={styles.bodytxt}>@SomeUser</Text>
+              </Right>
             </CardItem>
           </Card>
           <Card>
@@ -164,7 +170,7 @@ export default class Profile extends Component {
                 </CardItem>
               }
               right={
-                <Button danger onPress={() => alert('Trash')}>
+                <Button danger onPress={() => { this.setState({ id: '', token: '' }) }}>
                   <Icon active name="ios-close-circle-outline" />
                 </Button>
               }
@@ -185,7 +191,7 @@ export default class Profile extends Component {
                 </CardItem>
               }
               right={
-                <Button danger onPress={() => { this.setState({ id: '', token: '' }) }}>
+                <Button danger onPress={() => alert('Trash')}>
                   <Icon active name="ios-close-circle-outline" />
                 </Button>
               }
@@ -221,14 +227,6 @@ export default class Profile extends Component {
             <CardItem button onPress={() => this.setState({ promptVisible: true })}>
               <Body>
                 <Text style={styles.bodytxt}>Create a Playlist</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward" style={styles.arrow} />
-              </Right>
-            </CardItem>
-            <CardItem button onPress={this.whoamI}>
-              <Body>
-                <Text style={styles.bodytxt}>Who Am I?</Text>
               </Body>
               <Right>
                 <Icon name="arrow-forward" style={styles.arrow} />
