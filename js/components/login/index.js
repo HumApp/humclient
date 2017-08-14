@@ -38,6 +38,10 @@ export default class SignUp extends Component {
         buttonText: 'Okay'
       });
       this.props.navigation.navigate('SignedIn');
+      firebase.database().ref(`/songs`).orderByKey().once('value', songs => {
+        // console.log(songs);
+        songs.forEach(song => console.log(song));
+      });
     } catch (err) {
       Toast.show({
         text: `${err}`,
