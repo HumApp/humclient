@@ -13,6 +13,7 @@ import SinglePlaylist from '../components/playlists/singlePlaylist';
 import Collab from '../components/collab';
 import Friends from '../components/friends';
 import Profile from '../components/profile';
+import UpdatePassword from '../components/profile/updatePassword';
 
 export const PlaylistsStack = StackNavigator({
   Playlists: {
@@ -31,7 +32,8 @@ export const CollabStack = StackNavigator({
   Collab: {
     screen: Collab,
     navigationOptions: {
-      title: 'Collab'    }
+      title: 'Collab'
+    }
   }
 });
 
@@ -39,7 +41,8 @@ export const FriendsStack = StackNavigator({
   Friends: {
     screen: Friends,
     navigationOptions: {
-      title: 'Friends'    }
+      title: 'Friends'
+    }
   }
 });
 
@@ -47,7 +50,12 @@ export const ProfileStack = StackNavigator({
   Profile: {
     screen: Profile,
     navigationOptions: {
-      title: 'Profile'    }
+      title: 'Profile'
+    }
+  },
+  UpdatePassword: {
+    screen: UpdatePassword,
+    navigationOptions: {}
   }
 });
 
@@ -57,7 +65,7 @@ export const Tabs = TabNavigator({
     navigationOptions: {
       tabBarLabel: 'Playlists',
       tabBarIcon: ({ tintColor }) =>
-        <Icon name="ios-musical-notes" style={{fontSize: 35, color: tintColor}} />
+        <Icon name="ios-musical-notes" style={{ fontSize: 35, color: tintColor }} />
     }
   },
   Collab: {
@@ -65,7 +73,7 @@ export const Tabs = TabNavigator({
     navigationOptions: {
       tabBarLabel: 'Collab',
       tabBarIcon: ({ tintColor }) =>
-        <Icon name="md-headset" style={{fontSize: 35, color: tintColor}} />
+        <Icon name="md-headset" style={{ fontSize: 35, color: tintColor }} />
     }
   },
   Friends: {
@@ -73,7 +81,7 @@ export const Tabs = TabNavigator({
     navigationOptions: {
       tabBarLabel: 'Friends',
       tabBarIcon: ({ tintColor }) =>
-        <Icon name="md-people" style={{fontSize: 35, color: tintColor}} />
+        <Icon name="md-people" style={{ fontSize: 35, color: tintColor }} />
     }
   },
   Profile: {
@@ -81,14 +89,15 @@ export const Tabs = TabNavigator({
     navigationOptions: {
       tabBarLabel: 'Profile',
       tabBarIcon: ({ tintColor }) => (
-      <Icon name="md-person" style={{fontSize: 35, color: tintColor}} />)
+        <Icon name="md-person" style={{ fontSize: 35, color: tintColor }} />)
     }
-  }}, {
-  tabBarOptions: {
-    activeTintColor: '#ff5a5f',
-    inactiveTintColor: '#cecece'
-  },
-});
+  }
+}, {
+    tabBarOptions: {
+      activeTintColor: '#ff5a5f',
+      inactiveTintColor: '#cecece'
+    },
+  });
 
 export const SignedOut = StackNavigator({
   Home: {

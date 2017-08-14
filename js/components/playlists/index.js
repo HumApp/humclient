@@ -14,7 +14,10 @@ import {
   CardItem,
   SwipeRow,
   View,
-  Thumbnail
+  Thumbnail,
+  Header,
+  Item,
+  Input
 } from 'native-base';
 import styles from './styles'
 export default class Playlists extends Component {
@@ -25,10 +28,19 @@ export default class Playlists extends Component {
   render() {
     return (
       <Container>
+        <Header searchBar rounded>
+          <Item>
+            <Icon name="ios-search" />
+            <Input placeholder="Search" />
+          </Item>
+          <Button transparent>
+            <Text>Search</Text>
+          </Button>
+        </Header>
         <Content>
           <Card>
             <CardItem header>
-              <Icon active name="ios-musical-notes" style={styles.headerIcon}/>
+              <Icon active name="ios-musical-notes" style={styles.headerIcon} />
               <Text style={styles.header}>Playlists</Text>
             </CardItem>
             <CardItem button onPress={() => this.goToPlaylist()}>
@@ -36,7 +48,7 @@ export default class Playlists extends Component {
                 <Text style={styles.bodytxt}>Summer</Text>
               </Body>
               <Right>
-                <Icon name="arrow-forward"  style={styles.arrow}/>
+                <Icon name="arrow-forward" style={styles.arrow} />
               </Right>
             </CardItem>
             <CardItem>
@@ -44,7 +56,7 @@ export default class Playlists extends Component {
                 <Text style={styles.bodytxt}>Vibes</Text>
               </Body>
               <Right>
-                <Icon name="arrow-forward"  style={styles.arrow} />
+                <Icon name="arrow-forward" style={styles.arrow} />
               </Right>
             </CardItem>
             <CardItem>
@@ -52,13 +64,13 @@ export default class Playlists extends Component {
                 <Text style={styles.bodytxt}>Chill</Text>
               </Body>
               <Right>
-                <Icon name="arrow-forward"  style={styles.arrow}/>
+                <Icon name="arrow-forward" style={styles.arrow} />
               </Right>
             </CardItem>
           </Card>
           <Card>
             <CardItem header>
-              <Icon active name="musical-note" style={{color:'#484848', fontSize:40}}/>
+              <Icon active name="musical-note" style={{ color: '#484848', fontSize: 40 }} />
               <Text style={styles.header}>Shared with Me</Text>
             </CardItem>
             <SwipeRow
@@ -86,7 +98,7 @@ export default class Playlists extends Component {
                 <Text note style={styles.bodytxt}>Playlist by One June</Text>
               </Body>
               <Right>
-                <Icon name="arrow-forward" style={styles.arrow}/>
+                <Icon name="arrow-forward" style={styles.arrow} />
               </Right>
             </CardItem>
           </Card>
