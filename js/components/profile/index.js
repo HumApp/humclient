@@ -17,9 +17,22 @@ import {
 } from 'native-base';
 import styles from './styles'
 import { default as FAIcon } from 'react-native-vector-icons/FontAwesome';
+import { NativeModules } from 'react-native';
+const SpotifyModule = NativeModules.SpotifyModule;
+
 export default class Profile extends Component {
   deleteAccount = () => {
     this.props.navigation.navigate('Home');
+  };
+
+  authSpotify = () => {
+    try {
+      SpotifyModule.authenticate(data => {
+        console.log(data);
+      });
+    } catch (err) {
+      console.error('Spotify authentication failed: ', err);
+    }
   };
 
   render() {
@@ -71,7 +84,7 @@ export default class Profile extends Component {
             <SwipeRow
               rightOpenValue={-75}
               body={
-                <CardItem>
+                <CardItem button onPress={this.authSpotify}>
                   <Left>
                     <FAIcon name="spotify" size={25} color="#1db954" />
                   </Left>
