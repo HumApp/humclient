@@ -36,7 +36,7 @@ export default class SignUp extends Component {
         .auth()
         .createUserWithEmailAndPassword(this.state.email, this.state.password);
       await newUser.sendEmailVerification();
-      this.props.navigation.navigate('SignedIn');
+      this.props.navigation.navigate('SignedOut');
       Toast.show({
         text: `Verification email sent to ${this.state.email}`,
         position: 'top',
