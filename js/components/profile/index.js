@@ -34,7 +34,7 @@ export default class Profile extends Component {
     };
   }
 
-  deleteAccount = () => {
+  signOut = () => {
     this.props.navigation.navigate('Home');
   };
 
@@ -227,9 +227,9 @@ export default class Profile extends Component {
                 <Icon name="arrow-forward" style={styles.arrow} />
               </Right>
             </CardItem>
-            <CardItem button onPress={this.deleteAccount}>
+            <CardItem button onPress={this.signOut}>
               <Body>
-                <Text style={styles.bodytxt}>Delete Account</Text>
+                <Text style={styles.bodytxt}>Sign Out</Text>
               </Body>
               <Right>
                 <Icon name="arrow-forward" style={styles.arrow} />
