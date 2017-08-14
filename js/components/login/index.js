@@ -9,6 +9,7 @@ import {
   Item,
   Input,
   Card,
+  Toast,
   CardItem,
   Label,
   Icon
@@ -25,23 +26,32 @@ export default class SignUp extends Component {
       email: '',
       password: ''
     };
-    this.login = this.login.bind(this);
   }
-  async login() {
+  login = async () => {
     try {
       await firebase
         .auth()
         .signInWithEmailAndPassword(this.state.email, this.state.password);
-      console.log('Logged In');
+      Toast.show({
+        text: `Logged in with ${this.state.email}`,
+        position: 'top',
+        buttonText: 'Okay'
+      });
+      this.props.navigation.navigate('SignedIn');
     } catch (error) {
-      console.log(error.toString());
+      Toast.show({
+        text: `${err}`,
+        position: 'top',
+        buttonText: 'Okay'
+      });
     }
     this.setState({
       email: '',
       password: '',
       loaded: true
     });
-  }
+  };
+
   render() {
     return (
       <Container>
