@@ -38,7 +38,7 @@ export default class SignUp extends Component {
         buttonText: 'Okay'
       });
       this.props.navigation.navigate('SignedIn');
-    } catch (error) {
+    } catch (err) {
       Toast.show({
         text: `${err}`,
         position: 'top',
@@ -59,7 +59,6 @@ export default class SignUp extends Component {
           <Content>
             <Form style={styles.form}>
               <Text style={styles.header}>Login</Text>
-
               <Item floatingLabel>
                 <Label>Username</Label>
                 <Input
