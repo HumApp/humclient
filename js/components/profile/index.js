@@ -22,15 +22,15 @@ import axios from 'axios';
 import Prompt from 'react-native-prompt';
 
 const SpotifyModule = NativeModules.SpotifyModule;
-const token = '';
-const id = '';
 
 export default class Profile extends Component {
   constructor(props) {
     super(props);
     this.state = {
       playlist: '',
-      promptVisible: false
+      promptVisible: false,
+      token: '',
+      id: ''
     };
   }
 
@@ -43,8 +43,7 @@ export default class Profile extends Component {
       SpotifyModule.authenticate(data => {
         console.log(data);
         let { accessToken } = data;
-        token = accessToken;
-        this.whoamI();
+        this.setState({ token: accessToken }, this.whoamI);
       });
     } catch (err) {
       console.error('Spotify authentication failed: ', err);
@@ -56,7 +55,7 @@ export default class Profile extends Component {
       'https://api.spotify.com/v1/me/playlists',
       {
         headers: {
-          "Authorization": `Bearer ${token}`
+          "Authorization": `Bearer ${this.state.token}`
         }
       }
     )
@@ -66,11 +65,11 @@ export default class Profile extends Component {
 
   createPlaylists = () => {
     axios.post(
-      `https://api.spotify.com/v1/users/${id}/playlists`,
+      `https://api.spotify.com/v1/users/${this.state.id}/playlists`,
       `{\"name\":\"${this.state.playlist}\", \"public\":false}`,
       {
         headers: {
-          "Authorization": `Bearer ${token}`,
+          "Authorization": `Bearer ${this.state.token}`,
           "Content-Type": "application/json"
         }
       }
@@ -84,13 +83,13 @@ export default class Profile extends Component {
       'https://api.spotify.com/v1/me',
       {
         headers: {
-          "Authorization": `Bearer ${token}`
+          "Authorization": `Bearer ${this.state.token}`
         }
       }
     )
       .then(response => {
-        console.log(response.data)
-        id = response.data.id
+        console.log(response.data);
+        this.setState({ id: response.data.id })
       })
       .catch(error => console.log(error))
   };
