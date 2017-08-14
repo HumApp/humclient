@@ -20,10 +20,9 @@ export default class SignUp extends Component {
   render() {
     return (
       <Container>
-
         <Content>
-        <Card>
-            <Form style={styles.form}>
+          <Card>
+            <Form style={styles.form} >
               <Text style={styles.header}>Sign up</Text>
               <Item floatingLabel>
                 <Label>First Name</Label>
@@ -35,28 +34,28 @@ export default class SignUp extends Component {
               </Item>
               <Item floatingLabel>
                 <Label>Username</Label>
-                <Input />
+                <Input autoCapitalize="none" />
               </Item>
               <Item floatingLabel>
                 <Label>Email</Label>
-                <Input />
+                <Input autoCapitalize="none" />
               </Item>
               <Item floatingLabel>
                 <Label>Password</Label>
-                <Input />
+                <Input autoCapitalize="none" secureTextEntry={true} />
               </Item>
               <Item floatingLabel>
                 <Label>Confirm Password</Label>
-                <Input />
+                <Input autoCapitalize="none" secureTextEntry={true} />
               </Item>
               <CardItem>
-              <Button iconRight style={styles.signup} rounded onPress={() => this.props.navigation.navigate('SignedIn')}>
-                <Text style={{fontSize: 18}}>Sign Up</Text>
-                <Icon name='ios-arrow-forward' style={{color: '#fff'}}/>
-              </Button>
+                <Button iconRight style={styles.signup} rounded onPress={() => this.props.navigation.navigate('SignedIn')}>
+                  <Text style={{ fontSize: 18 }}>Sign Up</Text>
+                  <Icon name='ios-arrow-forward' style={{ color: '#fff' }} />
+                </Button>
               </CardItem>
             </Form>
-            </Card>
+          </Card>
         </Content>
       </Container>
     );

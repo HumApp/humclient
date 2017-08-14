@@ -17,20 +17,22 @@ import {
   CardItem,
   Thumbnail
 } from 'native-base';
-import styles from './styles'
+import styles from './styles';
+
 export default class SinglePlaylist extends Component {
   render() {
     return (
-          <Container>
+      <Container>
         <Content>
+
           <Card>
             <CardItem header bordered>
               <Body>
                 <Text style={styles.pheader}>Summer</Text>
                 <Text note style={styles.subtitle}>Playlist by Olivia Oddo</Text>
               </Body>
-               <Right>
-                    <Icon name="ios-share-outline" style={styles.headerIcon} />
+              <Right>
+                <Icon name="ios-share-outline" style={styles.headerIcon} />
               </Right>
             </CardItem>
             <CardItem header>
@@ -39,9 +41,9 @@ export default class SinglePlaylist extends Component {
               </Body>
             </CardItem>
             <ListItem avatar bordered>
-            <Left>
+              <Left>
                 <Thumbnail square size={80} source={{ uri: "https://images-na.ssl-images-amazon.com/images/I/71JWCAY6cvL._AC_UL115_.jpg" }} />
-                  </Left>
+              </Left>
               <Body>
                 <Text style={styles.bodytxt}>Simon Mignolet</Text>
                 <Text note style={styles.bodytxt}>Ice Cube</Text>
@@ -49,9 +51,9 @@ export default class SinglePlaylist extends Component {
 
             </ListItem>
             <ListItem bordered avatar>
-               <Left>
+              <Left>
                 <Thumbnail square size={80} source={{ uri: "https://images-na.ssl-images-amazon.com/images/I/71JWCAY6cvL._AC_UL115_.jpg" }} />
-                  </Left>
+              </Left>
               <Body>
                 <Text style={styles.bodytxt}>Simon Mignolet</Text>
                 <Text note style={styles.bodytxt}>Ice Cube</Text>
@@ -59,16 +61,16 @@ export default class SinglePlaylist extends Component {
 
             </ListItem>
             <ListItem bordered avatar>
-            <Left>
-              <Thumbnail square size={80} source={{ uri: 'https://upload.wikimedia.org/wikipedia/en/7/74/InBetweenDreams.jpg' }} />
-                  </Left>
+              <Left>
+                <Thumbnail square size={80} source={{ uri: 'https://upload.wikimedia.org/wikipedia/en/7/74/InBetweenDreams.jpg' }} />
+              </Left>
               <Body>
                 <Text style={styles.bodytxt}>Simon Mignolet</Text>
                 <Text note style={styles.bodytxt}>Ice Cube</Text>
               </Body>
 
             </ListItem>
-             <CardItem>
+            <CardItem>
             </CardItem>
           </Card>
         </Content>

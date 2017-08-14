@@ -18,6 +18,9 @@ import {
 import styles from './styles'
 import { default as FAIcon } from 'react-native-vector-icons/FontAwesome';
 export default class Profile extends Component {
+  deleteAccount = () => {
+    this.props.navigation.navigate('Home');
+  };
 
   render() {
     return (
@@ -25,7 +28,7 @@ export default class Profile extends Component {
         <Content>
           <Card>
             <CardItem header>
-              <Icon active name="ios-person" style={styles.headerIcon}/>
+              <Icon active name="ios-person" style={styles.headerIcon} />
               <Text style={styles.header}>Personal Information</Text>
             </CardItem>
             <CardItem>
@@ -55,7 +58,7 @@ export default class Profile extends Component {
                     <Text style={styles.bodytxt}>Apple Music</Text>
                   </Body>
                   <Right>
-                    <Icon name="ios-checkmark-circle" style={styles.header}/>
+                    <Icon name="ios-checkmark-circle" style={styles.header} />
                   </Right>
                 </CardItem>
               }
@@ -97,7 +100,7 @@ export default class Profile extends Component {
                     <Text style={styles.bodytxt}>Youtube</Text>
                   </Body>
                   <Right>
-                    <Icon name="ios-add" style={styles.header}/>
+                    <Icon name="ios-add" style={styles.header} />
                   </Right>
                 </CardItem>
               }
@@ -110,15 +113,15 @@ export default class Profile extends Component {
           </Card>
           <Card>
             <CardItem header>
-              <Icon active name="ios-settings" style={styles.headerIcon}/>
+              <Icon active name="ios-settings" style={styles.headerIcon} />
               <Text style={styles.header}>Settings</Text>
             </CardItem>
-            <CardItem>
+            <CardItem button onPress={() => this.props.navigation.navigate('UpdatePassword')}>
               <Body>
                 <Text style={styles.bodytxt}>Update Password</Text>
               </Body>
               <Right>
-                <Icon name="arrow-forward" style={styles.arrow}/>
+                <Icon name="arrow-forward" style={styles.arrow} />
               </Right>
             </CardItem>
             <CardItem>
@@ -126,15 +129,15 @@ export default class Profile extends Component {
                 <Text style={styles.bodytxt}>Report an Issue</Text>
               </Body>
               <Right>
-                <Icon name="arrow-forward" style={styles.arrow}/>
+                <Icon name="arrow-forward" style={styles.arrow} />
               </Right>
             </CardItem>
-            <CardItem>
+            <CardItem button onPress={this.deleteAccount}>
               <Body>
                 <Text style={styles.bodytxt}>Delete Account</Text>
               </Body>
               <Right>
-                <Icon name="arrow-forward" style={styles.arrow}/>
+                <Icon name="arrow-forward" style={styles.arrow} />
               </Right>
             </CardItem>
           </Card>

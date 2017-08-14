@@ -21,28 +21,28 @@ export default class SignUp extends Component {
     return (
       <Container>
         <Card>
-        <Content>
-          <Form style={styles.form}>
-            <Text style={styles.header}>Login</Text>
-            <Item floatingLabel>
-              <Label>Username</Label>
-              <Input />
-            </Item>
-            <Item floatingLabel>
-              <Label>Password</Label>
-              <Input />
-            </Item>
-            <CardItem>
-            <Button rounded iconRight  style={styles.login}
-              onPress={() =>
-                this.props.navigation.navigate('SignedIn', { signedIn: false })}
-            >
-              <Text style={{fontSize: 18}}>Login</Text>
-               <Icon name='ios-arrow-forward' style={{color: '#fff'}}/>
-            </Button>
-            </CardItem>
-          </Form>
-        </Content>
+          <Content>
+            <Form style={styles.form}>
+              <Text style={styles.header}>Login</Text>
+              <Item floatingLabel>
+                <Label>Username</Label>
+                <Input autoCapitalize="none" />
+              </Item>
+              <Item floatingLabel>
+                <Label>Password</Label>
+                <Input autoCapitalize="none" secureTextEntry={true} />
+              </Item>
+              <CardItem>
+                <Button rounded iconRight style={styles.login}
+                  onPress={() =>
+                    this.props.navigation.navigate('SignedIn', { signedIn: false })}
+                >
+                  <Text style={{ fontSize: 18 }}>Login</Text>
+                  <Icon name='ios-arrow-forward' style={{ color: '#fff' }} />
+                </Button>
+              </CardItem>
+            </Form>
+          </Content>
         </Card>
       </Container>
     );
