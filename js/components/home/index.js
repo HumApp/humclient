@@ -12,11 +12,29 @@ import {
 import { Image, Dimensions } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import styles from './style.js';
+import Firebase from '../utils/database';
 import firebase from 'firebase';
+import { obj } from '../utils/testPlaylist';
 
 const deviceHeight = Dimensions.get('window').height;
 
 export default class Home extends Component {
+  componentDidMount() {
+    // console.log(
+    firebase
+      .database()
+      .ref('songs')
+      .orderByChild('title')
+      .equalTo('Oh')
+      .once('value')
+      .then(function(dataSnapshot) {
+        console.log(dataSnapshot.val());
+      });
+    // )
+    // console.log(obj.Liv);
+    // Firebase.savePlaylist(obj.Liv, 'appleId');
+  }
+
   goToLogIn = currUser => {
     this.props.navigation.navigate('Login', currUser);
   };

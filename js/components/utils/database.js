@@ -1,23 +1,20 @@
 import * as firebase from 'firebase';
 
 export default class Database {
-  static async savePlaylist(playlist, providerId) {
-    try {
-      let newPlaylist = {};
-      playlist.songs.forEach(fetchSong => {
-        await findOrCreateSong(fetchSong, providerId);
-        (newPlaylist.artist = fetchSong.artist), (newPlaylist.title =
-          fetchSong.title);
-      });
-      const newPlaylistId = firebase.database().ref('playlists').push().key;
-      firebase.database().ref(`playlists/${newPlaylistId}`).set({
-        title: playlist.title,
-        creator: firebase.auth().currentUser.uid,
-        songs: newPlaylist
-      });
-    } catch (err) {
-      alert(err);
-    }
+  static savePlaylist(playlist, providerId) {
+    let playlistSongs = {};
+    playlist.forEach(fetchSong => {
+      this.findOrCreateSong(fetchSong, providerId);
+      const newSong = firebase.database().ref('playlists').push().key;
+      (playlistSongs.artist = fetchSong.artist), (playlistSongs.title =
+        fetchSong.title);
+    });
+    const newPlaylistId = firebase.database().ref('playlists').push().key;
+    firebase.database().ref(`playlists/${newPlaylistId}`).set({
+      title: 'olivia playlist',
+      creator: 'wonjun',
+      songs: playlistSongs
+    });
   }
 
   static async findOrCreateSong(fetchSong, providerId) {
@@ -25,11 +22,10 @@ export default class Database {
       const address = firebase
         .database()
         .ref(`songs/${fetchSong.title}/${fetchSong.artist}`);
-      const dataSnapshot = await address.once(value);
+      const dataSnapshot = await address.once('value');
       if (!dataSnapshot.val()) {
         await address.set({
-          [providerId]: fetchSong.id,
-          image: fetchSong.image
+          [providerId]: fetchSong.id
         });
       } else {
         if (!dataSnapshot.hasChild(providerId)) {
@@ -39,6 +35,7 @@ export default class Database {
         }
       }
     } catch (err) {
+      console.log(err);
       alert(err);
     }
   }
