@@ -25,15 +25,6 @@
 		1405986F01494BF4BD00AC38 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FB168EF259D64B53BA46857F /* EvilIcons.ttf */; };
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
-		1CEBF9121F42976200BA1DF1 /* Artwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBF90F1F42976200BA1DF1 /* Artwork.swift */; };
-		1CEBF9131F42976200BA1DF1 /* MediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBF9101F42976200BA1DF1 /* MediaItem.swift */; };
-		1CEBF9141F42976200BA1DF1 /* SerializationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBF9111F42976200BA1DF1 /* SerializationError.swift */; };
-		1CEBF9191F42977E00BA1DF1 /* AppleMusicRequestFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBF9171F42977E00BA1DF1 /* AppleMusicRequestFactory.swift */; };
-		1CEBF91A1F42977E00BA1DF1 /* JSONKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBF9181F42977E00BA1DF1 /* JSONKeys.swift */; };
-		1CEBF91F1F42978B00BA1DF1 /* MediaLibraryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBF91B1F42978B00BA1DF1 /* MediaLibraryManager.swift */; };
-		1CEBF9201F42978B00BA1DF1 /* AuthorizationDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBF91C1F42978B00BA1DF1 /* AuthorizationDataSource.swift */; };
-		1CEBF9211F42978B00BA1DF1 /* AppleMusicManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBF91D1F42978B00BA1DF1 /* AppleMusicManager.swift */; };
-		1CEBF9221F42978B00BA1DF1 /* AuthorizationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBF91E1F42978B00BA1DF1 /* AuthorizationManager.swift */; };
 		1CEBF9241F4297BE00BA1DF1 /* appleMusicBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBF9231F4297BE00BA1DF1 /* appleMusicBridge.m */; };
 		257621565AF343419F98C357 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C9C3E5C1894A46B3B98227B7 /* Zocial.ttf */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
@@ -49,6 +40,15 @@
 		2D02E4C91E0B4AEC006451C7 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
 		2DCD954D1E0B4F2C00145EB5 /* HumClientTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* HumClientTests.m */; };
 		2F3233F70118441F8DB14FE1 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 628F9C97D120484B8133C007 /* MaterialIcons.ttf */; };
+		4106FCD91F4348F4006636FF /* Artwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4106FCD61F4348F4006636FF /* Artwork.swift */; };
+		4106FCDA1F4348F4006636FF /* MediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4106FCD71F4348F4006636FF /* MediaItem.swift */; };
+		4106FCDB1F4348F4006636FF /* SerializationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4106FCD81F4348F4006636FF /* SerializationError.swift */; };
+		4106FCFF1F434915006636FF /* AppleMusicManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4106FCFB1F434915006636FF /* AppleMusicManager.swift */; };
+		4106FD001F434915006636FF /* AuthorizationDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4106FCFC1F434915006636FF /* AuthorizationDataSource.swift */; };
+		4106FD011F434915006636FF /* AuthorizationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4106FCFD1F434915006636FF /* AuthorizationManager.swift */; };
+		4106FD021F434915006636FF /* MediaLibraryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4106FCFE1F434915006636FF /* MediaLibraryManager.swift */; };
+		4106FD051F434920006636FF /* AppleMusicRequestFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4106FD031F434920006636FF /* AppleMusicRequestFactory.swift */; };
+		4106FD061F434920006636FF /* JSONKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4106FD041F434920006636FF /* JSONKeys.swift */; };
 		41EE66AE1F421067006A10E9 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41EE66AD1F421067006A10E9 /* AVFoundation.framework */; };
 		41EE66CF1F42107F006A10E9 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41EE66CE1F42107F006A10E9 /* SystemConfiguration.framework */; };
 		41EE66D21F421146006A10E9 /* SpotifyModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 41EE66D11F421146006A10E9 /* SpotifyModule.m */; };
@@ -333,16 +333,7 @@
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		1C1817AE1F42A07100B1E86B /* HumClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HumClient-Bridging-Header.h"; sourceTree = "<group>"; };
 		1CEBF90E1F42976200BA1DF1 /* HumClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HumClient-Bridging-Header.h"; sourceTree = "<group>"; };
-		1CEBF90F1F42976200BA1DF1 /* Artwork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Artwork.swift; path = ../../applemusic/ios/Model/Artwork.swift; sourceTree = "<group>"; };
-		1CEBF9101F42976200BA1DF1 /* MediaItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MediaItem.swift; path = ../../applemusic/ios/Model/MediaItem.swift; sourceTree = "<group>"; };
-		1CEBF9111F42976200BA1DF1 /* SerializationError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SerializationError.swift; path = ../../applemusic/ios/Model/SerializationError.swift; sourceTree = "<group>"; };
 		1CEBF9151F42976600BA1DF1 /* HumClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HumClient-Bridging-Header.h"; sourceTree = "<group>"; };
-		1CEBF9171F42977E00BA1DF1 /* AppleMusicRequestFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppleMusicRequestFactory.swift; path = ../../applemusic/ios/Utility/AppleMusicRequestFactory.swift; sourceTree = "<group>"; };
-		1CEBF9181F42977E00BA1DF1 /* JSONKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = JSONKeys.swift; path = ../../applemusic/ios/Utility/JSONKeys.swift; sourceTree = "<group>"; };
-		1CEBF91B1F42978B00BA1DF1 /* MediaLibraryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MediaLibraryManager.swift; path = ../../applemusic/ios/Controllers/MediaLibraryManager.swift; sourceTree = "<group>"; };
-		1CEBF91C1F42978B00BA1DF1 /* AuthorizationDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthorizationDataSource.swift; path = ../../applemusic/ios/Controllers/AuthorizationDataSource.swift; sourceTree = "<group>"; };
-		1CEBF91D1F42978B00BA1DF1 /* AppleMusicManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppleMusicManager.swift; path = ../../applemusic/ios/Controllers/AppleMusicManager.swift; sourceTree = "<group>"; };
-		1CEBF91E1F42978B00BA1DF1 /* AuthorizationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthorizationManager.swift; path = ../../applemusic/ios/Controllers/AuthorizationManager.swift; sourceTree = "<group>"; };
 		1CEBF9231F4297BE00BA1DF1 /* appleMusicBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = appleMusicBridge.m; sourceTree = "<group>"; };
 		1D5273FFD4B244F9B64A9456 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		1DBE29844A2A4DFCAA63EB6D /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
@@ -352,6 +343,15 @@
 		340CF1AD19FE4D50AE76AB6B /* libBVLinearGradient.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libBVLinearGradient.a; sourceTree = "<group>"; };
 		3B6465A613B34553BB8D19CD /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/native-base/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		3F3E9E0E2A614BB282C03F70 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
+		4106FCD61F4348F4006636FF /* Artwork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Artwork.swift; path = Model/Artwork.swift; sourceTree = "<group>"; };
+		4106FCD71F4348F4006636FF /* MediaItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MediaItem.swift; path = Model/MediaItem.swift; sourceTree = "<group>"; };
+		4106FCD81F4348F4006636FF /* SerializationError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SerializationError.swift; path = Model/SerializationError.swift; sourceTree = "<group>"; };
+		4106FCFB1F434915006636FF /* AppleMusicManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppleMusicManager.swift; path = Controllers/AppleMusicManager.swift; sourceTree = "<group>"; };
+		4106FCFC1F434915006636FF /* AuthorizationDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthorizationDataSource.swift; path = Controllers/AuthorizationDataSource.swift; sourceTree = "<group>"; };
+		4106FCFD1F434915006636FF /* AuthorizationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthorizationManager.swift; path = Controllers/AuthorizationManager.swift; sourceTree = "<group>"; };
+		4106FCFE1F434915006636FF /* MediaLibraryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MediaLibraryManager.swift; path = Controllers/MediaLibraryManager.swift; sourceTree = "<group>"; };
+		4106FD031F434920006636FF /* AppleMusicRequestFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppleMusicRequestFactory.swift; path = Utility/AppleMusicRequestFactory.swift; sourceTree = "<group>"; };
+		4106FD041F434920006636FF /* JSONKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = JSONKeys.swift; path = Utility/JSONKeys.swift; sourceTree = "<group>"; };
 		41EE66AD1F421067006A10E9 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		41EE66CE1F42107F006A10E9 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		41EE66D01F421146006A10E9 /* SpotifyModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpotifyModule.h; sourceTree = "<group>"; };
@@ -584,10 +584,10 @@
 		1CEBF8EC1F42973300BA1DF1 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				1CEBF91D1F42978B00BA1DF1 /* AppleMusicManager.swift */,
-				1CEBF91C1F42978B00BA1DF1 /* AuthorizationDataSource.swift */,
-				1CEBF91E1F42978B00BA1DF1 /* AuthorizationManager.swift */,
-				1CEBF91B1F42978B00BA1DF1 /* MediaLibraryManager.swift */,
+				4106FCFB1F434915006636FF /* AppleMusicManager.swift */,
+				4106FCFC1F434915006636FF /* AuthorizationDataSource.swift */,
+				4106FCFD1F434915006636FF /* AuthorizationManager.swift */,
+				4106FCFE1F434915006636FF /* MediaLibraryManager.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -595,8 +595,8 @@
 		1CEBF90C1F42973B00BA1DF1 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
-				1CEBF9171F42977E00BA1DF1 /* AppleMusicRequestFactory.swift */,
-				1CEBF9181F42977E00BA1DF1 /* JSONKeys.swift */,
+				4106FD031F434920006636FF /* AppleMusicRequestFactory.swift */,
+				4106FD041F434920006636FF /* JSONKeys.swift */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -604,9 +604,9 @@
 		1CEBF90D1F42974300BA1DF1 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				1CEBF90F1F42976200BA1DF1 /* Artwork.swift */,
-				1CEBF9101F42976200BA1DF1 /* MediaItem.swift */,
-				1CEBF9111F42976200BA1DF1 /* SerializationError.swift */,
+				4106FCD61F4348F4006636FF /* Artwork.swift */,
+				4106FCD71F4348F4006636FF /* MediaItem.swift */,
+				4106FCD81F4348F4006636FF /* SerializationError.swift */,
 				1CEBF90E1F42976200BA1DF1 /* HumClient-Bridging-Header.h */,
 			);
 			name = Model;
@@ -1222,19 +1222,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1CEBF9201F42978B00BA1DF1 /* AuthorizationDataSource.swift in Sources */,
-				1CEBF9191F42977E00BA1DF1 /* AppleMusicRequestFactory.swift in Sources */,
+				4106FD021F434915006636FF /* MediaLibraryManager.swift in Sources */,
+				4106FCDA1F4348F4006636FF /* MediaItem.swift in Sources */,
+				4106FCD91F4348F4006636FF /* Artwork.swift in Sources */,
 				41EE66D21F421146006A10E9 /* SpotifyModule.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
-				1CEBF9131F42976200BA1DF1 /* MediaItem.swift in Sources */,
-				1CEBF9221F42978B00BA1DF1 /* AuthorizationManager.swift in Sources */,
-				1CEBF9211F42978B00BA1DF1 /* AppleMusicManager.swift in Sources */,
-				1CEBF9141F42976200BA1DF1 /* SerializationError.swift in Sources */,
-				1CEBF9121F42976200BA1DF1 /* Artwork.swift in Sources */,
+				4106FCDB1F4348F4006636FF /* SerializationError.swift in Sources */,
+				4106FD001F434915006636FF /* AuthorizationDataSource.swift in Sources */,
+				4106FD051F434920006636FF /* AppleMusicRequestFactory.swift in Sources */,
+				4106FD061F434920006636FF /* JSONKeys.swift in Sources */,
+				4106FCFF1F434915006636FF /* AppleMusicManager.swift in Sources */,
+				4106FD011F434915006636FF /* AuthorizationManager.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				1CEBF9241F4297BE00BA1DF1 /* appleMusicBridge.m in Sources */,
-				1CEBF91F1F42978B00BA1DF1 /* MediaLibraryManager.swift in Sources */,
-				1CEBF91A1F42977E00BA1DF1 /* JSONKeys.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
