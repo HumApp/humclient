@@ -96,9 +96,9 @@ export default class Profile extends Component {
   };
 
   requestAppleMusic = () => {
-      NativeModules.AuthorizationManager.requestMediaLibraryAuthorization((str) => console.log(str) )
+      // NativeModules.AuthorizationManager.requestMediaLibraryAuthorization((str) => console.log(str) )
       // need to call after requesting authorization finishes
-      // NativeModules.MediaLibraryManager.getPlaylists((str) => console.log(str) )
+      NativeModules.MediaLibraryManager.getPlaylists((str) => console.log(str) )
   }
 
   connected = () => {
