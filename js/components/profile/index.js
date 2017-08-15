@@ -97,7 +97,7 @@ export default class Profile extends Component {
       .catch(error => console.log(error))
   };
 
-
+  //need to implement synchronously
   requestAppleMusic = () => {
       NativeModules.AuthorizationManager.requestMediaLibraryAuthorization((str) => {
         console.log("requested apple music", str)
