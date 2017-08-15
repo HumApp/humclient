@@ -44,8 +44,8 @@ export default class SignUp extends Component {
             fullname: this.state.firstName + ' ' + this.state.lastName
           });
         });
-      // await newUser.sendEmailVerification();
-      // const userId = await firebase.database().ref('users/').push().key;
+      await newUser.sendEmailVerification();
+      const userId = await firebase.database().ref('users/').push().key;
       this.props.navigation.navigate('SignedIn');
       Toast.show({
         text: `Verification email sent to ${this.state.email}`,
