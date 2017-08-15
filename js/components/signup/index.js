@@ -76,12 +76,13 @@ export default class SignUp extends Component {
               </Item>
               <Item floatingLabel>
                 <Label>Username</Label>
-                <Input autoCapitalize="none" />
+                <Input autoCapitalize="none" autoCorrect={false} />
               </Item>
               <Item floatingLabel>
                 <Label>Email</Label>
                 <Input
                   autoCapitalize="none"
+                  keyboardType='email-address'
                   value={this.state.email}
                   onChangeText={text => this.setState({ email: text })}
                 />

@@ -30,9 +30,11 @@ export default class Profile extends Component {
       playlist: '',
       promptVisible: false,
       token: '',
-      id: ''
+      id: '',
+      appleAuth: false
     };
     this.requestAppleMusic = this.requestAppleMusic.bind(this)
+    this.getPlaylists = this.getPlaylists.bind(this)
   }
 
   signOut = () => {
@@ -95,10 +97,19 @@ export default class Profile extends Component {
       .catch(error => console.log(error))
   };
 
+
   requestAppleMusic = () => {
-      // NativeModules.AuthorizationManager.requestMediaLibraryAuthorization((str) => console.log(str) )
-      // need to call after requesting authorization finishes
-      NativeModules.MediaLibraryManager.getPlaylists((str) => console.log(str) )
+      NativeModules.AuthorizationManager.requestMediaLibraryAuthorization((str) => {
+        console.log("requested apple music", str)
+
+        this.setState({appleAuth: true}, () => this.getPlaylists)
+      })
+
+  }
+
+  getPlaylists = () => {
+    console.log('getting the playlists')
+    NativeModules.MediaLibraryManager.getPlaylists((str) => console.log(str) )
   }
 
   connected = () => {
@@ -108,6 +119,11 @@ export default class Profile extends Component {
       return (<Icon name="ios-checkmark-circle" style={styles.header} />)
     }
   };
+
+  appleConnected = () => {
+    if(this.state.appleAuth) return (<Icon name="ios-checkmark-circle" style={styles.header} />)
+    else return (<Icon name="ios-add" style={styles.header} />)
+  }
 
   render() {
     return (
@@ -143,7 +159,7 @@ export default class Profile extends Component {
             <SwipeRow
               rightOpenValue={-75}
               body={
-                <CardItem>
+                <CardItem button onPress={this.requestAppleMusic}>
                   <Left>
                     <FAIcon name="apple" size={25} color="#FF4B63" />
                   </Left>
@@ -151,7 +167,7 @@ export default class Profile extends Component {
                     <Text style={styles.bodytxt}>Apple Music</Text>
                   </Body>
                   <Right>
-                      <Icon onPress={this.requestAppleMusic} name="ios-add" style={styles.header} />
+                      {this.appleConnected()}
                   </Right>
                 </CardItem>
               }
