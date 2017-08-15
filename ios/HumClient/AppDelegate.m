@@ -12,6 +12,7 @@
 
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
+#import "HumClient-Bridging-Header.h"
 
 @implementation AppDelegate
 

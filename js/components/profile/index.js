@@ -32,6 +32,7 @@ export default class Profile extends Component {
       token: '',
       id: ''
     };
+    this.requestAppleMusic = this.requestAppleMusic.bind(this)
   }
 
   signOut = () => {
@@ -94,6 +95,12 @@ export default class Profile extends Component {
       .catch(error => console.log(error))
   };
 
+  requestAppleMusic = () => {
+      // NativeModules.AuthorizationManager.requestMediaLibraryAuthorization((str) => console.log(str) )
+      // need to call after requesting authorization finishes
+      NativeModules.MediaLibraryManager.getPlaylists((str) => console.log(str) )
+  }
+
   connected = () => {
     if (this.state.id === "") {
       return (<Icon name="ios-add" style={styles.header} />)
@@ -144,7 +151,7 @@ export default class Profile extends Component {
                     <Text style={styles.bodytxt}>Apple Music</Text>
                   </Body>
                   <Right>
-                    <Icon name="ios-add" style={styles.header} />
+                      <Icon onPress={this.requestAppleMusic} name="ios-add" style={styles.header} />
                   </Right>
                 </CardItem>
               }
@@ -186,7 +193,7 @@ export default class Profile extends Component {
                     <Text style={styles.bodytxt}>Youtube</Text>
                   </Body>
                   <Right>
-                    <Icon name="ios-add" style={styles.header} />
+                    <Icon onPress={() => console.log('hello')} name="ios-add" style={styles.header} />
                   </Right>
                 </CardItem>
               }
