@@ -20,6 +20,7 @@ import { default as FAIcon } from 'react-native-vector-icons/FontAwesome';
 import { NativeModules } from 'react-native';
 import axios from 'axios';
 import Prompt from 'react-native-prompt';
+import firebase from 'firebase';
 
 const SpotifyModule = NativeModules.SpotifyModule;
 
@@ -95,11 +96,90 @@ export default class Profile extends Component {
       .catch(error => console.log(error))
   };
 
+  importPlaylist = () => {
+    // const sampleDatabase = firebase.database().ref('playlists/IDHERE');
+    // sampleDatabase.on('value', function (snapshot) {
+    //   const samplePlaylist = snapshot.val();
+    //   console.log(samplePlaylist)
+    // });
+    let samplePlaylist = { "name": "A Sample Playlist", "songs": [{ "artist": "Drake", "track": "Controlla", "album": "Views" }] };
+
+    axios.post(
+      `https://api.spotify.com/v1/users/${this.state.id}/playlists`,
+      `{\"name\":\"${samplePlaylist.name}\", \"public\":false}`,
+      {
+        headers: {
+          "Authorization": `Bearer ${this.state.token}`,
+          "Content-Type": "application/json"
+        }
+      }
+    )
+      .then(response => {
+        let songURI = '';
+        let playlistID = response.data.id;
+        samplePlaylist.songs.forEach(song => {
+          axios.get(
+            `https://api.spotify.com/v1/search?q=album:${song.album}%20artist:${song.artist}&type=album&limit=1`,
+            {
+              headers: {
+                "Authorization": `Bearer ${this.state.token}`
+              }
+            }
+          )
+            .then(response => {
+              let sampleAlbum = response.data.albums.items[0].id;
+              axios.get(
+                `https://api.spotify.com/v1/albums/${sampleAlbum}/tracks`,
+                {
+                  headers: {
+                    "Authorization": `Bearer ${this.state.token}`
+                  }
+                }
+              )
+                .then(response => {
+                  let sampleTracks = response.data.items;
+                  for (let i = 0; i < sampleTracks.length; i++) {
+                    console.log(`THIS IS THE ${i}th TRACK`, sampleTracks[i].name)
+                    if (sampleTracks[i].name === song.track) {
+                      songURI = sampleTracks[i].uri;
+                      break
+                    }
+                  };
+                  axios.post(
+                    `https://api.spotify.com/v1/users/${this.state.id}/playlists/${playlistID}/tracks`,
+                    { "uris": [`${songURI}`] },
+                    {
+                      headers: {
+                        "Authorization": `Bearer ${this.state.token}`,
+                        "Content-Type": "application/json"
+                      }
+                    })
+                    .catch(error => console.log(error))
+                })
+                .catch(error => console.log(error))
+            })
+            .catch(error => console.log(error))
+        });
+      })
+      //https://api.spotify.com/v1/search?q=album:${song.album}%20artist:${song.artist}&type=album
+      // .then(response => {
+      //   //add songs to the playlist
+      // })
+      .catch(error => console.log(error))
+    //create a playlist and get it's ID and the user's ID
+    //query song for spotify URI "https://api.spotify.com/v1/search?"
+    ///////q=album:${album}%20artist:${artist}%20track:${track}&type=album&limit=1 (limit 1)
+    //////for returned album.items: item.name === name then save item.uri
+    //construct comma separated list of URIs
+    //send an axios post request to  'https://api.spotify.com/v1/users/${user}/playlists/${playlists}/tracks
+    // with {"uris": [${insert CSVs}]'
+  };
+
   requestAppleMusic = () => {
-      // NativeModules.AuthorizationManager.requestMediaLibraryAuthorization((str) => console.log(str) )
-      // need to call after requesting authorization finishes
-      NativeModules.MediaLibraryManager.getPlaylists((str) => console.log(str) )
-  }
+    // NativeModules.AuthorizationManager.requestMediaLibraryAuthorization((str) => console.log(str) )
+    // need to call after requesting authorization finishes
+    NativeModules.MediaLibraryManager.getPlaylists((str) => console.log(str))
+  };
 
   connected = () => {
     if (this.state.id === "") {
@@ -151,7 +231,7 @@ export default class Profile extends Component {
                     <Text style={styles.bodytxt}>Apple Music</Text>
                   </Body>
                   <Right>
-                      <Icon onPress={this.requestAppleMusic} name="ios-add" style={styles.header} />
+                    <Icon onPress={this.requestAppleMusic} name="ios-add" style={styles.header} />
                   </Right>
                 </CardItem>
               }
@@ -234,6 +314,14 @@ export default class Profile extends Component {
             <CardItem button onPress={() => this.setState({ promptVisible: true })}>
               <Body>
                 <Text style={styles.bodytxt}>Create a Playlist</Text>
+              </Body>
+              <Right>
+                <Icon name="arrow-forward" style={styles.arrow} />
+              </Right>
+            </CardItem>
+            <CardItem button onPress={this.importPlaylist}>
+              <Body>
+                <Text style={styles.bodytxt}>Import Playlist</Text>
               </Body>
               <Right>
                 <Icon name="arrow-forward" style={styles.arrow} />
