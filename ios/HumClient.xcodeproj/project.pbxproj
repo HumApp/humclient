@@ -25,6 +25,16 @@
 		1405986F01494BF4BD00AC38 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FB168EF259D64B53BA46857F /* EvilIcons.ttf */; };
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
+		1CEBF9121F42976200BA1DF1 /* Artwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBF90F1F42976200BA1DF1 /* Artwork.swift */; };
+		1CEBF9131F42976200BA1DF1 /* MediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBF9101F42976200BA1DF1 /* MediaItem.swift */; };
+		1CEBF9141F42976200BA1DF1 /* SerializationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBF9111F42976200BA1DF1 /* SerializationError.swift */; };
+		1CEBF9191F42977E00BA1DF1 /* AppleMusicRequestFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBF9171F42977E00BA1DF1 /* AppleMusicRequestFactory.swift */; };
+		1CEBF91A1F42977E00BA1DF1 /* JSONKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBF9181F42977E00BA1DF1 /* JSONKeys.swift */; };
+		1CEBF91F1F42978B00BA1DF1 /* MediaLibraryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBF91B1F42978B00BA1DF1 /* MediaLibraryManager.swift */; };
+		1CEBF9201F42978B00BA1DF1 /* AuthorizationDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBF91C1F42978B00BA1DF1 /* AuthorizationDataSource.swift */; };
+		1CEBF9211F42978B00BA1DF1 /* AppleMusicManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBF91D1F42978B00BA1DF1 /* AppleMusicManager.swift */; };
+		1CEBF9221F42978B00BA1DF1 /* AuthorizationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBF91E1F42978B00BA1DF1 /* AuthorizationManager.swift */; };
+		1CEBF9241F4297BE00BA1DF1 /* appleMusicBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBF9231F4297BE00BA1DF1 /* appleMusicBridge.m */; };
 		257621565AF343419F98C357 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C9C3E5C1894A46B3B98227B7 /* Zocial.ttf */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -321,6 +331,19 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = HumClient/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = HumClient/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
+		1C1817AE1F42A07100B1E86B /* HumClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HumClient-Bridging-Header.h"; sourceTree = "<group>"; };
+		1CEBF90E1F42976200BA1DF1 /* HumClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HumClient-Bridging-Header.h"; sourceTree = "<group>"; };
+		1CEBF90F1F42976200BA1DF1 /* Artwork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Artwork.swift; path = ../../applemusic/ios/Model/Artwork.swift; sourceTree = "<group>"; };
+		1CEBF9101F42976200BA1DF1 /* MediaItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MediaItem.swift; path = ../../applemusic/ios/Model/MediaItem.swift; sourceTree = "<group>"; };
+		1CEBF9111F42976200BA1DF1 /* SerializationError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SerializationError.swift; path = ../../applemusic/ios/Model/SerializationError.swift; sourceTree = "<group>"; };
+		1CEBF9151F42976600BA1DF1 /* HumClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HumClient-Bridging-Header.h"; sourceTree = "<group>"; };
+		1CEBF9171F42977E00BA1DF1 /* AppleMusicRequestFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppleMusicRequestFactory.swift; path = ../../applemusic/ios/Utility/AppleMusicRequestFactory.swift; sourceTree = "<group>"; };
+		1CEBF9181F42977E00BA1DF1 /* JSONKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = JSONKeys.swift; path = ../../applemusic/ios/Utility/JSONKeys.swift; sourceTree = "<group>"; };
+		1CEBF91B1F42978B00BA1DF1 /* MediaLibraryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MediaLibraryManager.swift; path = ../../applemusic/ios/Controllers/MediaLibraryManager.swift; sourceTree = "<group>"; };
+		1CEBF91C1F42978B00BA1DF1 /* AuthorizationDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthorizationDataSource.swift; path = ../../applemusic/ios/Controllers/AuthorizationDataSource.swift; sourceTree = "<group>"; };
+		1CEBF91D1F42978B00BA1DF1 /* AppleMusicManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppleMusicManager.swift; path = ../../applemusic/ios/Controllers/AppleMusicManager.swift; sourceTree = "<group>"; };
+		1CEBF91E1F42978B00BA1DF1 /* AuthorizationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthorizationManager.swift; path = ../../applemusic/ios/Controllers/AuthorizationManager.swift; sourceTree = "<group>"; };
+		1CEBF9231F4297BE00BA1DF1 /* appleMusicBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = appleMusicBridge.m; sourceTree = "<group>"; };
 		1D5273FFD4B244F9B64A9456 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		1DBE29844A2A4DFCAA63EB6D /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		23A1D0F775984EF9B3530BF0 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
@@ -495,6 +518,9 @@
 		13B07FAE1A68108700A75B9A /* HumClient */ = {
 			isa = PBXGroup;
 			children = (
+				1CEBF90D1F42974300BA1DF1 /* Model */,
+				1CEBF90C1F42973B00BA1DF1 /* Utility */,
+				1CEBF8EC1F42973300BA1DF1 /* Controllers */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				41EE66D01F421146006A10E9 /* SpotifyModule.h */,
@@ -504,6 +530,9 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				1CEBF9151F42976600BA1DF1 /* HumClient-Bridging-Header.h */,
+				1C1817AE1F42A07100B1E86B /* HumClient-Bridging-Header.h */,
+				1CEBF9231F4297BE00BA1DF1 /* appleMusicBridge.m */,
 			);
 			name = HumClient;
 			sourceTree = "<group>";
@@ -550,6 +579,37 @@
 				1C25D2F11F400BC000B81678 /* libRNVectorIcons.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		1CEBF8EC1F42973300BA1DF1 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				1CEBF91D1F42978B00BA1DF1 /* AppleMusicManager.swift */,
+				1CEBF91C1F42978B00BA1DF1 /* AuthorizationDataSource.swift */,
+				1CEBF91E1F42978B00BA1DF1 /* AuthorizationManager.swift */,
+				1CEBF91B1F42978B00BA1DF1 /* MediaLibraryManager.swift */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		1CEBF90C1F42973B00BA1DF1 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				1CEBF9171F42977E00BA1DF1 /* AppleMusicRequestFactory.swift */,
+				1CEBF9181F42977E00BA1DF1 /* JSONKeys.swift */,
+			);
+			name = Utility;
+			sourceTree = "<group>";
+		};
+		1CEBF90D1F42974300BA1DF1 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				1CEBF90F1F42976200BA1DF1 /* Artwork.swift */,
+				1CEBF9101F42976200BA1DF1 /* MediaItem.swift */,
+				1CEBF9111F42976200BA1DF1 /* SerializationError.swift */,
+				1CEBF90E1F42976200BA1DF1 /* HumClient-Bridging-Header.h */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 		41EE66AC1F421067006A10E9 /* Frameworks */ = {
@@ -754,6 +814,7 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = LNQ22YF8UB;
+						LastSwiftMigration = 0900;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -1161,9 +1222,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1CEBF9201F42978B00BA1DF1 /* AuthorizationDataSource.swift in Sources */,
+				1CEBF9191F42977E00BA1DF1 /* AppleMusicRequestFactory.swift in Sources */,
 				41EE66D21F421146006A10E9 /* SpotifyModule.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				1CEBF9131F42976200BA1DF1 /* MediaItem.swift in Sources */,
+				1CEBF9221F42978B00BA1DF1 /* AuthorizationManager.swift in Sources */,
+				1CEBF9211F42978B00BA1DF1 /* AppleMusicManager.swift in Sources */,
+				1CEBF9141F42976200BA1DF1 /* SerializationError.swift in Sources */,
+				1CEBF9121F42976200BA1DF1 /* Artwork.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				1CEBF9241F4297BE00BA1DF1 /* appleMusicBridge.m in Sources */,
+				1CEBF91F1F42978B00BA1DF1 /* MediaLibraryManager.swift in Sources */,
+				1CEBF91A1F42977E00BA1DF1 /* JSONKeys.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1215,6 +1286,7 @@
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -1245,6 +1317,7 @@
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				HEADER_SEARCH_PATHS = (
@@ -1273,6 +1346,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = LNQ22YF8UB;
@@ -1286,6 +1360,7 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 				);
 				INFOPLIST_FILE = HumClient/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1293,6 +1368,9 @@
 					"-lc++",
 				);
 				PRODUCT_NAME = HumClient;
+				SWIFT_OBJC_BRIDGING_HEADER = "HumClient-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1301,6 +1379,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = LNQ22YF8UB;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1313,6 +1392,7 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 				);
 				INFOPLIST_FILE = HumClient/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1320,6 +1400,8 @@
 					"-lc++",
 				);
 				PRODUCT_NAME = HumClient;
+				SWIFT_OBJC_BRIDGING_HEADER = "HumClient-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
