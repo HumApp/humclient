@@ -15,9 +15,10 @@ import {
   SwipeRow,
   View
 } from 'native-base';
-import styles from './styles'
+import styles from './styles';
 import { default as FAIcon } from 'react-native-vector-icons/FontAwesome';
-import { NativeModules } from 'react-native';
+import { NativeModules, AsyncStorage } from 'react-native';
+import firebase from 'firebase';
 import axios from 'axios';
 import Prompt from 'react-native-prompt';
 
@@ -33,12 +34,21 @@ export default class Profile extends Component {
       id: '',
       appleAuth: false
     };
-    this.requestAppleMusic = this.requestAppleMusic.bind(this)
-    this.getPlaylists = this.getPlaylists.bind(this)
   }
 
-  signOut = () => {
-    this.props.navigation.navigate('Home');
+  signOut = async () => {
+    try {
+      await AsyncStorage.removeItem('user');
+      await firebase.auth().signOut();
+      this.props.navigation.navigate('SignedOut');
+    } catch (err) {
+      Toast.show({
+        text: `${err}`,
+        position: 'top',
+        buttonText: 'Okay',
+        duration: 2000
+      });
+    }
   };
 
   authSpotify = () => {
@@ -54,76 +64,73 @@ export default class Profile extends Component {
   };
 
   jsonPlaylists = () => {
-    axios.get(
-      'https://api.spotify.com/v1/me/playlists',
-      {
+    axios
+      .get('https://api.spotify.com/v1/me/playlists', {
         headers: {
-          "Authorization": `Bearer ${this.state.token}`
+          Authorization: `Bearer ${this.state.token}`
         }
-      }
-    )
+      })
       .then(response => console.log(response.data))
-      .catch(error => console.log(error))
+      .catch(error => console.log(error));
   };
 
   createPlaylists = () => {
-    axios.post(
-      `https://api.spotify.com/v1/users/${this.state.id}/playlists`,
-      `{\"name\":\"${this.state.playlist}\", \"public\":false}`,
-      {
-        headers: {
-          "Authorization": `Bearer ${this.state.token}`,
-          "Content-Type": "application/json"
+    axios
+      .post(
+        `https://api.spotify.com/v1/users/${this.state.id}/playlists`,
+        `{\"name\":\"${this.state.playlist}\", \"public\":false}`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.state.token}`,
+            'Content-Type': 'application/json'
+          }
         }
-      }
-    )
+      )
       .then(response => console.log(response))
-      .catch(error => console.log(error))
-  }
+      .catch(error => console.log(error));
+  };
 
   whoamI = () => {
-    axios.get(
-      'https://api.spotify.com/v1/me',
-      {
+    axios
+      .get('https://api.spotify.com/v1/me', {
         headers: {
-          "Authorization": `Bearer ${this.state.token}`
+          Authorization: `Bearer ${this.state.token}`
         }
-      }
-    )
+      })
       .then(response => {
         console.log(response.data);
-        this.setState({ id: response.data.id })
+        this.setState({ id: response.data.id });
       })
-      .catch(error => console.log(error))
+      .catch(error => console.log(error));
   };
 
   //need to implement synchronously
   requestAppleMusic = () => {
-      NativeModules.AuthorizationManager.requestMediaLibraryAuthorization((str) => {
-        console.log("requested apple music", str)
+    NativeModules.AuthorizationManager.requestMediaLibraryAuthorization(str => {
+      console.log('requested apple music', str);
 
-        this.setState({appleAuth: true}, () => this.getPlaylists)
-      })
-
-  }
+      this.setState({ appleAuth: true }, () => this.getPlaylists);
+    });
+  };
 
   getPlaylists = () => {
-    console.log('getting the playlists')
-    NativeModules.MediaLibraryManager.getPlaylists((str) => console.log(str) )
-  }
+    console.log('getting the playlists');
+    NativeModules.MediaLibraryManager.getPlaylists(str => console.log(str));
+  };
 
   connected = () => {
-    if (this.state.id === "") {
-      return (<Icon name="ios-add" style={styles.header} />)
+    if (this.state.id === '') {
+      return <Icon name="ios-add" style={styles.header} />;
     } else {
-      return (<Icon name="ios-checkmark-circle" style={styles.header} />)
+      return <Icon name="ios-checkmark-circle" style={styles.header} />;
     }
   };
 
   appleConnected = () => {
-    if(this.state.appleAuth) return (<Icon name="ios-checkmark-circle" style={styles.header} />)
-    else return (<Icon name="ios-add" style={styles.header} />)
-  }
+    if (this.state.appleAuth)
+      return <Icon name="ios-checkmark-circle" style={styles.header} />;
+    else return <Icon name="ios-add" style={styles.header} />;
+  };
 
   render() {
     return (
@@ -167,7 +174,7 @@ export default class Profile extends Component {
                     <Text style={styles.bodytxt}>Apple Music</Text>
                   </Body>
                   <Right>
-                      {this.appleConnected()}
+                    {this.appleConnected()}
                   </Right>
                 </CardItem>
               }
@@ -193,7 +200,12 @@ export default class Profile extends Component {
                 </CardItem>
               }
               right={
-                <Button danger onPress={() => { this.setState({ id: '', token: '' }) }}>
+                <Button
+                  danger
+                  onPress={() => {
+                    this.setState({ id: '', token: '' });
+                  }}
+                >
                   <Icon active name="ios-close-circle-outline" />
                 </Button>
               }
@@ -209,7 +221,11 @@ export default class Profile extends Component {
                     <Text style={styles.bodytxt}>Youtube</Text>
                   </Body>
                   <Right>
-                    <Icon onPress={() => console.log('hello')} name="ios-add" style={styles.header} />
+                    <Icon
+                      onPress={() => console.log('hello')}
+                      name="ios-add"
+                      style={styles.header}
+                    />
                   </Right>
                 </CardItem>
               }
@@ -225,7 +241,10 @@ export default class Profile extends Component {
               <Icon active name="ios-settings" style={styles.headerIcon} />
               <Text style={styles.header}>Settings</Text>
             </CardItem>
-            <CardItem button onPress={() => this.props.navigation.navigate('UpdatePassword')}>
+            <CardItem
+              button
+              onPress={() => this.props.navigation.navigate('UpdatePassword')}
+            >
               <Body>
                 <Text style={styles.bodytxt}>Update Password</Text>
               </Body>
@@ -246,8 +265,16 @@ export default class Profile extends Component {
               placeholder="New playlist"
               visible={this.state.promptVisible}
               onCancel={() => this.setState({ promptVisible: false })}
-              onSubmit={(value) => this.setState({ promptVisible: false, playlist: `${value}` }, this.createPlaylists)} />
-            <CardItem button onPress={() => this.setState({ promptVisible: true })}>
+              onSubmit={value =>
+                this.setState(
+                  { promptVisible: false, playlist: `${value}` },
+                  this.createPlaylists
+                )}
+            />
+            <CardItem
+              button
+              onPress={() => this.setState({ promptVisible: true })}
+            >
               <Body>
                 <Text style={styles.bodytxt}>Create a Playlist</Text>
               </Body>
