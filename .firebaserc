@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "build": "hum-app",
+    "default": "hum-app"
+  }
+}

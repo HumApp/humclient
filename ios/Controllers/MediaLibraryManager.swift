@@ -142,29 +142,18 @@ class MediaLibraryManager: NSObject {
     @objc func getPlaylists(_ callback: RCTResponseSenderBlock) {
       let myPlaylistQuery = MPMediaQuery.playlists()
       let playlists = myPlaylistQuery.collections
-      //        let firstPlaylist = playlists![0]
-      //      firstPlaylist.artwork
-      //        print(firstPlaylist.value(forProperty: MPMediaPlaylistPropertyPersistentID)!)
-      //          print(firstPlaylist.)
-      //        var dictOfPlaylists =  [String : [String : [String]]] ()
+
       var jsonString = "{"
       for playlist in playlists! {
-        //            print(playlist.value(forProperty: MPMediaPlaylistPropertyName)!)
-        //            print(playlist.value(forProperty: MPMediaPlaylistCreationMetadata)!)
         jsonString += "\"" + String(describing: playlist.value(forProperty: MPMediaPlaylistPropertyName)!) + "\"" + ":" + "["
         let songs = playlist.items
-        //            var dictOfSongs =  [String : [String]] ()
         for song in songs {
           let title = String(describing: song.value(forProperty: MPMediaItemPropertyTitle)!)
           let artist = String(describing: song.value(forProperty: MPMediaItemPropertyArtist)!)
-          //              let songInfoArr: [String] = [title, artist]
           let songId = String(describing: song.value(forProperty: MPMediaItemPropertyPlaybackStoreID)!)
           jsonString += "{" + "id: " + songId + ", " + "title: " + "\"" + title + "\"" + ", " + "artist: " + "\"" + artist + "\"" + "},"
-          //              dictOfSongs[songId] = songInfoArr
-          //            print("\t\t", song.value(forProperty: MPMediaItemPropertyArtist)!)
         }
         jsonString += "],"
-        //            dictOfPlaylists[String(describing: playlist.value(forProperty: MPMediaPlaylistPropertyName)!)] = dictOfSongs
       }
       jsonString += "}"
       callback([jsonString])

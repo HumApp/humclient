@@ -5,8 +5,10 @@
  */
 
 #import "SpotifyModule.h"
+//#import "spotifyClientId.m"
 #import "React/RCTLog.h"
 #import "React/RCTBridge.h"
+
 
 
 @implementation SpotifyModule
@@ -35,7 +37,7 @@ RCT_EXPORT_METHOD(authenticate:(RCTResponseSenderBlock)callback)
    */
   
   // The spotify client id
-  [[SPTAuth defaultInstance] setClientID:@"fdaf12a8f6e44ae19b85bd44f846a7ca"];
+  [[SPTAuth defaultInstance] setClientID: @"fdaf12a8f6e44ae19b85bd44f846a7ca"];
   
   // The callback (called Custom URL Scheme in XCode project configuration)
   [[SPTAuth defaultInstance] setRedirectURL:[NSURL URLWithString:@"humapplogin://"]];
