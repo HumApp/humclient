@@ -19,7 +19,7 @@ import styles from './styles';
 import { default as FAIcon } from 'react-native-vector-icons/FontAwesome';
 import { NativeModules, AsyncStorage } from 'react-native';
 import axios from 'axios';
-import Database from '../../../utils/database';
+import Database from '../../../utils/database'
 import Prompt from 'react-native-prompt';
 import firebase from 'firebase';
 const SpotifyModule = NativeModules.SpotifyModule;
@@ -37,7 +37,7 @@ export default class Profile extends Component {
       appleAuth: false
     };
   }
-
+  
   signOut = async () => {
     try {
       await AsyncStorage.removeItem('user');
@@ -51,7 +51,7 @@ export default class Profile extends Component {
         duration: 2000
       });
     }
-  };
+  }
 
   authSpotify = () => {
     try {
@@ -76,15 +76,45 @@ export default class Profile extends Component {
       .catch(error => console.log(error));
   };
 
-  fetchPlaylists = () => {
-    axios
-      .get('https://api.spotify.com/v1/me/playlists', {
-        headers: {
-          Authorization: `Bearer ${this.state.token}`
-        }
-      })
-      .then(response => this.setState({ usersPlaylists: response.data }))
-      .catch(error => console.log(error));
+  fetchPlaylists = async () => {
+    try {
+    let playlistArr = []
+      const responseData = await axios.get(
+        'https://api.spotify.com/v1/me/playlists',
+        {
+          headers: {
+            "Authorization": `Bearer ${this.state.token}`
+          }
+        })
+        const returnedPlaylist = responseData.data
+          returnedPlaylist.items.forEach(async (item) => {
+            let playlist = {}
+            playlist.name = item.name
+            const songsData = await axios.get(
+              `${item.tracks.href}`,
+              {
+                headers: {
+                   "Authorization": `Bearer ${this.state.token}`
+                }
+              }
+            )
+          let songs = songsData.data.items
+          let songsArr = []
+          songs.forEach(song => {
+            let songObj = {}
+            songObj.title = song.track.name
+            songObj.artist = song.track.album.artists[0].name
+            songObj.id = song.track.uri
+            songsArr.push(songObj)
+          })
+          playlist.songs = songsArr
+          playlistArr.push(playlist)
+          Database.saveApplePlaylists(playlistArr, 'spotifyId')
+        })
+    }
+    catch(error) {
+      console.log(error)
+    }
   };
 
   createPlaylists = () => {
@@ -169,7 +199,11 @@ export default class Profile extends Component {
     else return <Icon name="ios-add" style={styles.header} />;
   };
 
+
   render() {
+      let obj = { name: 'Fullstack', author: 'One June', songs: [ '736211860', '712330693', '897279570']}
+
+      let applePlaylist = JSON.stringify(obj)
     return (
       <Container>
         <Content>
@@ -325,6 +359,17 @@ export default class Profile extends Component {
             <CardItem button onPress={this.signOut}>
               <Body>
                 <Text style={styles.bodytxt}>Sign Out</Text>
+              </Body>
+              <Right>
+                <Icon name="arrow-forward" style={styles.arrow} />
+              </Right>
+            </CardItem>
+            <CardItem button onPress={() => {
+               NativeModules.MediaLibraryManager.createPlaylist(applePlaylist, (str) => {
+                  console.log(str)
+              })}}>
+              <Body>
+                <Text style={styles.bodytxt}>Create apple Playlist</Text>
               </Body>
               <Right>
                 <Icon name="arrow-forward" style={styles.arrow} />

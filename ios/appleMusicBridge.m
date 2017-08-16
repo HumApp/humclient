@@ -19,7 +19,7 @@ RCT_EXTERN_METHOD(requestMediaLibraryAuthorization: (RCTResponseSenderBlock)call
 
 @interface RCT_EXTERN_MODULE(MediaLibraryManager, NSObject)
 
-RCT_EXTERN_METHOD(createPlaylist: (RCTResponseSenderBlock)callback);
+RCT_EXTERN_METHOD(createPlaylist:(NSData *)playlist callback: (RCTResponseSenderBlock)callback);
 RCT_EXTERN_METHOD(getPlaylists: (RCTResponseSenderBlock)callback);
 
 @end
