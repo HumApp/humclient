@@ -20,8 +20,8 @@ const deviceHeight = Dimensions.get('window').height;
 
 export default class Home extends Component {
   componentDidMount() {
-    console.log(obj.Liv);
-    Firebase.savePlaylist(obj.Liv, 'appleId');
+    console.log(obj);
+    Firebase.saveMultiPlaylists(obj, 'appleId');
   }
 
   goToLogIn = currUser => {
