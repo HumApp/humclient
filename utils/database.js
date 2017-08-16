@@ -18,6 +18,7 @@ export default class Database {
           songs: newSong
         });
       })
+    }
 
   static getPlaylist(playlist, userId) {
     return firebase.database().ref(`playlists/`).on();

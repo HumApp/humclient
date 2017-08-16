@@ -19,7 +19,7 @@ import styles from './styles'
 import { default as FAIcon } from 'react-native-vector-icons/FontAwesome';
 import { NativeModules, AsyncStorage } from 'react-native';
 import axios from 'axios';
-import Database from '../utils/database'
+import Database from '../../../utils/database'
 import Prompt from 'react-native-prompt';
 import firebase from 'firebase';
 const SpotifyModule = NativeModules.SpotifyModule;
@@ -36,9 +36,8 @@ export default class Profile extends Component {
       usersPlaylists: {},
       appleAuth: false
     };
-    
+
   }
-   
 
   signOut = async () => {
     try {
@@ -53,6 +52,7 @@ export default class Profile extends Component {
         duration: 2000
       });
     }
+  }
 
   authSpotify = () => {
     try {
