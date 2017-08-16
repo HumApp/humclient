@@ -33,9 +33,13 @@ export default class Profile extends Component {
       promptVisible: false,
       token: '',
       id: '',
-      usersPlaylists: {}
-    }
-  };
+      usersPlaylists: {},
+      appleAuth: false
+    };
+    
+    this.requestAppleMusic = this.requestAppleMusic.bind(this)
+    this.getPlaylists = this.getPlaylists.bind(this)
+  }
 
   requestAppleMusic = () => {
     // NativeModules.AuthorizationManager.requestMediaLibraryAuthorization((str) => console.log(str) )
@@ -132,6 +136,26 @@ export default class Profile extends Component {
       .catch(error => console.log(error))
   };
 
+  //need to implement synchronously
+  requestAppleMusic = () => {
+      NativeModules.AuthorizationManager.requestMediaLibraryAuthorization((str) => {
+        console.log("requested apple music", str)
+
+        this.setState({appleAuth: true}, () => this.getPlaylists)
+      })
+
+  }
+
+  getPlaylists = () => {
+    console.log('getting the playlists')
+    NativeModules.MediaLibraryManager.getPlaylists((str) => console.log(str) )
+  }
+
+  appleConnected = () => {
+    if(this.state.appleAuth) return (<Icon name="ios-checkmark-circle" style={styles.header} />)
+    else return (<Icon name="ios-add" style={styles.header} />)
+  }
+
   render() {
     return (
       <Container>
@@ -166,7 +190,7 @@ export default class Profile extends Component {
             <SwipeRow
               rightOpenValue={-75}
               body={
-                <CardItem>
+                <CardItem button onPress={this.requestAppleMusic}>
                   <Left>
                     <FAIcon name="apple" size={25} color="#FF4B63" />
                   </Left>
@@ -174,7 +198,7 @@ export default class Profile extends Component {
                     <Text style={styles.bodytxt}>Apple Music</Text>
                   </Body>
                   <Right>
-                    <Icon onPress={this.requestAppleMusic} name="ios-add" style={styles.header} />
+                      {this.appleConnected()}
                   </Right>
                 </CardItem>
               }

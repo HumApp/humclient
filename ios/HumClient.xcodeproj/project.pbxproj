@@ -54,6 +54,16 @@
 		41EE66D21F421146006A10E9 /* SpotifyModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 41EE66D11F421146006A10E9 /* SpotifyModule.m */; };
 		41EE66D41F42117C006A10E9 /* SpotifyAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41EE66D31F42117C006A10E9 /* SpotifyAuthentication.framework */; };
 		4E7C405F10DB453BAB268E55 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = ED86967EDE644FD6B4D23084 /* Entypo.ttf */; };
+		50FDA70C1F43477A0039C3D3 /* spotifyClientId.m in Sources */ = {isa = PBXBuildFile; fileRef = 50FDA70B1F43477A0039C3D3 /* spotifyClientId.m */; };
+		50FDA7301F4348F80039C3D3 /* MediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FDA72D1F4348F80039C3D3 /* MediaItem.swift */; };
+		50FDA7311F4348F80039C3D3 /* Artwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FDA72E1F4348F80039C3D3 /* Artwork.swift */; };
+		50FDA7321F4348F80039C3D3 /* SerializationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FDA72F1F4348F80039C3D3 /* SerializationError.swift */; };
+		50FDA7371F4349070039C3D3 /* AppleMusicManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FDA7331F4349070039C3D3 /* AppleMusicManager.swift */; };
+		50FDA7381F4349070039C3D3 /* AuthorizationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FDA7341F4349070039C3D3 /* AuthorizationManager.swift */; };
+		50FDA7391F4349070039C3D3 /* MediaLibraryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FDA7351F4349070039C3D3 /* MediaLibraryManager.swift */; };
+		50FDA73A1F4349070039C3D3 /* AuthorizationDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FDA7361F4349070039C3D3 /* AuthorizationDataSource.swift */; };
+		50FDA73D1F4349170039C3D3 /* JSONKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FDA73B1F4349170039C3D3 /* JSONKeys.swift */; };
+		50FDA73E1F4349170039C3D3 /* AppleMusicRequestFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FDA73C1F4349170039C3D3 /* AppleMusicRequestFactory.swift */; };
 		55184174AA394446AD5C4634 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C40B2C18713948B1A3C1332D /* FontAwesome.ttf */; };
 		5C6B2AD671AF4F5BA5DB3031 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D23FE801A7144C07B6E5297B /* EvilIcons.ttf */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
@@ -358,6 +368,17 @@
 		41EE66D11F421146006A10E9 /* SpotifyModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpotifyModule.m; sourceTree = "<group>"; };
 		41EE66D31F42117C006A10E9 /* SpotifyAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SpotifyAuthentication.framework; sourceTree = "<group>"; };
 		4649E3BB33C74978B79B6EFA /* rubicon-icon-font.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "rubicon-icon-font.ttf"; path = "../node_modules/native-base/Fonts/rubicon-icon-font.ttf"; sourceTree = "<group>"; };
+		50FDA70B1F43477A0039C3D3 /* spotifyClientId.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = spotifyClientId.m; sourceTree = "<group>"; };
+		50FDA72C1F4347A60039C3D3 /* spotifyClientId.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = spotifyClientId.m; sourceTree = "<group>"; };
+		50FDA72D1F4348F80039C3D3 /* MediaItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MediaItem.swift; path = Model/MediaItem.swift; sourceTree = "<group>"; };
+		50FDA72E1F4348F80039C3D3 /* Artwork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Artwork.swift; path = Model/Artwork.swift; sourceTree = "<group>"; };
+		50FDA72F1F4348F80039C3D3 /* SerializationError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SerializationError.swift; path = Model/SerializationError.swift; sourceTree = "<group>"; };
+		50FDA7331F4349070039C3D3 /* AppleMusicManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppleMusicManager.swift; path = Controllers/AppleMusicManager.swift; sourceTree = "<group>"; };
+		50FDA7341F4349070039C3D3 /* AuthorizationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthorizationManager.swift; path = Controllers/AuthorizationManager.swift; sourceTree = "<group>"; };
+		50FDA7351F4349070039C3D3 /* MediaLibraryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MediaLibraryManager.swift; path = Controllers/MediaLibraryManager.swift; sourceTree = "<group>"; };
+		50FDA7361F4349070039C3D3 /* AuthorizationDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthorizationDataSource.swift; path = Controllers/AuthorizationDataSource.swift; sourceTree = "<group>"; };
+		50FDA73B1F4349170039C3D3 /* JSONKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = JSONKeys.swift; path = Utility/JSONKeys.swift; sourceTree = "<group>"; };
+		50FDA73C1F4349170039C3D3 /* AppleMusicRequestFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppleMusicRequestFactory.swift; path = Utility/AppleMusicRequestFactory.swift; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		628F9C97D120484B8133C007 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/native-base/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		7143D39B2EE74713A904ED87 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/native-base/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
@@ -525,6 +546,7 @@
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				41EE66D01F421146006A10E9 /* SpotifyModule.h */,
 				41EE66D11F421146006A10E9 /* SpotifyModule.m */,
+				50FDA72C1F4347A60039C3D3 /* spotifyClientId.m */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
@@ -584,10 +606,12 @@
 		1CEBF8EC1F42973300BA1DF1 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				4106FCFB1F434915006636FF /* AppleMusicManager.swift */,
-				4106FCFC1F434915006636FF /* AuthorizationDataSource.swift */,
-				4106FCFD1F434915006636FF /* AuthorizationManager.swift */,
-				4106FCFE1F434915006636FF /* MediaLibraryManager.swift */,
+				50FDA7361F4349070039C3D3 /* AuthorizationDataSource.swift */,
+				50FDA7341F4349070039C3D3 /* AuthorizationManager.swift */,
+				50FDA7331F4349070039C3D3 /* AppleMusicManager.swift */,
+				50FDA7351F4349070039C3D3 /* MediaLibraryManager.swift */,
+				50FDA70B1F43477A0039C3D3 /* spotifyClientId.m */,
+
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -595,8 +619,8 @@
 		1CEBF90C1F42973B00BA1DF1 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
-				4106FD031F434920006636FF /* AppleMusicRequestFactory.swift */,
-				4106FD041F434920006636FF /* JSONKeys.swift */,
+				50FDA73C1F4349170039C3D3 /* AppleMusicRequestFactory.swift */,
+				50FDA73B1F4349170039C3D3 /* JSONKeys.swift */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -604,9 +628,9 @@
 		1CEBF90D1F42974300BA1DF1 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				4106FCD61F4348F4006636FF /* Artwork.swift */,
-				4106FCD71F4348F4006636FF /* MediaItem.swift */,
-				4106FCD81F4348F4006636FF /* SerializationError.swift */,
+				50FDA72E1F4348F80039C3D3 /* Artwork.swift */,
+				50FDA72D1F4348F80039C3D3 /* MediaItem.swift */,
+				50FDA72F1F4348F80039C3D3 /* SerializationError.swift */,
 				1CEBF90E1F42976200BA1DF1 /* HumClient-Bridging-Header.h */,
 			);
 			name = Model;
@@ -1222,17 +1246,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4106FD021F434915006636FF /* MediaLibraryManager.swift in Sources */,
-				4106FCDA1F4348F4006636FF /* MediaItem.swift in Sources */,
-				4106FCD91F4348F4006636FF /* Artwork.swift in Sources */,
+				50FDA73E1F4349170039C3D3 /* AppleMusicRequestFactory.swift in Sources */,
+				50FDA7391F4349070039C3D3 /* MediaLibraryManager.swift in Sources */,
+				50FDA70C1F43477A0039C3D3 /* spotifyClientId.m in Sources */,
+				50FDA7321F4348F80039C3D3 /* SerializationError.swift in Sources */,
+				50FDA7371F4349070039C3D3 /* AppleMusicManager.swift in Sources */,
+				50FDA7311F4348F80039C3D3 /* Artwork.swift in Sources */,
+				50FDA73A1F4349070039C3D3 /* AuthorizationDataSource.swift in Sources */,
+				50FDA7301F4348F80039C3D3 /* MediaItem.swift in Sources */,
 				41EE66D21F421146006A10E9 /* SpotifyModule.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
-				4106FCDB1F4348F4006636FF /* SerializationError.swift in Sources */,
-				4106FD001F434915006636FF /* AuthorizationDataSource.swift in Sources */,
-				4106FD051F434920006636FF /* AppleMusicRequestFactory.swift in Sources */,
-				4106FD061F434920006636FF /* JSONKeys.swift in Sources */,
-				4106FCFF1F434915006636FF /* AppleMusicManager.swift in Sources */,
-				4106FD011F434915006636FF /* AuthorizationManager.swift in Sources */,
+				50FDA73D1F4349170039C3D3 /* JSONKeys.swift in Sources */,
+				50FDA7381F4349070039C3D3 /* AuthorizationManager.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				1CEBF9241F4297BE00BA1DF1 /* appleMusicBridge.m in Sources */,
 			);
