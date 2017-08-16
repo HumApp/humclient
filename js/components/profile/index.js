@@ -20,49 +20,66 @@ import { default as FAIcon } from 'react-native-vector-icons/FontAwesome';
 import { NativeModules } from 'react-native';
 import axios from 'axios';
 import Prompt from 'react-native-prompt';
+import firebase from 'firebase';
 
 const SpotifyModule = NativeModules.SpotifyModule;
 
 export default class Profile extends Component {
   constructor(props) {
     super(props);
+    //this state object is temporary until I'm done testing.
     this.state = {
       playlist: '',
       promptVisible: false,
       token: '',
       id: '',
+      usersPlaylists: {},
       appleAuth: false
     };
+    
     this.requestAppleMusic = this.requestAppleMusic.bind(this)
     this.getPlaylists = this.getPlaylists.bind(this)
   }
 
-  signOut = () => {
-    this.props.navigation.navigate('Home');
+  requestAppleMusic = () => {
+    // NativeModules.AuthorizationManager.requestMediaLibraryAuthorization((str) => console.log(str) )
+    // need to call after requesting authorization finishes
+    NativeModules.MediaLibraryManager.getPlaylists((str) => console.log(str))
   };
 
   authSpotify = () => {
     try {
       SpotifyModule.authenticate(data => {
-        console.log(data);
-        let { accessToken } = data;
-        this.setState({ token: accessToken }, this.whoamI);
-      });
+        this.setState({ token: data.accessToken }, this.whoamI);
+      })
     } catch (err) {
-      console.error('Spotify authentication failed: ', err);
+      console.error('Spotify authentication failed: ', err)
     }
   };
 
-  jsonPlaylists = () => {
+  whoamI = () => {
+    axios.get(
+      'https://api.spotify.com/v1/me',
+      {
+        headers: {
+          "Authorization": `Bearer ${this.state.token}`
+        }
+      })
+      .then(response => {
+        this.setState({ id: response.data.id }, this.fetchPlaylists)
+      })
+      .catch(error => console.log(error))
+  };
+
+  fetchPlaylists = () => {
     axios.get(
       'https://api.spotify.com/v1/me/playlists',
       {
         headers: {
           "Authorization": `Bearer ${this.state.token}`
         }
-      }
-    )
-      .then(response => console.log(response.data))
+      })
+      .then(response => this.setState({ usersPlaylists: response.data }))
       .catch(error => console.log(error))
   };
 
@@ -75,24 +92,46 @@ export default class Profile extends Component {
           "Authorization": `Bearer ${this.state.token}`,
           "Content-Type": "application/json"
         }
-      }
-    )
-      .then(response => console.log(response))
+      })
       .catch(error => console.log(error))
-  }
+  };
 
-  whoamI = () => {
-    axios.get(
-      'https://api.spotify.com/v1/me',
+  importPlaylist = () => {
+    //import Playlist will take a playlist object or an id by querying database for the playlist
+    //hard coded example for now
+    // const sampleDatabase = firebase.database().ref('playlists/IDHERE');
+    // sampleDatabase.on('value', function (snapshot) {
+    //   const samplePlaylist = snapshot.val();
+    //   console.log(samplePlaylist)
+    // });
+
+    let playlist = {
+      'name': 'Sample Playlist', 'owner': 'Apple Music User', 'songs': ["spotify:track:4iV5W9uYEdYUVa79Axb7Rh",
+        "spotify:track:1301WleyT98MSxVHPZCA6M"]
+    };
+
+    axios.post(
+      `https://api.spotify.com/v1/users/${this.state.id}/playlists`,
+      `{\"name\":\"${playlist.name}\", \"public\":false, \"description\":\"Hum playlist created by ${playlist.owner}\"}`,
       {
         headers: {
-          "Authorization": `Bearer ${this.state.token}`
+          "Authorization": `Bearer ${this.state.token}`,
+          "Content-Type": "application/json"
         }
-      }
-    )
+      })
       .then(response => {
-        console.log(response.data);
-        this.setState({ id: response.data.id })
+        let playlistID = response.data.id;
+        axios.post(
+          `https://api.spotify.com/v1/users/${this.state.id}/playlists/${playlistID}/tracks`,
+          { "uris": playlist.songs },
+          {
+            headers: {
+              "Authorization": `Bearer ${this.state.token}`,
+              "Content-Type": "application/json"
+            }
+          })
+          .then(response => this.fetchPlaylists)
+          .catch(error => console.log(error))
       })
       .catch(error => console.log(error))
   };
@@ -111,14 +150,6 @@ export default class Profile extends Component {
     console.log('getting the playlists')
     NativeModules.MediaLibraryManager.getPlaylists((str) => console.log(str) )
   }
-
-  connected = () => {
-    if (this.state.id === "") {
-      return (<Icon name="ios-add" style={styles.header} />)
-    } else {
-      return (<Icon name="ios-checkmark-circle" style={styles.header} />)
-    }
-  };
 
   appleConnected = () => {
     if(this.state.appleAuth) return (<Icon name="ios-checkmark-circle" style={styles.header} />)
@@ -188,12 +219,12 @@ export default class Profile extends Component {
                     <Text style={styles.bodytxt}>Spotify</Text>
                   </Body>
                   <Right>
-                    {this.connected()}
+                    {(this.state.id === "") ? (<Icon name="ios-add" style={styles.header} />) : (<Icon name="ios-checkmark-circle" style={styles.header} />)}
                   </Right>
                 </CardItem>
               }
               right={
-                <Button danger onPress={() => { this.setState({ id: '', token: '' }) }}>
+                <Button danger onPress={() => this.setState({ id: '', token: '' })}>
                   <Icon active name="ios-close-circle-outline" />
                 </Button>
               }
@@ -233,17 +264,9 @@ export default class Profile extends Component {
                 <Icon name="arrow-forward" style={styles.arrow} />
               </Right>
             </CardItem>
-            <CardItem button onPress={this.jsonPlaylists}>
-              <Body>
-                <Text style={styles.bodytxt}>Show Playlists</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward" style={styles.arrow} />
-              </Right>
-            </CardItem>
             <Prompt
               title="Enter a playlist name"
-              placeholder="New playlist"
+              placeholder="My New Playlist"
               visible={this.state.promptVisible}
               onCancel={() => this.setState({ promptVisible: false })}
               onSubmit={(value) => this.setState({ promptVisible: false, playlist: `${value}` }, this.createPlaylists)} />
@@ -255,7 +278,15 @@ export default class Profile extends Component {
                 <Icon name="arrow-forward" style={styles.arrow} />
               </Right>
             </CardItem>
-            <CardItem button onPress={this.signOut}>
+            <CardItem button onPress={this.importPlaylist}>
+              <Body>
+                <Text style={styles.bodytxt}>Import Playlist</Text>
+              </Body>
+              <Right>
+                <Icon name="arrow-forward" style={styles.arrow} />
+              </Right>
+            </CardItem>
+            <CardItem button onPress={() => this.props.navigation.navigate('Home')}>
               <Body>
                 <Text style={styles.bodytxt}>Sign Out</Text>
               </Body>
@@ -269,3 +300,67 @@ export default class Profile extends Component {
     );
   }
 }
+
+
+// importPlaylist = () => {
+
+//       let samplePlaylist = { "name": "A Sample Playlist", "songs": [{ "artist": "Drake", "track": "Controlla", "album": "Views" }], "creator": "Apple Music User" };
+
+//       axios.post(
+//         `https://api.spotify.com/v1/users/${this.state.id}/playlists`,
+//         `{\"name\":\"${samplePlaylist.name}\", \"public\":false}`,
+//         {
+//           headers: {
+//             "Authorization": `Bearer ${this.state.token}`,
+//             "Content-Type": "application/json"
+//           }
+//         }
+//       )
+//         .then(response => {
+//           let songURI = '';
+//           let playlistID = response.data.id;
+//           samplePlaylist.songs.forEach(song => {
+//             axios.get(
+//               `https://api.spotify.com/v1/search?q=album:${song.album}%20artist:${song.artist}&type=album&limit=1`,
+//               {
+//                 headers: {
+//                   "Authorization": `Bearer ${this.state.token}`
+//                 }
+//               }
+//             )
+//               .then(response => {
+//                 let sampleAlbum = response.data.albums.items[0].id;
+//                 axios.get(
+//                   `https://api.spotify.com/v1/albums/${sampleAlbum}/tracks`,
+//                   {
+//                     headers: {
+//                       "Authorization": `Bearer ${this.state.token}`
+//                     }
+//                   }
+//                 )
+//                   .then(response => {
+//                     let sampleTracks = response.data.items;
+//                     for (let i = 0; i < sampleTracks.length; i++) {
+//                       if (sampleTracks[i].name === song.track) {
+//                         songURI = sampleTracks[i].uri;
+//                         break
+//                       }
+//                     };
+//                     axios.post(
+//                       `https://api.spotify.com/v1/users/${this.state.id}/playlists/${playlistID}/tracks`,
+//                       { "uris": [`${songURI}`] },
+//                       {
+//                         headers: {
+//                           "Authorization": `Bearer ${this.state.token}`,
+//                           "Content-Type": "application/json"
+//                         }
+//                       })
+//                       .catch(error => console.log(error))
+//                   })
+//                   .catch(error => console.log(error))
+//               })
+//               .catch(error => console.log(error))
+//           });
+//         })
+//         .catch(error => console.log(error))
+//     };
