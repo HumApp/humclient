@@ -1,23 +1,37 @@
 import * as firebase from 'firebase';
 
 export default class Database {
-
   static saveApplePlaylists(playlists, providerId) {
-      playlists.forEach(playlist => {
-        let newSong = {}
-        playlist.songs.forEach((song, index) => {
-          this.findOrCreateSong(song, providerId);
-            newSong[index] = {};
-            newSong[index].artist = song.artist;
-            newSong[index].title = song.title;
-        })
-        const newPlaylistId = firebase.database().ref('playlists').push().key;
-          firebase.database().ref(`playlists/${newPlaylistId}`).set({
-          title: playlist.name,
-          creator: "Olivia",
-          songs: newSong
+    playlists.forEach(playlist => {
+      let newSong = {};
+      playlist.songs.forEach((song, index) => {
+        this.findOrCreateSong(song, providerId);
+        newSong[index] = {};
+        newSong[index].artist = song.artist;
+        newSong[index].title = song.title;
+      });
+      const newPlaylistId = firebase.database().ref('playlists').push().key;
+      firebase.database().ref(`playlists/${newPlaylistId}`).set({
+        title: playlist.name,
+        creator: 'Olivia',
+        songs: newSong
+      });
+    });
+  }
+
+  static deleteAllUserPlaylists(userId) {
+    firebase
+      .database()
+      .ref(`playlists`)
+      .orderByChild('creator')
+      .equalTo(userId)
+      .once('value')
+      .then(playlists => {
+        playlists.forEach(playlist => {
+          firebase.database().ref(`playlists/${playlist.key}`).remove();
         });
-      })
+      });
+  }
 
   static getPlaylist(playlist, userId) {
     return firebase.database().ref(`playlists/`).on();
@@ -65,7 +79,6 @@ export default class Database {
       creator: this.getCurrentUser(),
       songs: newSong
     });
-
   }
 
   static async findOrCreateSong(fetchSong, providerId) {
@@ -103,18 +116,5 @@ export default class Database {
 
   static getNameFromUrlPath(url) {
     return decodeURIComponent(url);
-  }
-
-  static listenUserInfo(userId, callback) {
-    let userNamePath = '/user/' + userId + '/details';
-
-    firebase.database().ref(userNamePath).on('value', snapshot => {
-      var name = '';
-
-      if (snapshot.val()) {
-        name = snapshot.val().name;
-      }
-      callback(name);
-    });
   }
 }
