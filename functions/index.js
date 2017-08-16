@@ -45,6 +45,21 @@ exports.getSongId = functions.https.onRequest((req, response) => {
     })
     .catch(console.error);
 });
+
+exports.savePlayistToSpotify = functions.https.onRequest((req, res) => {
+  //given a DB playlist ID and spotify user token, saves the playlist from the database to spotify
+  const userToken = req.body.userToken;
+  const playlistId = req.body.playlistId;
+  admin.database().ref(`/playlists/${playlistId}/songs`).once('value')
+  .then(snap => {
+    let songIds = [];
+    snap.forEach(child => {
+      songIds.push(child.key);
+    });
+    //songIds now contains all of the ids of the songs
+  });
+});
+
 function makeiTunesSongQuery(songTitle, songArtist) {
   return `https://itunes.apple.com/search?term=${songTitle} ${songArtist}&media=music`;
 }
