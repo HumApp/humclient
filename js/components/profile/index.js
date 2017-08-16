@@ -104,7 +104,7 @@ export default class Profile extends Component {
   };
 
   importPlaylist = () => {
-    let firedata = firebase.database().ref(`FOR_THE_LOVE_OG_GOD_DONT_DELETE_ME/PLAYLISTID`);
+    let firedata = firebase.database().ref(`playlists/-Krh2eGlMXEJxtQEnLUY`);
     let external = [];
     let id = this.state.id
     let userToken = this.state.token;
