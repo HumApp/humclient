@@ -3,6 +3,7 @@ import * as firebase from 'firebase';
 export default class Database {
 
   static saveApplePlaylists(playlists, providerId) {
+      console.log(playlists)
       playlists.forEach(playlist => {
         let newSong = {}
         playlist.songs.forEach((song, index) => {
@@ -18,8 +19,8 @@ export default class Database {
           songs: newSong
         });
       })
-    }
 
+  }
   static getPlaylist(playlist, userId) {
     return firebase.database().ref(`playlists/`).on();
   }
@@ -74,7 +75,7 @@ export default class Database {
       const address = firebase
         .database()
         .ref(
-          `songs/${this.getUrl(fetchSong.title)}/${this.getUrl(
+          `songs/${this.getUrlPath(fetchSong.title)}/${this.getUrlPath(
             fetchSong.artist
           )}`
         );

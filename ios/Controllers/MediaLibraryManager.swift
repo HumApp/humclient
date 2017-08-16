@@ -64,41 +64,54 @@ class MediaLibraryManager: NSObject {
     }
   
   // needs to create a new playlist with a name, an author display name, and takes song id's
-    @objc func createPlaylist(_ callback: RCTResponseSenderBlock) {
-        
-        guard mediaPlaylist == nil else { return }
-        
-        // To create a new playlist or lookup a playlist there are several steps you need to do.
-        let playlistUUID: UUID
-        
-        var playlistCreationMetadata: MPMediaPlaylistCreationMetadata!
-        
-        let userDefaults = UserDefaults.standard
-      
-        // Create an instance of `UUID` to identify the new playlist.
-        playlistUUID = UUID()
-      
-        // Create an instance of `MPMediaPlaylistCreationMetadata`, this represents the metadata to associate with the new playlist.
-        playlistCreationMetadata = MPMediaPlaylistCreationMetadata(name: "Hum Playlist")
-      
-        playlistCreationMetadata.descriptionText = "This playlist was created using \(Bundle.main.infoDictionary!["CFBundleName"]!) to demonstrate how to use the Apple Music APIs"
-      
-        // Store the `UUID` that the sample will use for looking up the playlist in the future.
-        userDefaults.setValue(playlistUUID.uuidString, forKey: MediaLibraryManager.playlistUUIDKey)
-        userDefaults.synchronize()
-        
-        // Request the new or existing playlist from the device.
-        MPMediaLibrary.default().getPlaylist(with: playlistUUID, creationMetadata: playlistCreationMetadata) { (playlist, error) in
-            guard error == nil else {
-                fatalError("An error occurred while retrieving/creating playlist: \(error!.localizedDescription)")
+  @objc func createPlaylist(_ playlist: Data, callback: @escaping RCTResponseSenderBlock) {
+          struct Playlist: Codable {
+              var name : String
+              var author : String
+              var songs: [String]
             }
-            self.mediaPlaylist = playlist
-            //call add items in a loop
-            self.addItem(with: "203709340")
-            NotificationCenter.default.post(name: MediaLibraryManager.libraryDidUpdate, object: nil)
-        }
-
-        callback(["created playlist"])
+            do {
+              // Decode data to object
+              let jsonDecoder = JSONDecoder()
+              let newPlaylist = try jsonDecoder.decode(Playlist.self, from: playlist)
+              guard mediaPlaylist == nil else { return }
+              
+              // To create a new playlist or lookup a playlist there are several steps you need to do.
+              let playlistUUID: UUID
+              
+              var playlistCreationMetadata: MPMediaPlaylistCreationMetadata!
+              
+              let userDefaults = UserDefaults.standard
+              
+              // Create an instance of `UUID` to identify the new playlist.
+              playlistUUID = UUID()
+              
+              // Create an instance of `MPMediaPlaylistCreationMetadata`, this represents the metadata to associate with the new playlist.
+              playlistCreationMetadata = MPMediaPlaylistCreationMetadata(name: newPlaylist.name)
+              playlistCreationMetadata.authorDisplayName = newPlaylist.author
+              playlistCreationMetadata.descriptionText = "This playlist was created using Hum!"
+              
+      
+              // Store the `UUID` that the sample will use for looking up the playlist in the future.
+              userDefaults.setValue(playlistUUID.uuidString, forKey: MediaLibraryManager.playlistUUIDKey)
+              userDefaults.synchronize()
+      
+              // Request the new or existing playlist from the device.
+              MPMediaLibrary.default().getPlaylist(with: playlistUUID, creationMetadata: playlistCreationMetadata) { (playlist, error) in
+                  guard error == nil else {
+                      fatalError("An error occurred while retrieving/creating playlist: \(error!.localizedDescription)")
+                  }
+                  self.mediaPlaylist = playlist
+                  //call add items in a loop
+                  for song in newPlaylist.songs {
+                    self.addItem(with: song)
+                  }
+                  NotificationCenter.default.post(name: MediaLibraryManager.libraryDidUpdate, object: nil)
+                  callback(["created playlist"])
+              }
+            }
+            catch {
+            }
     }
   
   
