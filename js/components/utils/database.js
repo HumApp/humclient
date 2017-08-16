@@ -2,11 +2,9 @@ import * as firebase from 'firebase';
 
 export default class Database {
   static saveMultiPlaylists(playlists, providerId) {
-    // console.log(playlists)
     for (playlistName in playlists) {
       if (playlists.hasOwnProperty(playlistName)) {
         const playlist = playlists[playlistName];
-        console.log(playlist)
         let newSong = {};
         playlist.forEach((fetchSong, idx) => {
           this.findOrCreateSong(fetchSong, providerId);
