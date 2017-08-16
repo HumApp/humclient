@@ -67,24 +67,4 @@ export default class Database {
     });
   }
 }
-  
-//    static saveMultiPlaylists(playlists, providerId) {
-//     console.log(playlists[0])
-//     console.log(typeof playlists)
-//     playlists.forEach(playlist => {
-//       let newSong = {}
-//       playlist.songs.forEach((song, index) => {
-//         this.findOrCreateSong(song, providerId);
-//           newSong[index] = {};
-//           newSong[index].artist = song.artist;
-//           newSong[index].title = song.title;
-//       })
-//       const newPlaylistId = firebase.database().ref('playlists').push().key;
-//         firebase.database().ref(`playlists/${newPlaylistId}`).set({
-//         title: playlist.name,
-//         creator: "Olivia",
-//         songs: newSong
-//       });
-//     })
-//   }
 
