@@ -22,6 +22,17 @@ export default StyleSheet.create({
     alignItems: 'flex-start',
   },
   form: {
-    padding: 15
+    padding: 15,
+  },
+
+  loginTxt: {
+    padding: 15,
+    marginTop: 50,
+    color: '#484848',
+    fontSize: 30,
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
   }
 });

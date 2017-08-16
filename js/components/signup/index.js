@@ -97,6 +97,7 @@ export default class SignUp extends Component {
                 <Input
                   autoCapitalize="none"
                   value={this.state.userName}
+                  autoCorrect={false}
                   onChangeText={text => this.setState({ userName: text })}
                 />
               </Item>
@@ -104,6 +105,7 @@ export default class SignUp extends Component {
                 <Label>Email</Label>
                 <Input
                   autoCapitalize="none"
+                  keyboardType='email-address'
                   value={this.state.email}
                   onChangeText={text => this.setState({ email: text })}
                 />

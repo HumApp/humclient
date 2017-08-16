@@ -17,6 +17,7 @@ import {
 import styles from './style';
 import { Field, reduxForm } from 'redux-form';
 import firebase from 'firebase';
+import {KeyboardAvoidingView} from 'react-native'
 
 export default class SignUp extends Component {
   constructor(props) {
@@ -27,6 +28,7 @@ export default class SignUp extends Component {
       password: ''
     };
   }
+
   login = async () => {
     try {
       await firebase
@@ -57,28 +59,31 @@ export default class SignUp extends Component {
       <Container>
         <Card>
           <Content>
+            <Text style={styles.loginTxt}>Log in</Text>
             <Form style={styles.form}>
-              <Text style={styles.header}>Login</Text>
               <Item floatingLabel>
                 <Label>Username</Label>
                 <Input
                   autoCapitalize="none"
+                  autoCorrect={false}
+
                   value={this.state.email}
                   onChangeText={text => this.setState({ email: text })}
                 />
               </Item>
-              <Item floatingLabel last>
+              <Item floatingLabel>
                 <Label>Password</Label>
                 <Input
                   autoCapitalize="none"
+                  autoCorrect={false}
                   value={this.state.password}
                   secureTextEntry={true}
                   onChangeText={text => this.setState({ password: text })}
                 />
               </Item>
               <CardItem>
-                <Button iconRight style={styles.login} onPress={this.login}>
-                  <Text style={{ fontSize: 18 }}>Login</Text>
+                <Button rounded iconRight style={styles.login} onPress={this.login}>
+                  <Text style={{ fontSize: 18 }}>Log in</Text>
                   <Icon name="ios-arrow-forward" style={{ color: '#fff' }} />
                 </Button>
               </CardItem>
