@@ -3,6 +3,7 @@ import * as firebase from 'firebase';
 export default class Database {
 
   static saveApplePlaylists(playlists, providerId) {
+      console.log(playlists)
       playlists.forEach(playlist => {
         let newSong = {}
         playlist.songs.forEach((song, index) => {

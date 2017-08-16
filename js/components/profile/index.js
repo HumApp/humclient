@@ -79,16 +79,45 @@ export default class Profile extends Component {
       .catch(error => console.log(error))
   };
 
-  fetchPlaylists = () => {
-    axios.get(
-      'https://api.spotify.com/v1/me/playlists',
-      {
-        headers: {
-          "Authorization": `Bearer ${this.state.token}`
-        }
-      })
-      .then(response => console.log(response.data))
-      .catch(error => console.log(error))
+  fetchPlaylists = async () => {
+    try {
+    let playlistArr = []
+      const responseData = await axios.get(
+        'https://api.spotify.com/v1/me/playlists',
+        {
+          headers: {
+            "Authorization": `Bearer ${this.state.token}`
+          }
+        })
+        const returnedPlaylist = responseData.data
+          returnedPlaylist.items.forEach(async (item) => {
+            let playlist = {}
+            playlist.name = item.name
+            const songsData = await axios.get(
+              `${item.tracks.href}`,
+              {
+                headers: {
+                   "Authorization": `Bearer ${this.state.token}`
+                }
+              }
+            )
+          let songs = songsData.data.items
+          let songsArr = []
+          songs.forEach(song => {
+            let songObj = {}
+            songObj.title = song.track.name
+            songObj.artist = song.track.album.artists[0].name
+            songObj.id = song.track.uri
+            songsArr.push(songObj)
+          })
+          playlist.songs = songsArr
+          playlistArr.push(playlist)
+          Database.saveApplePlaylists(playlistArr, 'spotifyId')
+        })
+    }
+    catch(error) {
+      console.log(error)
+    }
   };
 
   createPlaylists = () => {
