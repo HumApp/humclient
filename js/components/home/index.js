@@ -12,18 +12,10 @@ import {
 import { Image, Dimensions } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import styles from './style.js';
-import Firebase from '../utils/database';
-import firebase from 'firebase';
-import { obj } from '../utils/testPlaylist';
 
 const deviceHeight = Dimensions.get('window').height;
 
 export default class Home extends Component {
-  componentDidMount() {
-    console.log(obj);
-    Firebase.saveMultiPlaylists(obj, 'appleId');
-  }
-
   goToLogIn = currUser => {
     this.props.navigation.navigate('Login', currUser);
   };

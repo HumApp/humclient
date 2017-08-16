@@ -31,7 +31,7 @@ export default class SignUp extends Component {
       isLoading: false
     };
   }
-  handleSubmit = async () => {
+  handleSignup = async () => {
     this.setState({ isLoading: true });
     try {
       newUser = await firebase
@@ -45,24 +45,23 @@ export default class SignUp extends Component {
           });
         });
       await newUser.sendEmailVerification();
-      const userId = await firebase.database().ref('users/').push().key;
+      const userId = firebase.database().ref('users/').push().key;
       this.props.navigation.navigate('SignedIn');
       Toast.show({
         text: `Verification email sent to ${this.state.email}`,
         position: 'top',
-        buttonText: 'Okay'
+        buttonText: 'Okay',
+        duration: 2000
       });
     } catch (err) {
       Toast.show({
         text: `${err}`,
         position: 'top',
-        buttonText: 'Okay'
+        buttonText: 'Okay',
+        duration: 2000
       });
+      this.setState({ isLoading: false });
     }
-
-    this.setState({
-      isLoading: false
-    });
   };
 
   handleConfirmationSubmit = async () => {
@@ -70,9 +69,9 @@ export default class SignUp extends Component {
   };
 
   render() {
-    return (
-      <Container>
-        <Content>
+    const content = this.state.isLoading
+      ? <Spinner color="red" />
+      : <Content>
           <Card>
             <Form style={styles.form}>
               <Text style={styles.header}>Sign up</Text>
@@ -105,7 +104,7 @@ export default class SignUp extends Component {
                 <Label>Email</Label>
                 <Input
                   autoCapitalize="none"
-                  keyboardType='email-address'
+                  keyboardType="email-address"
                   value={this.state.email}
                   onChangeText={text => this.setState({ email: text })}
                 />
@@ -133,7 +132,7 @@ export default class SignUp extends Component {
                   iconRight
                   style={styles.signup}
                   rounded
-                  onPress={this.handleSubmit}
+                  onPress={this.handleSignup}
                 >
                   <Text style={{ fontSize: 18 }}>Sign Up</Text>
                   <Icon name="ios-arrow-forward" style={{ color: '#fff' }} />
@@ -141,7 +140,10 @@ export default class SignUp extends Component {
               </CardItem>
             </Form>
           </Card>
-        </Content>
+        </Content>;
+    return (
+      <Container>
+        {content}
       </Container>
     );
   }

@@ -95,10 +95,14 @@ export default class Database {
     }
   }
 
-  static getUrl(str) {
+  static getUrlPath(str) {
     return encodeURIComponent(str).replace(/\./g, function(c) {
       return '%' + c.charCodeAt(0).toString(16);
     });
+  }
+
+  static getNameFromUrlPath(url) {
+    return decodeURIComponent(url);
   }
 
   static listenUserInfo(userId, callback) {

@@ -17,12 +17,11 @@ import {
 } from 'native-base';
 import styles from './styles'
 import { default as FAIcon } from 'react-native-vector-icons/FontAwesome';
-import { NativeModules } from 'react-native';
+import { NativeModules, AsyncStorage } from 'react-native';
 import axios from 'axios';
 import Database from '../utils/database'
 import Prompt from 'react-native-prompt';
 import firebase from 'firebase';
-
 const SpotifyModule = NativeModules.SpotifyModule;
 
 export default class Profile extends Component {
@@ -38,15 +37,22 @@ export default class Profile extends Component {
       appleAuth: false
     };
     
-    this.requestAppleMusic = this.requestAppleMusic.bind(this)
-    this.getPlaylists = this.getPlaylists.bind(this)
   }
+   
 
-  requestAppleMusic = () => {
-    // NativeModules.AuthorizationManager.requestMediaLibraryAuthorization((str) => console.log(str) )
-    // need to call after requesting authorization finishes
-    NativeModules.MediaLibraryManager.getPlaylists((str) => console.log(str))
-  };
+  signOut = async () => {
+    try {
+      await AsyncStorage.removeItem('user');
+      await firebase.auth().signOut();
+      this.props.navigation.navigate('SignedOut');
+    } catch (err) {
+      Toast.show({
+        text: `${err}`,
+        position: 'top',
+        buttonText: 'Okay',
+        duration: 2000
+      });
+    }
 
   authSpotify = () => {
     try {
@@ -285,7 +291,7 @@ export default class Profile extends Component {
                 <Icon name="arrow-forward" style={styles.arrow} />
               </Right>
             </CardItem>
-            <CardItem button onPress={() => this.props.navigation.navigate('Home')}>
+            <CardItem button onPress={this.signOut}>
               <Body>
                 <Text style={styles.bodytxt}>Sign Out</Text>
               </Body>
