@@ -12,6 +12,7 @@ import {
 import { Image, Dimensions } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import styles from './style.js';
+import firebase from 'firebase';
 
 const deviceHeight = Dimensions.get('window').height;
 
