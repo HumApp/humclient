@@ -2,18 +2,18 @@ import * as firebase from 'firebase';
 
 export default class Database {
   static savePlaylist(playlist, providerId) {
-    let playlistSongs = {};
-    playlist.forEach(fetchSong => {
+    let newSong = {};
+    playlist.forEach((fetchSong, idx) => {
       this.findOrCreateSong(fetchSong, providerId);
-      const newSong = firebase.database().ref('playlists').push().key;
-      (playlistSongs.artist = fetchSong.artist), (playlistSongs.title =
-        fetchSong.title);
+      newSong[idx] = {};
+      newSong[idx].artist = fetchSong.artist;
+      newSong[idx].title = fetchSong.title;
     });
     const newPlaylistId = firebase.database().ref('playlists').push().key;
     firebase.database().ref(`playlists/${newPlaylistId}`).set({
       title: 'olivia playlist',
       creator: 'wonjun',
-      songs: playlistSongs
+      songs: newSong
     });
   }
 
@@ -21,7 +21,11 @@ export default class Database {
     try {
       const address = firebase
         .database()
-        .ref(`songs/${fetchSong.title}/${fetchSong.artist}`);
+        .ref(
+          `songs/${this.encodeURI(fetchSong.title)}/${this.encodeURI(
+            fetchSong.artist
+          )}`
+        );
       const dataSnapshot = await address.once('value');
       if (!dataSnapshot.val()) {
         await address.set({
@@ -38,6 +42,12 @@ export default class Database {
       console.log(err);
       alert(err);
     }
+  }
+
+  static encodeURI(str) {
+    return encodeURIComponent(str).replace(/\./g, function(c) {
+      return '%' + c.charCodeAt(0).toString(16);
+    });
   }
 
   static listenUserInfo(userId, callback) {
