@@ -38,8 +38,7 @@ export default class Profile extends Component {
     };
 
   }
-
-
+  
   signOut = async () => {
     try {
       await AsyncStorage.removeItem('user');
