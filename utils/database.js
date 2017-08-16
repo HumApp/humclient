@@ -1,7 +1,32 @@
 import * as firebase from 'firebase';
 
 export default class Database {
-  static savePlaylist(playlist, providerId) {
+  static getPlaylist(playlist, userId) {
+    return firebase.database().ref(`playlists/`).on();
+  }
+
+  static getCurrentUser() {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        // User is signed in
+        return user.uid;
+      } else {
+        // No user is signed in
+        return 'Unknown';
+      }
+    });
+  }
+
+  static saveMultiPlaylists(playlists, providerId) {
+    for (playlistName in playlists) {
+      if (playlists.hasOwnProperty(playlistName)) {
+        const playlist = playlists[playlistName];
+        this.savePlaylist(playlist, playlistName, providerId);
+      }
+    }
+  }
+
+  static savePlaylist(playlist, playlistName, providerId) {
     let newSong = {};
     playlist.forEach((fetchSong, idx) => {
       this.findOrCreateSong(fetchSong, providerId);
@@ -10,9 +35,16 @@ export default class Database {
       newSong[idx].title = fetchSong.title;
     });
     const newPlaylistId = firebase.database().ref('playlists').push().key;
+    firebase
+      .database()
+      .ref(`users/${this.getCurrentUser()}/playlists`)
+      .once('value')
+      .set({
+        [newPlaylistId]: true
+      });
     firebase.database().ref(`playlists/${newPlaylistId}`).set({
-      title: 'olivia playlist',
-      creator: 'wonjun',
+      title: playlistName,
+      creator: this.getCurrentUser(),
       songs: newSong
     });
   }
@@ -22,7 +54,7 @@ export default class Database {
       const address = firebase
         .database()
         .ref(
-          `songs/${this.encodeURI(fetchSong.title)}/${this.encodeURI(
+          `songs/${this.getUrl(fetchSong.title)}/${this.getUrl(
             fetchSong.artist
           )}`
         );
@@ -44,7 +76,7 @@ export default class Database {
     }
   }
 
-  static encodeURI(str) {
+  static getUrl(str) {
     return encodeURIComponent(str).replace(/\./g, function(c) {
       return '%' + c.charCodeAt(0).toString(16);
     });
