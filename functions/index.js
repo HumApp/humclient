@@ -14,19 +14,23 @@ exports.getSongId = functions.https.onRequest((req, response) => {
         axios.get(makeiTunesSongQuery(reqSong.title, reqSong.artist))
           .then(res => res.data)
           .then(json => {
-            let track = json.results[0];
-            //save id to the database
-            response.send(track.trackId.toString());
+            let track = json.results[0]trackId.toString();
+            admin.database().ref("/songs").set({
+              reqSong.title : {
+                  reqSong.artist: {
+                    appleId: track
+                  }
+              }
+            }).then(() => {
+              response.send(track);
+            })
           })
           .catch(console.error);
         } else {
           axios.get(makeSpotifySongQuery(reqSong.title.replace(' ', '+'), reqSong.artist.replace(' ', '+')),
-          // axios.get('https://api.spotify.com/v1/search?q=track:The+Long+And+Winding+Road+artist:The+Beatles&type=track&market=us',
           {
            headers: {
              "Authorization": "Bearer BQD57jmCLBcyccmoVzShwSV9gZLyBiljcr8OHO8zle03wLW74J76tEFiqLq3nwq_4ZuAVAihSAOJsXMUUZFjiu0-3S7-CI87bVuGts22eVaPB0LZ8S8lYaSnM6W-wgRQn2ueFTrXT3_B9NPhB30ZU52vWcgqAuAJWgo6xsxlx0nWi2QsqXbCkePbof8TkhmlqPxVNBwiKXnI_Utbr5_ewIC38V51_U9QGtknCL8NHBE-zwQ3bl6iVxRFEi244sRmBbHkJ8Movj2gzVXcpRLJpLSJRRC61XKN-TVxrxO80GhvZlqgdUO1YVrPCy6qIVHhDyXj",
-            //  "Content-Type": 'application/x-www-form-urlencoded'
-            //  Accept: 'application/json'
            }
           })
           .then(res => res.data)
