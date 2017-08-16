@@ -2,25 +2,24 @@ import * as firebase from 'firebase';
 
 export default class Database {
   static saveMultiPlaylists(playlists, providerId) {
-    for (playlistName in playlists) {
-      if (playlists.hasOwnProperty(playlistName)) {
-        const playlist = playlists[playlistName];
-        let newSong = {};
-        playlist.forEach((fetchSong, idx) => {
-          this.findOrCreateSong(fetchSong, providerId);
-          newSong[idx] = {};
-          newSong[idx].artist = fetchSong.artist;
-          newSong[idx].title = fetchSong.title;
-        });
+
+      playlists.forEach(playlist => {
+        let newSong = {}
+        playlist.songs.forEach((song, index) => {
+          this.findOrCreateSong(song, providerId);
+            newSong[index] = {};
+            newSong[index].artist = song.artist;
+            newSong[index].title = song.title;
+        })
         const newPlaylistId = firebase.database().ref('playlists').push().key;
-        firebase.database().ref(`playlists/${newPlaylistId}`).set({
-          title: playlistName,
-          creator: firebase.auth().currentUser.uid,
+          firebase.database().ref(`playlists/${newPlaylistId}`).set({
+          title: playlist.name,
+          creator: "Olivia",
           songs: newSong
         });
-      }
-    }
+      })
   }
+
   static async findOrCreateSong(fetchSong, providerId) {
     try {
       const address = firebase
