@@ -19,11 +19,17 @@ import {
   Item,
   Input
 } from 'native-base';
-import styles from './styles'
+import styles from './styles';
+
 export default class Playlists extends Component {
   goToPlaylist = playlist => {
     this.props.navigation.navigate('SinglePlaylist', playlist);
   };
+
+  // Displaying Playlists:
+  // spotify.get me (state, updated after import)
+  // if description === Hum playlist created by ... then render in shared
+  // else in personal
 
   render() {
     return (
