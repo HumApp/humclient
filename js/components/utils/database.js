@@ -20,6 +20,7 @@ export default class Database {
         });
       }
     }
+  }
   static async findOrCreateSong(fetchSong, providerId) {
     try {
       const address = firebase
