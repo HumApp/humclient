@@ -19,6 +19,7 @@ import styles from './styles'
 import { default as FAIcon } from 'react-native-vector-icons/FontAwesome';
 import { NativeModules } from 'react-native';
 import axios from 'axios';
+import Database from '../utils/database'
 import Prompt from 'react-native-prompt';
 import firebase from 'firebase';
 
@@ -136,19 +137,17 @@ export default class Profile extends Component {
       .catch(error => console.log(error))
   };
 
-  //need to implement synchronously
   requestAppleMusic = () => {
       NativeModules.AuthorizationManager.requestMediaLibraryAuthorization((str) => {
-        console.log("requested apple music", str)
-
-        this.setState({appleAuth: true}, () => this.getPlaylists)
+        this.setState({appleAuth: true}, () => this.getPlaylists())
       })
 
   }
 
   getPlaylists = () => {
-    console.log('getting the playlists')
-    NativeModules.MediaLibraryManager.getPlaylists((str) => console.log(str) )
+    NativeModules.MediaLibraryManager.getPlaylists((playlists) => {
+        Database.saveMultiPlaylists(JSON.parse(playlists), 'appleId')
+    })
   }
 
   appleConnected = () => {
