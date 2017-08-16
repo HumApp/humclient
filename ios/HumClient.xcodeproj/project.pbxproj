@@ -25,6 +25,7 @@
 		1405986F01494BF4BD00AC38 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FB168EF259D64B53BA46857F /* EvilIcons.ttf */; };
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
+		1CEBF9241F4297BE00BA1DF1 /* appleMusicBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CEBF9231F4297BE00BA1DF1 /* appleMusicBridge.m */; };
 		257621565AF343419F98C357 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C9C3E5C1894A46B3B98227B7 /* Zocial.ttf */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -39,7 +40,21 @@
 		2D02E4C91E0B4AEC006451C7 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
 		2DCD954D1E0B4F2C00145EB5 /* HumClientTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* HumClientTests.m */; };
 		2F3233F70118441F8DB14FE1 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 628F9C97D120484B8133C007 /* MaterialIcons.ttf */; };
+		41EE66AE1F421067006A10E9 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41EE66AD1F421067006A10E9 /* AVFoundation.framework */; };
+		41EE66CF1F42107F006A10E9 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41EE66CE1F42107F006A10E9 /* SystemConfiguration.framework */; };
+		41EE66D21F421146006A10E9 /* SpotifyModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 41EE66D11F421146006A10E9 /* SpotifyModule.m */; };
+		41EE66D41F42117C006A10E9 /* SpotifyAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41EE66D31F42117C006A10E9 /* SpotifyAuthentication.framework */; };
 		4E7C405F10DB453BAB268E55 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = ED86967EDE644FD6B4D23084 /* Entypo.ttf */; };
+		50FDA70C1F43477A0039C3D3 /* spotifyClientId.m in Sources */ = {isa = PBXBuildFile; fileRef = 50FDA70B1F43477A0039C3D3 /* spotifyClientId.m */; };
+		50FDA7301F4348F80039C3D3 /* MediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FDA72D1F4348F80039C3D3 /* MediaItem.swift */; };
+		50FDA7311F4348F80039C3D3 /* Artwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FDA72E1F4348F80039C3D3 /* Artwork.swift */; };
+		50FDA7321F4348F80039C3D3 /* SerializationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FDA72F1F4348F80039C3D3 /* SerializationError.swift */; };
+		50FDA7371F4349070039C3D3 /* AppleMusicManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FDA7331F4349070039C3D3 /* AppleMusicManager.swift */; };
+		50FDA7381F4349070039C3D3 /* AuthorizationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FDA7341F4349070039C3D3 /* AuthorizationManager.swift */; };
+		50FDA7391F4349070039C3D3 /* MediaLibraryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FDA7351F4349070039C3D3 /* MediaLibraryManager.swift */; };
+		50FDA73A1F4349070039C3D3 /* AuthorizationDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FDA7361F4349070039C3D3 /* AuthorizationDataSource.swift */; };
+		50FDA73D1F4349170039C3D3 /* JSONKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FDA73B1F4349170039C3D3 /* JSONKeys.swift */; };
+		50FDA73E1F4349170039C3D3 /* AppleMusicRequestFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FDA73C1F4349170039C3D3 /* AppleMusicRequestFactory.swift */; };
 		55184174AA394446AD5C4634 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C40B2C18713948B1A3C1332D /* FontAwesome.ttf */; };
 		5C6B2AD671AF4F5BA5DB3031 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D23FE801A7144C07B6E5297B /* EvilIcons.ttf */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
@@ -317,6 +332,10 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = HumClient/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = HumClient/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
+		1C1817AE1F42A07100B1E86B /* HumClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HumClient-Bridging-Header.h"; sourceTree = "<group>"; };
+		1CEBF90E1F42976200BA1DF1 /* HumClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HumClient-Bridging-Header.h"; sourceTree = "<group>"; };
+		1CEBF9151F42976600BA1DF1 /* HumClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HumClient-Bridging-Header.h"; sourceTree = "<group>"; };
+		1CEBF9231F4297BE00BA1DF1 /* appleMusicBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = appleMusicBridge.m; sourceTree = "<group>"; };
 		1D5273FFD4B244F9B64A9456 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		1DBE29844A2A4DFCAA63EB6D /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		23A1D0F775984EF9B3530BF0 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
@@ -325,7 +344,23 @@
 		340CF1AD19FE4D50AE76AB6B /* libBVLinearGradient.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libBVLinearGradient.a; sourceTree = "<group>"; };
 		3B6465A613B34553BB8D19CD /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/native-base/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		3F3E9E0E2A614BB282C03F70 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
+		41EE66AD1F421067006A10E9 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		41EE66CE1F42107F006A10E9 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		41EE66D01F421146006A10E9 /* SpotifyModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpotifyModule.h; sourceTree = "<group>"; };
+		41EE66D11F421146006A10E9 /* SpotifyModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpotifyModule.m; sourceTree = "<group>"; };
+		41EE66D31F42117C006A10E9 /* SpotifyAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SpotifyAuthentication.framework; sourceTree = "<group>"; };
 		4649E3BB33C74978B79B6EFA /* rubicon-icon-font.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "rubicon-icon-font.ttf"; path = "../node_modules/native-base/Fonts/rubicon-icon-font.ttf"; sourceTree = "<group>"; };
+		50FDA70B1F43477A0039C3D3 /* spotifyClientId.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = spotifyClientId.m; sourceTree = "<group>"; };
+		50FDA72C1F4347A60039C3D3 /* spotifyClientId.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = spotifyClientId.m; sourceTree = "<group>"; };
+		50FDA72D1F4348F80039C3D3 /* MediaItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MediaItem.swift; path = Model/MediaItem.swift; sourceTree = "<group>"; };
+		50FDA72E1F4348F80039C3D3 /* Artwork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Artwork.swift; path = Model/Artwork.swift; sourceTree = "<group>"; };
+		50FDA72F1F4348F80039C3D3 /* SerializationError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SerializationError.swift; path = Model/SerializationError.swift; sourceTree = "<group>"; };
+		50FDA7331F4349070039C3D3 /* AppleMusicManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppleMusicManager.swift; path = Controllers/AppleMusicManager.swift; sourceTree = "<group>"; };
+		50FDA7341F4349070039C3D3 /* AuthorizationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthorizationManager.swift; path = Controllers/AuthorizationManager.swift; sourceTree = "<group>"; };
+		50FDA7351F4349070039C3D3 /* MediaLibraryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MediaLibraryManager.swift; path = Controllers/MediaLibraryManager.swift; sourceTree = "<group>"; };
+		50FDA7361F4349070039C3D3 /* AuthorizationDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthorizationDataSource.swift; path = Controllers/AuthorizationDataSource.swift; sourceTree = "<group>"; };
+		50FDA73B1F4349170039C3D3 /* JSONKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = JSONKeys.swift; path = Utility/JSONKeys.swift; sourceTree = "<group>"; };
+		50FDA73C1F4349170039C3D3 /* AppleMusicRequestFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppleMusicRequestFactory.swift; path = Utility/AppleMusicRequestFactory.swift; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		628F9C97D120484B8133C007 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/native-base/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		7143D39B2EE74713A904ED87 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/native-base/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
@@ -362,6 +397,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				41EE66CF1F42107F006A10E9 /* SystemConfiguration.framework in Frameworks */,
+				41EE66AE1F421067006A10E9 /* AVFoundation.framework in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
@@ -369,6 +406,7 @@
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
 				133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */,
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
+				41EE66D41F42117C006A10E9 /* SpotifyAuthentication.framework in Frameworks */,
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
@@ -483,13 +521,22 @@
 		13B07FAE1A68108700A75B9A /* HumClient */ = {
 			isa = PBXGroup;
 			children = (
+				1CEBF90D1F42974300BA1DF1 /* Model */,
+				1CEBF90C1F42973B00BA1DF1 /* Utility */,
+				1CEBF8EC1F42973300BA1DF1 /* Controllers */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
+				41EE66D01F421146006A10E9 /* SpotifyModule.h */,
+				41EE66D11F421146006A10E9 /* SpotifyModule.m */,
+				50FDA72C1F4347A60039C3D3 /* spotifyClientId.m */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				1CEBF9151F42976600BA1DF1 /* HumClient-Bridging-Header.h */,
+				1C1817AE1F42A07100B1E86B /* HumClient-Bridging-Header.h */,
+				1CEBF9231F4297BE00BA1DF1 /* appleMusicBridge.m */,
 			);
 			name = HumClient;
 			sourceTree = "<group>";
@@ -536,6 +583,48 @@
 				1C25D2F11F400BC000B81678 /* libRNVectorIcons.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		1CEBF8EC1F42973300BA1DF1 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				50FDA7361F4349070039C3D3 /* AuthorizationDataSource.swift */,
+				50FDA7341F4349070039C3D3 /* AuthorizationManager.swift */,
+				50FDA7331F4349070039C3D3 /* AppleMusicManager.swift */,
+				50FDA7351F4349070039C3D3 /* MediaLibraryManager.swift */,
+				50FDA70B1F43477A0039C3D3 /* spotifyClientId.m */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		1CEBF90C1F42973B00BA1DF1 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				50FDA73C1F4349170039C3D3 /* AppleMusicRequestFactory.swift */,
+				50FDA73B1F4349170039C3D3 /* JSONKeys.swift */,
+			);
+			name = Utility;
+			sourceTree = "<group>";
+		};
+		1CEBF90D1F42974300BA1DF1 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				50FDA72E1F4348F80039C3D3 /* Artwork.swift */,
+				50FDA72D1F4348F80039C3D3 /* MediaItem.swift */,
+				50FDA72F1F4348F80039C3D3 /* SerializationError.swift */,
+				1CEBF90E1F42976200BA1DF1 /* HumClient-Bridging-Header.h */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		41EE66AC1F421067006A10E9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				41EE66D31F42117C006A10E9 /* SpotifyAuthentication.framework */,
+				41EE66CE1F42107F006A10E9 /* SystemConfiguration.framework */,
+				41EE66AD1F421067006A10E9 /* AVFoundation.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		5E91572E1DD0AC6500FF2AA8 /* Products */ = {
@@ -594,6 +683,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				DC8CB1B3FB554809A7AE7C85 /* Resources */,
 				1C25D2C21F400BBC00B81678 /* Recovered References */,
+				41EE66AC1F421067006A10E9 /* Frameworks */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -729,6 +819,7 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = LNQ22YF8UB;
+						LastSwiftMigration = 0900;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -1136,8 +1227,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50FDA73E1F4349170039C3D3 /* AppleMusicRequestFactory.swift in Sources */,
+				50FDA7391F4349070039C3D3 /* MediaLibraryManager.swift in Sources */,
+				50FDA70C1F43477A0039C3D3 /* spotifyClientId.m in Sources */,
+				50FDA7321F4348F80039C3D3 /* SerializationError.swift in Sources */,
+				50FDA7371F4349070039C3D3 /* AppleMusicManager.swift in Sources */,
+				50FDA7311F4348F80039C3D3 /* Artwork.swift in Sources */,
+				50FDA73A1F4349070039C3D3 /* AuthorizationDataSource.swift in Sources */,
+				50FDA7301F4348F80039C3D3 /* MediaItem.swift in Sources */,
+				41EE66D21F421146006A10E9 /* SpotifyModule.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				50FDA73D1F4349170039C3D3 /* JSONKeys.swift in Sources */,
+				50FDA7381F4349070039C3D3 /* AuthorizationManager.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				1CEBF9241F4297BE00BA1DF1 /* appleMusicBridge.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1189,6 +1292,7 @@
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -1219,6 +1323,7 @@
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				HEADER_SEARCH_PATHS = (
@@ -1247,15 +1352,21 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = LNQ22YF8UB;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 				);
 				INFOPLIST_FILE = HumClient/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1263,6 +1374,9 @@
 					"-lc++",
 				);
 				PRODUCT_NAME = HumClient;
+				SWIFT_OBJC_BRIDGING_HEADER = "HumClient-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1271,14 +1385,20 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = LNQ22YF8UB;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 				);
 				INFOPLIST_FILE = HumClient/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1286,6 +1406,8 @@
 					"-lc++",
 				);
 				PRODUCT_NAME = HumClient;
+				SWIFT_OBJC_BRIDGING_HEADER = "HumClient-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

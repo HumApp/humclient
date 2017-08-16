@@ -8,13 +8,16 @@
  */
 
 #import "AppDelegate.h"
+#import "SpotifyModule.h"
 
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
+#import "HumClient-Bridging-Header.h"
 
 @implementation AppDelegate
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+- (BOOL)application:(UIApplication *)application
+didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   NSURL *jsCodeLocation;
 
@@ -32,6 +35,17 @@
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
   return YES;
+}
+
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation {
+  
+  return [SpotifyModule application:application
+                            openURL:url
+                  sourceApplication:sourceApplication
+                         annotation:annotation];
 }
 
 @end

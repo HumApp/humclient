@@ -17,10 +17,113 @@ import {
 } from 'native-base';
 import styles from './styles'
 import { default as FAIcon } from 'react-native-vector-icons/FontAwesome';
+import { NativeModules } from 'react-native';
+import axios from 'axios';
+import Prompt from 'react-native-prompt';
+
+const SpotifyModule = NativeModules.SpotifyModule;
+
 export default class Profile extends Component {
-  deleteAccount = () => {
+  constructor(props) {
+    super(props);
+    this.state = {
+      playlist: '',
+      promptVisible: false,
+      token: '',
+      id: '',
+      appleAuth: false
+    };
+    this.requestAppleMusic = this.requestAppleMusic.bind(this)
+    this.getPlaylists = this.getPlaylists.bind(this)
+  }
+
+  signOut = () => {
     this.props.navigation.navigate('Home');
   };
+
+  authSpotify = () => {
+    try {
+      SpotifyModule.authenticate(data => {
+        console.log(data);
+        let { accessToken } = data;
+        this.setState({ token: accessToken }, this.whoamI);
+      });
+    } catch (err) {
+      console.error('Spotify authentication failed: ', err);
+    }
+  };
+
+  jsonPlaylists = () => {
+    axios.get(
+      'https://api.spotify.com/v1/me/playlists',
+      {
+        headers: {
+          "Authorization": `Bearer ${this.state.token}`
+        }
+      }
+    )
+      .then(response => console.log(response.data))
+      .catch(error => console.log(error))
+  };
+
+  createPlaylists = () => {
+    axios.post(
+      `https://api.spotify.com/v1/users/${this.state.id}/playlists`,
+      `{\"name\":\"${this.state.playlist}\", \"public\":false}`,
+      {
+        headers: {
+          "Authorization": `Bearer ${this.state.token}`,
+          "Content-Type": "application/json"
+        }
+      }
+    )
+      .then(response => console.log(response))
+      .catch(error => console.log(error))
+  }
+
+  whoamI = () => {
+    axios.get(
+      'https://api.spotify.com/v1/me',
+      {
+        headers: {
+          "Authorization": `Bearer ${this.state.token}`
+        }
+      }
+    )
+      .then(response => {
+        console.log(response.data);
+        this.setState({ id: response.data.id })
+      })
+      .catch(error => console.log(error))
+  };
+
+  //need to implement synchronously
+  requestAppleMusic = () => {
+      NativeModules.AuthorizationManager.requestMediaLibraryAuthorization((str) => {
+        console.log("requested apple music", str)
+
+        this.setState({appleAuth: true}, () => this.getPlaylists)
+      })
+
+  }
+
+  getPlaylists = () => {
+    console.log('getting the playlists')
+    NativeModules.MediaLibraryManager.getPlaylists((str) => console.log(str) )
+  }
+
+  connected = () => {
+    if (this.state.id === "") {
+      return (<Icon name="ios-add" style={styles.header} />)
+    } else {
+      return (<Icon name="ios-checkmark-circle" style={styles.header} />)
+    }
+  };
+
+  appleConnected = () => {
+    if(this.state.appleAuth) return (<Icon name="ios-checkmark-circle" style={styles.header} />)
+    else return (<Icon name="ios-add" style={styles.header} />)
+  }
 
   render() {
     return (
@@ -35,11 +138,17 @@ export default class Profile extends Component {
               <Body>
                 <Text style={styles.bodytxt}>Name</Text>
               </Body>
+              <Right>
+                <Text style={styles.bodytxt}>SomeUser</Text>
+              </Right>
             </CardItem>
             <CardItem>
               <Body>
                 <Text style={styles.bodytxt}>Username</Text>
               </Body>
+              <Right>
+                <Text style={styles.bodytxt}>@SomeUser</Text>
+              </Right>
             </CardItem>
           </Card>
           <Card>
@@ -50,7 +159,7 @@ export default class Profile extends Component {
             <SwipeRow
               rightOpenValue={-75}
               body={
-                <CardItem>
+                <CardItem button onPress={this.requestAppleMusic}>
                   <Left>
                     <FAIcon name="apple" size={25} color="#FF4B63" />
                   </Left>
@@ -58,7 +167,7 @@ export default class Profile extends Component {
                     <Text style={styles.bodytxt}>Apple Music</Text>
                   </Body>
                   <Right>
-                    <Icon name="ios-checkmark-circle" style={styles.header} />
+                      {this.appleConnected()}
                   </Right>
                 </CardItem>
               }
@@ -71,7 +180,7 @@ export default class Profile extends Component {
             <SwipeRow
               rightOpenValue={-75}
               body={
-                <CardItem>
+                <CardItem button onPress={this.authSpotify}>
                   <Left>
                     <FAIcon name="spotify" size={25} color="#1db954" />
                   </Left>
@@ -79,12 +188,12 @@ export default class Profile extends Component {
                     <Text style={styles.bodytxt}>Spotify</Text>
                   </Body>
                   <Right>
-                    <Icon name="ios-add" style={styles.header} />
+                    {this.connected()}
                   </Right>
                 </CardItem>
               }
               right={
-                <Button danger onPress={() => alert('Trash')}>
+                <Button danger onPress={() => { this.setState({ id: '', token: '' }) }}>
                   <Icon active name="ios-close-circle-outline" />
                 </Button>
               }
@@ -100,7 +209,7 @@ export default class Profile extends Component {
                     <Text style={styles.bodytxt}>Youtube</Text>
                   </Body>
                   <Right>
-                    <Icon name="ios-add" style={styles.header} />
+                    <Icon onPress={() => console.log('hello')} name="ios-add" style={styles.header} />
                   </Right>
                 </CardItem>
               }
@@ -124,17 +233,31 @@ export default class Profile extends Component {
                 <Icon name="arrow-forward" style={styles.arrow} />
               </Right>
             </CardItem>
-            <CardItem>
+            <CardItem button onPress={this.jsonPlaylists}>
               <Body>
-                <Text style={styles.bodytxt}>Report an Issue</Text>
+                <Text style={styles.bodytxt}>Show Playlists</Text>
               </Body>
               <Right>
                 <Icon name="arrow-forward" style={styles.arrow} />
               </Right>
             </CardItem>
-            <CardItem button onPress={this.deleteAccount}>
+            <Prompt
+              title="Enter a playlist name"
+              placeholder="New playlist"
+              visible={this.state.promptVisible}
+              onCancel={() => this.setState({ promptVisible: false })}
+              onSubmit={(value) => this.setState({ promptVisible: false, playlist: `${value}` }, this.createPlaylists)} />
+            <CardItem button onPress={() => this.setState({ promptVisible: true })}>
               <Body>
-                <Text style={styles.bodytxt}>Delete Account</Text>
+                <Text style={styles.bodytxt}>Create a Playlist</Text>
+              </Body>
+              <Right>
+                <Icon name="arrow-forward" style={styles.arrow} />
+              </Right>
+            </CardItem>
+            <CardItem button onPress={this.signOut}>
+              <Body>
+                <Text style={styles.bodytxt}>Sign Out</Text>
               </Body>
               <Right>
                 <Icon name="arrow-forward" style={styles.arrow} />
