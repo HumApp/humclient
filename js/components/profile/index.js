@@ -27,40 +27,55 @@ const SpotifyModule = NativeModules.SpotifyModule;
 export default class Profile extends Component {
   constructor(props) {
     super(props);
+    //this state object is temporary until I'm done testing.
     this.state = {
       playlist: '',
       promptVisible: false,
       token: '',
-      id: ''
-    };
-    this.requestAppleMusic = this.requestAppleMusic.bind(this)
-  }
+      id: '',
+      usersPlaylists: {}
+    }
+  };
 
-  signOut = () => {
-    this.props.navigation.navigate('Home');
+  requestAppleMusic = () => {
+    // NativeModules.AuthorizationManager.requestMediaLibraryAuthorization((str) => console.log(str) )
+    // need to call after requesting authorization finishes
+    NativeModules.MediaLibraryManager.getPlaylists((str) => console.log(str))
   };
 
   authSpotify = () => {
     try {
       SpotifyModule.authenticate(data => {
-        let { accessToken } = data;
-        this.setState({ token: accessToken }, this.whoamI);
-      });
+        this.setState({ token: data.accessToken }, this.whoamI);
+      })
     } catch (err) {
-      console.error('Spotify authentication failed: ', err);
+      console.error('Spotify authentication failed: ', err)
     }
   };
 
-  jsonPlaylists = () => {
+  whoamI = () => {
+    axios.get(
+      'https://api.spotify.com/v1/me',
+      {
+        headers: {
+          "Authorization": `Bearer ${this.state.token}`
+        }
+      })
+      .then(response => {
+        this.setState({ id: response.data.id }, this.fetchPlaylists)
+      })
+      .catch(error => console.log(error))
+  };
+
+  fetchPlaylists = () => {
     axios.get(
       'https://api.spotify.com/v1/me/playlists',
       {
         headers: {
           "Authorization": `Bearer ${this.state.token}`
         }
-      }
-    )
-      .then(response => console.log(response.data))
+      })
+      .then(response => this.setState({ usersPlaylists: response.data }))
       .catch(error => console.log(error))
   };
 
@@ -77,33 +92,20 @@ export default class Profile extends Component {
       .catch(error => console.log(error))
   };
 
-  whoamI = () => {
-    axios.get(
-      'https://api.spotify.com/v1/me',
-      {
-        headers: {
-          "Authorization": `Bearer ${this.state.token}`
-        }
-      })
-      .then(response => {
-        this.setState({ id: response.data.id }, this.jsonPlaylists)
-      })
-      .catch(error => console.log(error))
-  };
-
-  // const sampleDatabase = firebase.database().ref('playlists/IDHERE');
-  // sampleDatabase.on('value', function (snapshot) {
-  //   const samplePlaylist = snapshot.val();
-  //   console.log(samplePlaylist)
-  // });
-
   importPlaylist = () => {
     //import Playlist will take a playlist object or an id by querying database for the playlist
     //hard coded example for now
+    // const sampleDatabase = firebase.database().ref('playlists/IDHERE');
+    // sampleDatabase.on('value', function (snapshot) {
+    //   const samplePlaylist = snapshot.val();
+    //   console.log(samplePlaylist)
+    // });
+
     let playlist = {
       'name': 'Sample Playlist', 'owner': 'Apple Music User', 'songs': ["spotify:track:4iV5W9uYEdYUVa79Axb7Rh",
         "spotify:track:1301WleyT98MSxVHPZCA6M"]
-    }
+    };
+
     axios.post(
       `https://api.spotify.com/v1/users/${this.state.id}/playlists`,
       `{\"name\":\"${playlist.name}\", \"public\":false, \"description\":\"Hum playlist created by ${playlist.owner}\"}`,
@@ -124,25 +126,11 @@ export default class Profile extends Component {
               "Content-Type": "application/json"
             }
           })
-          .then(response => this.jsonPlaylists)
+          .then(response => this.fetchPlaylists)
           .catch(error => console.log(error))
       })
       .catch(error => console.log(error))
   };
-
-  requestAppleMusic = () => {
-    // NativeModules.AuthorizationManager.requestMediaLibraryAuthorization((str) => console.log(str) )
-    // need to call after requesting authorization finishes
-    NativeModules.MediaLibraryManager.getPlaylists((str) => console.log(str))
-  };
-
-  // connected = () => {
-  //   if (this.state.id === "") {
-  //     return (<Icon name="ios-add" style={styles.header} />)
-  //   } else {
-  //     return (<Icon name="ios-checkmark-circle" style={styles.header} />)
-  //   }
-  // };
 
   render() {
     return (
@@ -212,7 +200,7 @@ export default class Profile extends Component {
                 </CardItem>
               }
               right={
-                <Button danger onPress={() => { this.setState({ id: '', token: '' }) }}>
+                <Button danger onPress={() => this.setState({ id: '', token: '' })}>
                   <Icon active name="ios-close-circle-outline" />
                 </Button>
               }
@@ -252,17 +240,9 @@ export default class Profile extends Component {
                 <Icon name="arrow-forward" style={styles.arrow} />
               </Right>
             </CardItem>
-            <CardItem button onPress={this.jsonPlaylists}>
-              <Body>
-                <Text style={styles.bodytxt}>Show Playlists</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward" style={styles.arrow} />
-              </Right>
-            </CardItem>
             <Prompt
               title="Enter a playlist name"
-              placeholder="New playlist"
+              placeholder="My New Playlist"
               visible={this.state.promptVisible}
               onCancel={() => this.setState({ promptVisible: false })}
               onSubmit={(value) => this.setState({ promptVisible: false, playlist: `${value}` }, this.createPlaylists)} />
@@ -282,7 +262,7 @@ export default class Profile extends Component {
                 <Icon name="arrow-forward" style={styles.arrow} />
               </Right>
             </CardItem>
-            <CardItem button onPress={this.signOut}>
+            <CardItem button onPress={() => this.props.navigation.navigate('Home')}>
               <Body>
                 <Text style={styles.bodytxt}>Sign Out</Text>
               </Body>
