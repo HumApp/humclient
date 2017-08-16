@@ -2,6 +2,28 @@ import * as firebase from 'firebase';
 
 export default class Database {
   static saveMultiPlaylists(playlists, providerId) {
+    // console.log(playlists)
+    for (playlistName in playlists) {
+      if (playlists.hasOwnProperty(playlistName)) {
+        const playlist = playlists[playlistName];
+        console.log(playlist)
+        let newSong = {};
+        playlist.forEach((fetchSong, idx) => {
+          this.findOrCreateSong(fetchSong, providerId);
+          newSong[idx] = {};
+          newSong[idx].artist = fetchSong.artist;
+          newSong[idx].title = fetchSong.title;
+        });
+        const newPlaylistId = firebase.database().ref('playlists').push().key;
+        firebase.database().ref(`playlists/${newPlaylistId}`).set({
+          title: playlistName,
+          creator: firebase.auth().currentUser.uid,
+          songs: newSong
+        });
+      }
+    }
+
+    static saveMultiPlaylists(playlists, providerId) {
     console.log(playlists[0])
     console.log(typeof playlists)
     playlists.forEach(playlist => {
@@ -19,26 +41,6 @@ export default class Database {
         songs: newSong
       });
     })
-
-    // for (playlistName in playlists) {
-    //   if (playlists.hasOwnProperty(playlistName)) {
-    //     const playlist = playlists[playlistName];
-    //     console.log(playlist)
-    //     let newSong = {};
-    //     playlist.forEach((fetchSong, idx) => {
-    //       this.findOrCreateSong(fetchSong, providerId);
-    //       newSong[idx] = {};
-    //       newSong[idx].artist = fetchSong.artist;
-    //       newSong[idx].title = fetchSong.title;
-    //     });
-    //     const newPlaylistId = firebase.database().ref('playlists').push().key;
-    //     firebase.database().ref(`playlists/${newPlaylistId}`).set({
-    //       title: playlistName,
-    //       creator: firebase.auth().currentUser.uid,
-    //       songs: newSong
-    //     });
-    //   }
-    // }
   }
 
   static async findOrCreateSong(fetchSong, providerId) {
