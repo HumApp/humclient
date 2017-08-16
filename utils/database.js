@@ -1,11 +1,52 @@
 import * as firebase from 'firebase';
 
 export default class Database {
-  static setUserInfo(userId, info) {
-    let userNamePath = '/user/' + userId + '/details';
+  static savePlaylist(playlist, providerId) {
+    let newSong = {};
+    playlist.forEach((fetchSong, idx) => {
+      this.findOrCreateSong(fetchSong, providerId);
+      newSong[idx] = {};
+      newSong[idx].artist = fetchSong.artist;
+      newSong[idx].title = fetchSong.title;
+    });
+    const newPlaylistId = firebase.database().ref('playlists').push().key;
+    firebase.database().ref(`playlists/${newPlaylistId}`).set({
+      title: 'olivia playlist',
+      creator: 'wonjun',
+      songs: newSong
+    });
+  }
 
-    return firebase.database().ref(userNamePath).set({
-      name: name
+  static async findOrCreateSong(fetchSong, providerId) {
+    try {
+      const address = firebase
+        .database()
+        .ref(
+          `songs/${this.encodeURI(fetchSong.title)}/${this.encodeURI(
+            fetchSong.artist
+          )}`
+        );
+      const dataSnapshot = await address.once('value');
+      if (!dataSnapshot.val()) {
+        await address.set({
+          [providerId]: fetchSong.id
+        });
+      } else {
+        if (!dataSnapshot.hasChild(providerId)) {
+          await address.set({
+            [providerId]: fetchSong.id
+          });
+        }
+      }
+    } catch (err) {
+      console.log(err);
+      alert(err);
+    }
+  }
+
+  static encodeURI(str) {
+    return encodeURIComponent(str).replace(/\./g, function(c) {
+      return '%' + c.charCodeAt(0).toString(16);
     });
   }
 
