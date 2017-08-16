@@ -40,6 +40,15 @@
 		2D02E4C91E0B4AEC006451C7 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
 		2DCD954D1E0B4F2C00145EB5 /* HumClientTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* HumClientTests.m */; };
 		2F3233F70118441F8DB14FE1 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 628F9C97D120484B8133C007 /* MaterialIcons.ttf */; };
+		4106FCD91F4348F4006636FF /* Artwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4106FCD61F4348F4006636FF /* Artwork.swift */; };
+		4106FCDA1F4348F4006636FF /* MediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4106FCD71F4348F4006636FF /* MediaItem.swift */; };
+		4106FCDB1F4348F4006636FF /* SerializationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4106FCD81F4348F4006636FF /* SerializationError.swift */; };
+		4106FCFF1F434915006636FF /* AppleMusicManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4106FCFB1F434915006636FF /* AppleMusicManager.swift */; };
+		4106FD001F434915006636FF /* AuthorizationDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4106FCFC1F434915006636FF /* AuthorizationDataSource.swift */; };
+		4106FD011F434915006636FF /* AuthorizationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4106FCFD1F434915006636FF /* AuthorizationManager.swift */; };
+		4106FD021F434915006636FF /* MediaLibraryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4106FCFE1F434915006636FF /* MediaLibraryManager.swift */; };
+		4106FD051F434920006636FF /* AppleMusicRequestFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4106FD031F434920006636FF /* AppleMusicRequestFactory.swift */; };
+		4106FD061F434920006636FF /* JSONKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4106FD041F434920006636FF /* JSONKeys.swift */; };
 		41EE66AE1F421067006A10E9 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41EE66AD1F421067006A10E9 /* AVFoundation.framework */; };
 		41EE66CF1F42107F006A10E9 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41EE66CE1F42107F006A10E9 /* SystemConfiguration.framework */; };
 		41EE66D21F421146006A10E9 /* SpotifyModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 41EE66D11F421146006A10E9 /* SpotifyModule.m */; };
@@ -344,6 +353,15 @@
 		340CF1AD19FE4D50AE76AB6B /* libBVLinearGradient.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libBVLinearGradient.a; sourceTree = "<group>"; };
 		3B6465A613B34553BB8D19CD /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/native-base/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		3F3E9E0E2A614BB282C03F70 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
+		4106FCD61F4348F4006636FF /* Artwork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Artwork.swift; path = Model/Artwork.swift; sourceTree = "<group>"; };
+		4106FCD71F4348F4006636FF /* MediaItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MediaItem.swift; path = Model/MediaItem.swift; sourceTree = "<group>"; };
+		4106FCD81F4348F4006636FF /* SerializationError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SerializationError.swift; path = Model/SerializationError.swift; sourceTree = "<group>"; };
+		4106FCFB1F434915006636FF /* AppleMusicManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppleMusicManager.swift; path = Controllers/AppleMusicManager.swift; sourceTree = "<group>"; };
+		4106FCFC1F434915006636FF /* AuthorizationDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthorizationDataSource.swift; path = Controllers/AuthorizationDataSource.swift; sourceTree = "<group>"; };
+		4106FCFD1F434915006636FF /* AuthorizationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthorizationManager.swift; path = Controllers/AuthorizationManager.swift; sourceTree = "<group>"; };
+		4106FCFE1F434915006636FF /* MediaLibraryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MediaLibraryManager.swift; path = Controllers/MediaLibraryManager.swift; sourceTree = "<group>"; };
+		4106FD031F434920006636FF /* AppleMusicRequestFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppleMusicRequestFactory.swift; path = Utility/AppleMusicRequestFactory.swift; sourceTree = "<group>"; };
+		4106FD041F434920006636FF /* JSONKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = JSONKeys.swift; path = Utility/JSONKeys.swift; sourceTree = "<group>"; };
 		41EE66AD1F421067006A10E9 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		41EE66CE1F42107F006A10E9 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		41EE66D01F421146006A10E9 /* SpotifyModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpotifyModule.h; sourceTree = "<group>"; };
@@ -593,6 +611,7 @@
 				50FDA7331F4349070039C3D3 /* AppleMusicManager.swift */,
 				50FDA7351F4349070039C3D3 /* MediaLibraryManager.swift */,
 				50FDA70B1F43477A0039C3D3 /* spotifyClientId.m */,
+
 			);
 			name = Controllers;
 			sourceTree = "<group>";
