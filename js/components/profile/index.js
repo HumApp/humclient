@@ -19,7 +19,6 @@ import styles from './styles'
 import { default as FAIcon } from 'react-native-vector-icons/FontAwesome';
 import { NativeModules, AsyncStorage } from 'react-native';
 import axios from 'axios';
-import Database from '../utils/database'
 import Prompt from 'react-native-prompt';
 import firebase from 'firebase';
 const SpotifyModule = NativeModules.SpotifyModule;
@@ -36,9 +35,9 @@ export default class Profile extends Component {
       usersPlaylists: {},
       appleAuth: false
     };
-    
+
   }
-   
+
 
   signOut = async () => {
     try {
@@ -53,6 +52,7 @@ export default class Profile extends Component {
         duration: 2000
       });
     }
+  }
 
   authSpotify = () => {
     try {
@@ -104,60 +104,85 @@ export default class Profile extends Component {
   };
 
   importPlaylist = () => {
-    //import Playlist will take a playlist object or an id by querying database for the playlist
-    //hard coded example for now
-    // const sampleDatabase = firebase.database().ref('playlists/IDHERE');
-    // sampleDatabase.on('value', function (snapshot) {
-    //   const samplePlaylist = snapshot.val();
-    //   console.log(samplePlaylist)
-    // });
-
-    let playlist = {
-      'name': 'Sample Playlist', 'owner': 'Apple Music User', 'songs': ["spotify:track:4iV5W9uYEdYUVa79Axb7Rh",
-        "spotify:track:1301WleyT98MSxVHPZCA6M"]
-    };
-
-    axios.post(
-      `https://api.spotify.com/v1/users/${this.state.id}/playlists`,
-      `{\"name\":\"${playlist.name}\", \"public\":false, \"description\":\"Hum playlist created by ${playlist.owner}\"}`,
-      {
-        headers: {
-          "Authorization": `Bearer ${this.state.token}`,
-          "Content-Type": "application/json"
-        }
-      })
-      .then(response => {
-        let playlistID = response.data.id;
+    let firedata = firebase.database().ref(`playlists/-Krh2eGlMXEJxtQEnLUY`);
+    let external = [];
+    let id = this.state.id
+    let userToken = this.state.token;
+    firedata.on('value', function (snapshot) {
+      const playlist = snapshot.val();
+      console.log(playlist)
+      playlist.songs.forEach(song => external.push(song));
+      let promises = external.map(song => axios.post(
+        "https://us-central1-hum-app.cloudfunctions.net/getSongId/",
+        { "title": `${song.title}`, "artist": `${song.artist}`, "service": "spotifyId", "userToken": `${userToken}` },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          }
+        }));
+      Promise.all(promises).then(values => {
+        let final = values.map(value => value.data);
+        console.log(final)
         axios.post(
-          `https://api.spotify.com/v1/users/${this.state.id}/playlists/${playlistID}/tracks`,
-          { "uris": playlist.songs },
+          `https://api.spotify.com/v1/users/${id}/playlists`,
+          `{\"name\":\"A New Hum Playlist\", \"public\":false, \"description\":\"A Hum playlist created by Apple Music\"}`,
           {
             headers: {
-              "Authorization": `Bearer ${this.state.token}`,
+              "Authorization": `Bearer ${userToken}`,
               "Content-Type": "application/json"
             }
           })
-          .then(response => this.fetchPlaylists)
+          .then(response => {
+            let playlistID = response.data.id;
+            axios.post(
+              `https://api.spotify.com/v1/users/${id}/playlists/${playlistID}/tracks`,
+              { "uris": final },
+              {
+                headers: {
+                  "Authorization": `Bearer ${userToken}`,
+                  "Content-Type": "application/json"
+                }
+              })
+              .then(response => console.log(response))
+              .catch(error => console.log(error))
+          })
           .catch(error => console.log(error))
       })
-      .catch(error => console.log(error))
+      //   let songUris = [];
+      //   playlist.songs.forEach(song => {
+      //     axios.post(
+      //       "https://us-central1-hum-app.cloudfunctions.net/getSongId/",
+      //       { "title": `${song.title}`, "artist": `${song.artist}`, "service": "spotifyId", "userToken": },
+      //       {
+      //         headers: {
+      //           "Content-Type": "application/json",
+      //         }
+      //       })
+      //       .then(response => songUris.push(response.data))
+      //       .catch(error => console.log("I AM A BAD REQUEST", error))
+      //   })
+      // });
+
+    })
   };
 
+  //need to implement synchronously
   requestAppleMusic = () => {
-      NativeModules.AuthorizationManager.requestMediaLibraryAuthorization((str) => {
-        this.setState({appleAuth: true}, () => this.getPlaylists())
-      })
+    NativeModules.AuthorizationManager.requestMediaLibraryAuthorization((str) => {
+      console.log("requested apple music", str)
+
+      this.setState({ appleAuth: true }, () => this.getPlaylists)
+    })
 
   }
 
   getPlaylists = () => {
-    NativeModules.MediaLibraryManager.getPlaylists((playlists) => {
-        Database.saveMultiPlaylists(JSON.parse(playlists), 'appleId')
-    })
+    console.log('getting the playlists')
+    NativeModules.MediaLibraryManager.getPlaylists((str) => console.log(str))
   }
 
   appleConnected = () => {
-    if(this.state.appleAuth) return (<Icon name="ios-checkmark-circle" style={styles.header} />)
+    if (this.state.appleAuth) return (<Icon name="ios-checkmark-circle" style={styles.header} />)
     else return (<Icon name="ios-add" style={styles.header} />)
   }
 
@@ -203,7 +228,7 @@ export default class Profile extends Component {
                     <Text style={styles.bodytxt}>Apple Music</Text>
                   </Body>
                   <Right>
-                      {this.appleConnected()}
+                    {this.appleConnected()}
                   </Right>
                 </CardItem>
               }
@@ -305,6 +330,54 @@ export default class Profile extends Component {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+//   let playlist = {
+//     'name': 'Sample Playlist', 'owner': 'Apple Music User', 'songs': ["spotify:track:4iV5W9uYEdYUVa79Axb7Rh",
+//       "spotify:track:1301WleyT98MSxVHPZCA6M"]
+//   };
+
+// axios.post(
+//   `https://api.spotify.com/v1/users/${this.state.id}/playlists`,
+//   `{\"name\":\"${playlist.name}\", \"public\":false, \"description\":\"Hum playlist created by ${playlist.creator}\"}`,
+//   {
+//     headers: {
+//       "Authorization": `Bearer ${this.state.token}`,
+//       "Content-Type": "application/json"
+//     }
+//   })
+//   .then(response => {
+//     let playlistID = response.data.id;
+//     axios.post(
+//       `https://api.spotify.com/v1/users/${this.state.id}/playlists/${playlistID}/tracks`,
+//       { "uris": playlist.songs },
+//       {
+//         headers: {
+//           "Authorization": `Bearer ${this.state.token}`,
+//           "Content-Type": "application/json"
+//         }
+//       })
+//       .then(response => this.fetchPlaylists)
+//       .catch(error => console.log(error))
+//   })
+//   .catch(error => console.log(error))
+// };
+
+
+
+
+
+
+
+
+
 
 
 // importPlaylist = () => {

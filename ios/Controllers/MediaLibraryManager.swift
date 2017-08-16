@@ -62,9 +62,8 @@ class MediaLibraryManager: NSObject {
         notificationCenter.removeObserver(self, name: NSNotification.Name.MPMediaLibraryDidChange, object: nil)
         notificationCenter.removeObserver(self, name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
     }
-  
-  // needs to create a new playlist with a name, an author display name, and takes song id's
-    @objc func createPlaylist(_ callback: RCTResponseSenderBlock) {
+    
+    @objc func createPlaylistIfNeeded(_ callback: RCTResponseSenderBlock) {
         
         guard mediaPlaylist == nil else { return }
         
@@ -74,18 +73,31 @@ class MediaLibraryManager: NSObject {
         var playlistCreationMetadata: MPMediaPlaylistCreationMetadata!
         
         let userDefaults = UserDefaults.standard
+        let token = UserDefaults.standard.string(forKey: AuthorizationManager.userTokenUserDefaultsKey)
+        print(token)
       
-        // Create an instance of `UUID` to identify the new playlist.
-        playlistUUID = UUID()
-      
-        // Create an instance of `MPMediaPlaylistCreationMetadata`, this represents the metadata to associate with the new playlist.
-        playlistCreationMetadata = MPMediaPlaylistCreationMetadata(name: "Hum Playlist")
-      
-        playlistCreationMetadata.descriptionText = "This playlist was created using \(Bundle.main.infoDictionary!["CFBundleName"]!) to demonstrate how to use the Apple Music APIs"
-      
-        // Store the `UUID` that the sample will use for looking up the playlist in the future.
-        userDefaults.setValue(playlistUUID.uuidString, forKey: MediaLibraryManager.playlistUUIDKey)
-        userDefaults.synchronize()
+        if let playlistUUIDString = userDefaults.string(forKey: MediaLibraryManager.playlistUUIDKey) {
+            // In this case, the sample already created a playlist in a previous run.  In this case we lookup the UUID that was used before.
+            
+            guard let uuid = UUID(uuidString: playlistUUIDString) else {
+                fatalError("Failed to create UUID from existing UUID string: \(playlistUUIDString)")
+            }
+            
+            playlistUUID = uuid
+            print("playlist", playlistUUID)
+        } else {
+            // Create an instance of `UUID` to identify the new playlist.
+            playlistUUID = UUID()
+            
+            // Create an instance of `MPMediaPlaylistCreationMetadata`, this represents the metadata to associate with the new playlist.
+            playlistCreationMetadata = MPMediaPlaylistCreationMetadata(name: "Hum Playlist")
+            
+            playlistCreationMetadata.descriptionText = "This playlist was created using \(Bundle.main.infoDictionary!["CFBundleName"]!) to demonstrate how to use the Apple Music APIs"
+            
+            // Store the `UUID` that the sample will use for looking up the playlist in the future.
+            userDefaults.setValue(playlistUUID.uuidString, forKey: MediaLibraryManager.playlistUUIDKey)
+            userDefaults.synchronize()
+        }
         
         // Request the new or existing playlist from the device.
         MPMediaLibrary.default().getPlaylist(with: playlistUUID, creationMetadata: playlistCreationMetadata) { (playlist, error) in
@@ -93,103 +105,58 @@ class MediaLibraryManager: NSObject {
                 fatalError("An error occurred while retrieving/creating playlist: \(error!.localizedDescription)")
             }
             self.mediaPlaylist = playlist
-            //call add items in a loop
             self.addItem(with: "203709340")
             NotificationCenter.default.post(name: MediaLibraryManager.libraryDidUpdate, object: nil)
         }
-
-        callback(["created playlist"])
-    }
-  
-  
-    @objc func updatePlaylist(_ callback: RCTResponseSenderBlock) {
-      
-      guard mediaPlaylist == nil else { return }
-      
-      // To create a new playlist or lookup a playlist there are several steps you need to do.
-      let playlistUUID: UUID
-      
-      var playlistCreationMetadata: MPMediaPlaylistCreationMetadata!
-      
-      let userDefaults = UserDefaults.standard
-      
-      if let playlistUUIDString = userDefaults.string(forKey: MediaLibraryManager.playlistUUIDKey) {
-        // In this case, the sample already created a playlist in a previous run.  In this case we lookup the UUID that was used before.
-        
-        guard let uuid = UUID(uuidString: playlistUUIDString) else {
-          fatalError("Failed to create UUID from existing UUID string: \(playlistUUIDString)")
-        }
-        
-        playlistUUID = uuid
-        print("playlist", playlistUUID)
-      } else {
-        // Create an instance of `UUID` to identify the new playlist.
-        playlistUUID = UUID()
-        
-        // Create an instance of `MPMediaPlaylistCreationMetadata`, this represents the metadata to associate with the new playlist.
-        playlistCreationMetadata = MPMediaPlaylistCreationMetadata(name: "Hum Playlist")
-        
-        playlistCreationMetadata.descriptionText = "This playlist was created using \(Bundle.main.infoDictionary!["CFBundleName"]!) to demonstrate how to use the Apple Music APIs"
-        
-        // Store the `UUID` that the sample will use for looking up the playlist in the future.
-        userDefaults.setValue(playlistUUID.uuidString, forKey: MediaLibraryManager.playlistUUIDKey)
-        userDefaults.synchronize()
-      }
-      
-      // Request the new or existing playlist from the device.
-      MPMediaLibrary.default().getPlaylist(with: playlistUUID, creationMetadata: playlistCreationMetadata) { (playlist, error) in
-        guard error == nil else {
-          fatalError("An error occurred while retrieving/creating playlist: \(error!.localizedDescription)")
-        }
-        self.mediaPlaylist = playlist
-        self.addItem(with: "203709340")
-        NotificationCenter.default.post(name: MediaLibraryManager.libraryDidUpdate, object: nil)
-      }
-      
-      callback(["updated playlist"])
+        let myPlaylistQuery = MPMediaQuery.playlists()
+        let playlists = myPlaylistQuery.collections
+//        let firstPlaylist = playlists![0]
+//      firstPlaylist.artwork
+//        print(firstPlaylist.value(forProperty: MPMediaPlaylistPropertyPersistentID)!)
+//          print(firstPlaylist.)
+//        var dictOfPlaylists =  [String : [String : [String]]] ()
+        var jsonString = "{"
+          for playlist in playlists! {
+//            print(playlist.value(forProperty: MPMediaPlaylistPropertyName)!)
+//            print(playlist.value(forProperty: MPMediaPlaylistCreationMetadata)!)
+            jsonString += "\"" + String(describing: playlist.value(forProperty: MPMediaPlaylistPropertyName)!) + "\"" + ":" + "["
+            let songs = playlist.items
+//            var dictOfSongs =  [String : [String]] ()
+            for song in songs {
+              let title = String(describing: song.value(forProperty: MPMediaItemPropertyTitle)!)
+              let artist = String(describing: song.value(forProperty: MPMediaItemPropertyArtist)!)
+//              let songInfoArr: [String] = [title, artist]
+              let songId = String(describing: song.value(forProperty: MPMediaItemPropertyPlaybackStoreID)!)
+              jsonString += "{" + "id: " + songId + ", " + "title: " + "\"" + title + "\"" + ", " + "artist: " + "\"" + artist + "\"" + "},"
+//              dictOfSongs[songId] = songInfoArr
+  //            print("\t\t", song.value(forProperty: MPMediaItemPropertyArtist)!)
+            }
+            jsonString += "],"
+//            dictOfPlaylists[String(describing: playlist.value(forProperty: MPMediaPlaylistPropertyName)!)] = dictOfSongs
+          }
+          jsonString += "}"
+        callback([jsonString])
     }
     
     // MARK: Playlist Modification Method
     @objc func getPlaylists(_ callback: RCTResponseSenderBlock) {
-      struct Song: Codable {
-        var title : String
-        var artist : String
-        var id: String
-      }
-      
-      struct Playlist: Codable {
-        var name: String
-        var songs: [Song]
-        
-      }
-      
-      var allPlaylists: [Playlist] = []
-
-      
       let myPlaylistQuery = MPMediaQuery.playlists()
       let playlists = myPlaylistQuery.collections
-      
+
+      var jsonString = "{"
       for playlist in playlists! {
+        jsonString += "\"" + String(describing: playlist.value(forProperty: MPMediaPlaylistPropertyName)!) + "\"" + ":" + "["
         let songs = playlist.items
-        var songsInPlaylist: [Song] = []
         for song in songs {
           let title = String(describing: song.value(forProperty: MPMediaItemPropertyTitle)!)
           let artist = String(describing: song.value(forProperty: MPMediaItemPropertyArtist)!)
           let songId = String(describing: song.value(forProperty: MPMediaItemPropertyPlaybackStoreID)!)
-          songsInPlaylist.append(Song(title: title, artist: artist, id: songId))
+          jsonString += "{" + "id: " + songId + ", " + "title: " + "\"" + title + "\"" + ", " + "artist: " + "\"" + artist + "\"" + "},"
         }
-        let playlistName = String(describing: playlist.value(forProperty: MPMediaPlaylistPropertyName)!)
-        allPlaylists.append(Playlist(name: playlistName, songs: songsInPlaylist))
+        jsonString += "],"
       }
-      
-      let jsonEncoder = JSONEncoder()
-      do {
-        let jsonData = try jsonEncoder.encode(allPlaylists)
-        let jsonString = String(data: jsonData, encoding: .utf8)
-        callback([jsonString!])
-      }
-      catch {
-      }
+      jsonString += "}"
+      callback([jsonString])
     }
       
     func addItem(with identifier: String) {

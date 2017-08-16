@@ -115,6 +115,7 @@ class AuthorizationManager: NSObject {
          current authorization is `SKCloudServiceAuthorizationStatusNotDetermined`
          */
         let status = SKCloudServiceController.authorizationStatus()
+        print("THE STATUS", status)
         guard SKCloudServiceController.authorizationStatus() == .notDetermined else { return }
         
         /*
@@ -141,7 +142,7 @@ class AuthorizationManager: NSObject {
         callback(["cloud service"])
     }
     
-  @objc func requestMediaLibraryAuthorization(_ callback: @escaping RCTResponseSenderBlock) {
+  @objc func requestMediaLibraryAuthorization(_ callback: RCTResponseSenderBlock) {
         /*
          An application should only ever call `MPMediaLibrary.requestAuthorization(_:)` when their
          current authorization is `MPMediaLibraryAuthorizationStatusNotDetermined`
@@ -158,9 +159,9 @@ class AuthorizationManager: NSObject {
         
         MPMediaLibrary.requestAuthorization { (_) in
             NotificationCenter.default.post(name: AuthorizationManager.cloudServiceDidUpdateNotification, object: nil)
-            callback(["media player"])
         }
     
+    callback(["media player"])
     }
     
     // MARK: `SKCloudServiceController` Related Methods

@@ -3,21 +3,22 @@ import * as firebase from 'firebase';
 export default class Database {
 
   static saveApplePlaylists(playlists, providerId) {
-      playlists.forEach(playlist => {
-        let newSong = {}
-        playlist.songs.forEach((song, index) => {
-          this.findOrCreateSong(song, providerId);
-            newSong[index] = {};
-            newSong[index].artist = song.artist;
-            newSong[index].title = song.title;
-        })
-        const newPlaylistId = firebase.database().ref('playlists').push().key;
-          firebase.database().ref(`playlists/${newPlaylistId}`).set({
-          title: playlist.name,
-          creator: "Olivia",
-          songs: newSong
-        });
+    playlists.forEach(playlist => {
+      let newSong = {}
+      playlist.songs.forEach((song, index) => {
+        this.findOrCreateSong(song, providerId);
+        newSong[index] = {};
+        newSong[index].artist = song.artist;
+        newSong[index].title = song.title;
       })
+      const newPlaylistId = firebase.database().ref('playlists').push().key;
+      firebase.database().ref(`playlists/${newPlaylistId}`).set({
+        title: playlist.name,
+        creator: "Olivia",
+        songs: newSong
+      });
+    })
+  }
 
   static getPlaylist(playlist, userId) {
     return firebase.database().ref(`playlists/`).on();
@@ -73,9 +74,9 @@ export default class Database {
       const address = firebase
         .database()
         .ref(
-          `songs/${this.getUrl(fetchSong.title)}/${this.getUrl(
-            fetchSong.artist
-          )}`
+        `songs/${this.getUrl(fetchSong.title)}/${this.getUrl(
+          fetchSong.artist
+        )}`
         );
       const dataSnapshot = await address.once('value');
       if (!dataSnapshot.val()) {
@@ -96,7 +97,7 @@ export default class Database {
   }
 
   static getUrlPath(str) {
-    return encodeURIComponent(str).replace(/\./g, function(c) {
+    return encodeURIComponent(str).replace(/\./g, function (c) {
       return '%' + c.charCodeAt(0).toString(16);
     });
   }
