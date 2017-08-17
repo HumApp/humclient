@@ -27,6 +27,7 @@ import axios from 'axios';
 import Database from '../../../utils/database';
 import Prompt from 'react-native-prompt';
 import firebase from 'firebase';
+import _ from 'lodash';
 const SpotifyModule = NativeModules.SpotifyModule;
 
 export default class Friends extends Component {
@@ -41,6 +42,23 @@ export default class Friends extends Component {
     this.props.navigation.navigate('FriendRequests');
   }
 
+  componentDidMount() {
+    let user = firebase.auth().currentUser;
+    firebase.database().ref(`/users/${user.uid}/pending`).on('child_added', function (snapshot) {
+      console.log('CHILD ADDED ===========');
+      let pending = snapshot.val();
+      firebase.database().ref(`/users/${user.uid}/sent`).once('value', function(sentSnap) {
+        let matches = _.intersection(sentSnap.val(), pending)
+        if (matches) {
+          matches.forEach(match => {
+            firebase.database().ref(`/users/${user.uid}/friends/${match}`).set(true);
+            firebase.database().ref(`/users/${user.uid}/pending/${match}`).remove();
+            firebase.database().ref(`/users/${user.uid}/sent/${match}`).remove();
+          })
+        }
+      })
+    })
+  }
 
   deleteFriend = (username) => {
     console.log('deleted')
@@ -72,6 +90,12 @@ export default class Friends extends Component {
               </Right>
             </CardItem>
           </Card>
+          <Button onPress={() => Database.requestFriend('c6GrA1IiCfX0OAiH4Xn2F4YpcCZ2', true)}>
+            <Text>Add Friend</Text>
+          </Button>
+          <Button onPress={() => Database.addFriendFromPending('ttRb0nO5CbQEf61PzhWLwhivqbz1')}>
+          <Text>Add From Pending</Text>
+        </Button>
           <Card>
             <CardItem header>
               <Icon active name="md-people" style={styles.headerIcon} />
