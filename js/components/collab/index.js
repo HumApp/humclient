@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { Container, Content, Button, Icon, Text } from 'native-base';
+import firebase from 'firebase';
+
 export default class Collab extends Component {
   render() {
+    console.log('collab', firebase.auth().currentUser.uid);
     return (
       <Container>
         <Content />
