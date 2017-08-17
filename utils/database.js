@@ -1,27 +1,51 @@
 import * as firebase from 'firebase';
-import axios from 'axios';
-import { NativeModules } from 'react-native';
 
 export default class Database {
   //this might work?
   static getAllUsers() {
-    firebase.database().ref('/users').on('value', function (snapshot){
-      return snapshot.val();
-    })
+    return firebase.database().ref('/users').once('value')
+  }
+
+  static getAllFriends() {
+    let user = firebase.auth().currentUser;
+    return firebase.database().ref(`/users/${user.uid}/friends`).once('value')
   }
 
   static requestFriend (recievingUser) {
     let user = firebase.auth().currentUser;
-    firebase.database().ref(`/users/${recievingUser}/pending/${user}`).set(true);
+    firebase.database().ref(`/users/${recievingUser}/pending/${user.uid}`).set(true);
+    firebase.database().ref(`/users/${recievingUser}/sent/${recievingUser}`).set(true);
   }
 
-  static getPendingFriends () {
+  static addFriendFromPending (friend) {
     let user = firebase.auth().currentUser;
-    firebase.database().ref();
+    firebase.database().ref(`/users/${user.uid}/pendingFriends/${friend}`).remove();
+    firebase.database().ref(`/users/${user.uid}/friends/${friend}`).set(true);
+    this.requestFriend(friend);
   }
 
-  static savePlaylistToDatabase(playlists, providerId) {
-    let loggedInUser = this.getCurrentUser()
+  static rejectFriendFromPending (friend) {
+    let user = firebase.auth().currentUser;
+    firebase.database().ref(`/users/${user.uid}/pending/${friend}`).remove();
+  }
+  static ignoreMe() {
+    let user = firebase.auth().currentUser;
+    firebase.database().ref(`/users/${user.uid}/pending`).on('child_added')
+    .then(snapshot => {
+      let pending = snapshot.val();
+      firebase.database().ref(`/users/${user.uid}/sent`).once('value', function(sentSnap) {
+        let matches = _.intersection(sentSnap.val(), pending)
+        if (matches) {
+          matches.forEach(match => {
+            firebase.database().ref(`/users/${user.uid}/friends/${match}`).set(true);
+            firebase.database().ref(`/users/${user.uid}/pending/${match}`).remove();
+            firebase.database().ref(`/users/${user.uid}/sent/${match}`).remove();
+          })
+        }
+      })
+    })
+  }
+  static saveApplePlaylists(playlists, providerId) {
     playlists.forEach(playlist => {
       let newSong = {};
       playlist.songs.forEach((song, index) => {
@@ -33,7 +57,7 @@ export default class Database {
       const newPlaylistId = firebase.database().ref('playlists').push().key;
       firebase.database().ref(`playlists/${newPlaylistId}`).set({
         title: playlist.name,
-        creator: "oliviaoddo",
+        creator: 'Olivia',
         songs: newSong
       });
     });
@@ -154,44 +178,4 @@ export default class Database {
   static getNameFromUrlPath(url) {
     return decodeURIComponent(url);
   }
-
-  static listenUserInfo(userId, callback) {
-    let userNamePath = '/user/' + userId + '/details';
-
-    firebase.database().ref(userNamePath).on('value', snapshot => {
-      var name = '';
-
-      if (snapshot.val()) {
-        name = snapshot.val().name;
-      }
-      callback(name);
-    });
-  }
-  static saveAppleMusicPlaylist = (spotifyPlaylistId, playlistName, author) => {
-    let firedata = firebase.database().ref(`playlists/${spotifyPlaylistId}`);
-    let external = [];
-    firedata.on('value', function (snapshot) {
-      const playlist = snapshot.val();
-      playlist.songs.forEach(song => external.push(song));
-      let promises = external.map(song => axios.post(
-        "https://us-central1-hum-app.cloudfunctions.net/getSongId/",
-        { "title": `${song.title}`, "artist": `${song.artist}`, "service": "appleId"},
-        {
-          headers: {
-            "Content-Type": "application/json",
-          }
-        }));
-      Promise.all(promises).then(values => {
-        let final = values.map(value => value.data.toString());
-        let obj = {
-          name: playlistName,
-          author: author,
-          songs: final
-        }
-        let applePlaylist = JSON.stringify(obj);
-        NativeModules.MediaLibraryManager.createPlaylist(applePlaylist, (str) => {console.log(str);})
-    })
-  })
-  }
 }
-
