@@ -30,10 +30,10 @@ export default class SinglePlaylist extends Component {
         <Content>
 
           <Card>
-            <CardItem button header onPress= {() => this.goToShare("-KrklLkFi0xUD2owjZxi")} bordered>
+            <CardItem button header onPress= {() => this.goToShare(this.props.navigation.state.params.playlistRef)} bordered>
               <Body>
-                <Text style={styles.pheader}>Summer</Text>
-                <Text note style={styles.subtitle}>Playlist by Olivia Oddo</Text>
+                <Text style={styles.pheader}>{this.props.navigation.state.params.title}</Text>
+                <Text note style={styles.subtitle}>Playlist by {this.props.navigation.state.params.creator}</Text>
               </Body>
               <Right>
                 <Icon name="ios-share-outline" style={styles.headerIcon} />
@@ -44,36 +44,19 @@ export default class SinglePlaylist extends Component {
                 <Text style={styles.songHeader}>Songs</Text>
               </Body>
             </CardItem>
-            <ListItem avatar bordered>
-              <Left>
-                <Thumbnail square size={80} source={{ uri: "https://images-na.ssl-images-amazon.com/images/I/71JWCAY6cvL._AC_UL115_.jpg" }} />
-              </Left>
-              <Body>
-                <Text style={styles.bodytxt}>Simon Mignolet</Text>
-                <Text note style={styles.bodytxt}>Ice Cube</Text>
-              </Body>
-
-            </ListItem>
-            <ListItem bordered avatar>
-              <Left>
-                <Thumbnail square size={80} source={{ uri: "https://images-na.ssl-images-amazon.com/images/I/71JWCAY6cvL._AC_UL115_.jpg" }} />
-              </Left>
-              <Body>
-                <Text style={styles.bodytxt}>Simon Mignolet</Text>
-                <Text note style={styles.bodytxt}>Ice Cube</Text>
-              </Body>
-
-            </ListItem>
-            <ListItem bordered avatar>
-              <Left>
-                <Thumbnail square size={80} source={{ uri: 'https://upload.wikimedia.org/wikipedia/en/7/74/InBetweenDreams.jpg' }} />
-              </Left>
-              <Body>
-                <Text style={styles.bodytxt}>Simon Mignolet</Text>
-                <Text note style={styles.bodytxt}>Ice Cube</Text>
-              </Body>
-
-            </ListItem>
+            {this.props.navigation.state.params.songs.map((song, index) => {
+              return (
+                <ListItem avatar bordered key={index}>
+                  <Left>
+                    <Thumbnail square size={80} source={{ uri: "https://images-na.ssl-images-amazon.com/images/I/71JWCAY6cvL._AC_UL115_.jpg" }} />
+                  </Left>
+                  <Body>
+                    <Text style={styles.bodytxt}>{song.title}</Text>
+                    <Text note style={styles.bodytxt}>{song.artist}</Text>
+                  </Body>
+                </ListItem>
+              )
+            })}
             <CardItem>
             </CardItem>
           </Card>

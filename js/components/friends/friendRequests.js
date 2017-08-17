@@ -29,64 +29,49 @@ import Prompt from 'react-native-prompt';
 import firebase from 'firebase';
 const SpotifyModule = NativeModules.SpotifyModule;
 
-export default class Friends extends Component {
+export default class FriendRequests extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      friends: [{username: "oliviaoddo"}, {username: "brian"}]
+      requests: [{username: "oliviaoddo"}, {username: "brian"}]
     };
   }
 
-  friendRequests = () => {
-    this.props.navigation.navigate('FriendRequests');
+  deleteRequest = (username) => {
+    console.log('deleted')
+    this.setState({requests: this.state.requests.filter(person => username != person.username)})
+    Toast.show({text: 'Request deleted!', position: 'bottom', duration: 1500, type: 'danger'})
   }
 
+  acceptRequest = (username) => {
+    console.log("accepted")
+    this.setState({requests: this.state.requests.filter(person => username != person.username)})
+    Toast.show({text: 'Friend added!', position: 'bottom', duration: 1500, type: 'success'})
 
-  deleteFriend = (username) => {
-    console.log('deleted')
-    this.setState({friends: this.state.friends.filter(person => username != person.username)})
-    Toast.show({text: 'Request deleted!', position: 'bottom', duration: 1500, type: 'danger'})
   }
 
   render() {
     return (
       <Container>
-        <Header searchBar rounded>
-          <Item>
-            <Icon name="ios-search" />
-            <Input placeholder="Search for new friends" />
-          </Item>
-          <Button light onPress={() => {console.log("clear")}}transparent>
-            <Icon name="md-close-circle" />
-          </Button>
-        </Header>
         <Content>
-          <Card>
-            <CardItem button onPress={this.friendRequests} header>
-              <Badge style={{ backgroundColor: '#FC642D' }}>
-                <Text>2</Text>
-              </Badge>
-                <Text style={styles.header}>  Friend Requests</Text>
-              <Right>
-                  <Icon name="arrow-forward" style={styles.arrow} />
-              </Right>
-            </CardItem>
-          </Card>
           <Card>
             <CardItem header>
               <Icon active name="md-people" style={styles.headerIcon} />
-              <Text style={styles.header}>Friends</Text>
+              <Text style={styles.header}>Requests</Text>
             </CardItem>
-            {this.state.friends.map(friend => {
+            {this.state.requests.map(friend => {
               return(
                 <SwipeRow
+                  leftOpenValue={75}
                   rightOpenValue={-75}
                   key={friend.username}
+                  left={
+                    <Button success onPress={() => this.acceptRequest(friend.username)}>
+                      <Icon active name="md-add-circle" />
+                    </Button>
+                  }
                   body={
                     <CardItem>
-                      <Left>
-                        <FAIcon name="apple" size={25} color="#FF4B63" />
-                      </Left>
                       <Body>
                         <Text style={styles.bodytxt}>{friend.username}</Text>
                       </Body>
@@ -96,7 +81,7 @@ export default class Friends extends Component {
                     </CardItem>
                   }
                   right={
-                    <Button danger onPress={() => this.deleteFriend(friend.username)}>
+                    <Button danger onPress={() => this.deleteRequest(friend.username)}>
                       <Icon active name="md-close-circle" />
                     </Button>
                   }

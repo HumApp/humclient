@@ -174,54 +174,7 @@ importPlaylist = () => {
           .catch(error => console.log(error))
       })
     })
-  importPlaylist = () => {
-    //import Playlist will take a playlist object or an id by querying database for the playlist
-    //hard coded example for now
-    // const sampleDatabase = firebase.database().ref('playlists/IDHERE');
-    // sampleDatabase.on('value', function (snapshot) {
-    //   const samplePlaylist = snapshot.val();
-    //   console.log(samplePlaylist)
-    // });
-
-    let playlist = {
-      name: 'Sample Playlist',
-      owner: 'Apple Music User',
-      songs: [
-        'spotify:track:4iV5W9uYEdYUVa79Axb7Rh',
-        'spotify:track:1301WleyT98MSxVHPZCA6M'
-      ]
-    };
-
-    axios
-      .post(
-        `https://api.spotify.com/v1/users/${this.state.id}/playlists`,
-        `{\"name\":\"${playlist.name}\", \"public\":false, \"description\":\"Hum playlist created by ${playlist.owner}\"}`,
-        {
-          headers: {
-            Authorization: `Bearer ${this.state.token}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      )
-      .then(response => {
-        let playlistID = response.data.id;
-        axios
-          .post(
-            `https://api.spotify.com/v1/users/${this.state
-              .id}/playlists/${playlistID}/tracks`,
-            { uris: playlist.songs },
-            {
-              headers: {
-                Authorization: `Bearer ${this.state.token}`,
-                'Content-Type': 'application/json'
-              }
-            }
-          )
-          .then(response => this.fetchPlaylists)
-          .catch(error => console.log(error));
-      })
-      .catch(error => console.log(error));
-  };
+  }
 
   requestAppleMusic = () => {
     NativeModules.AuthorizationManager.requestMediaLibraryAuthorization(str => {
@@ -242,12 +195,6 @@ importPlaylist = () => {
   };
 
   render() {
-    let obj = {
-          name: "please work",
-          author: "olivia",
-          songs: ["684545030","684539426","684545032","964987819","684545034"]
-        }
-    let applePlaylist = JSON.stringify(obj);
     return (
       <Container>
         <Content>
@@ -403,24 +350,6 @@ importPlaylist = () => {
             <CardItem button onPress={this.signOut}>
               <Body>
                 <Text style={styles.bodytxt}>Sign Out</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward" style={styles.arrow} />
-              </Right>
-            </CardItem>
-            <CardItem
-              button
-              onPress={() => {
-                NativeModules.MediaLibraryManager.createPlaylist(
-                  applePlaylist,
-                  str => {
-                    console.log(str);
-                  }
-                );
-              }}
-            >
-              <Body>
-                <Text style={styles.bodytxt}>Create apple Playlist</Text>
               </Body>
               <Right>
                 <Icon name="arrow-forward" style={styles.arrow} />
