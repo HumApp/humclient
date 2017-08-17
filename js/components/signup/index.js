@@ -55,7 +55,8 @@ export default class SignUp extends Component {
         displayName: this.state.userName
       });
       firebase.database().ref(`users/${newUser.uid}`).set({
-        fullname: this.state.firstName + ' ' + this.state.lastName
+        fullname: this.state.firstName + ' ' + this.state.lastName,
+        username: this.state.userName
       });
       await newUser.sendEmailVerification();
       this.props.navigation.navigate('SignedOut');
