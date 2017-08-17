@@ -1,24 +1,25 @@
 import * as firebase from 'firebase';
+import axios from 'axios';
+import { NativeModules } from 'react-native';
 
 export default class Database {
-
-  static saveApplePlaylists(playlists, providerId) {
-      console.log(playlists)
-      playlists.forEach(playlist => {
-        let newSong = {}
-        playlist.songs.forEach((song, index) => {
-          this.findOrCreateSong(song, providerId);
-            newSong[index] = {};
-            newSong[index].artist = song.artist;
-            newSong[index].title = song.title;
-        })
-        const newPlaylistId = firebase.database().ref('playlists').push().key;
-          firebase.database().ref(`playlists/${newPlaylistId}`).set({
-          title: playlist.name,
-          creator: "Olivia",
-          songs: newSong
-        });
-      })
+  static savePlaylistToDatabase(playlists, providerId) {
+    let loggedInUser = this.getCurrentUser()
+    playlists.forEach(playlist => {
+      let newSong = {};
+      playlist.songs.forEach((song, index) => {
+        this.findOrCreateSong(song, providerId);
+        newSong[index] = {};
+        newSong[index].artist = song.artist;
+        newSong[index].title = song.title;
+      });
+      const newPlaylistId = firebase.database().ref('playlists').push().key;
+      firebase.database().ref(`playlists/${newPlaylistId}`).set({
+        title: playlist.name,
+        creator: "oliviaoddo",
+        songs: newSong
+      });
+    });
   }
 
   static getPlaylist(playlist, userId) {
@@ -67,7 +68,6 @@ export default class Database {
       creator: this.getCurrentUser(),
       songs: newSong
     });
-
   }
 
   static async findOrCreateSong(fetchSong, providerId) {
@@ -119,4 +119,31 @@ export default class Database {
       callback(name);
     });
   }
+  static saveAppleMusicPlaylist = (spotifyPlaylistId, playlistName, author) => {
+    let firedata = firebase.database().ref(`playlists/${spotifyPlaylistId}`);
+    let external = [];
+    firedata.on('value', function (snapshot) {
+      const playlist = snapshot.val();
+      playlist.songs.forEach(song => external.push(song));
+      let promises = external.map(song => axios.post(
+        "https://us-central1-hum-app.cloudfunctions.net/getSongId/",
+        { "title": `${song.title}`, "artist": `${song.artist}`, "service": "appleId"},
+        {
+          headers: {
+            "Content-Type": "application/json",
+          }
+        }));
+      Promise.all(promises).then(values => {
+        let final = values.map(value => value.data.toString());
+        let obj = {
+          name: playlistName,
+          author: author,
+          songs: final
+        }
+        let applePlaylist = JSON.stringify(obj);
+        NativeModules.MediaLibraryManager.createPlaylist(applePlaylist, (str) => {console.log(str);})
+    })
+  })
+  }
 }
+

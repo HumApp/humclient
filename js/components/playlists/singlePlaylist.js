@@ -18,7 +18,8 @@ import {
   Thumbnail
 } from 'native-base';
 import styles from './styles';
-
+import Database from '../../../utils/database';
+import { NativeModules } from 'react-native';
 export default class SinglePlaylist extends Component {
   render() {
     return (
@@ -26,7 +27,7 @@ export default class SinglePlaylist extends Component {
         <Content>
 
           <Card>
-            <CardItem header bordered>
+            <CardItem button header onPress= {() => Database.saveAppleMusicPlaylist("-Krh2eGND6mn6A7f2ZOZ", "CHVRCHES", "Olivia")} bordered>
               <Body>
                 <Text style={styles.pheader}>Summer</Text>
                 <Text note style={styles.subtitle}>Playlist by Olivia Oddo</Text>
