@@ -29,7 +29,7 @@ exports.getSongId = functions.https.onRequest((req, response) => {
           axios.get(makeSpotifySongQuery(reqSong.title, reqSong.artist),
           {
            headers: {
-             "Authorization": "Bearer BQAw6VUAjB7MaLBZv_DIC2X_Z0sMVb5Ya8jGBqVV9lNuzMBjuBt3SsghvSuD6B8jxTr_nb3mTHNwH80JMD2_X3mXowFiI_4IBlqc11SAsRXi1eEyWrSAHoZ4wWd9X-x2Iw8N_LV6sIXrNrIGsZSbrSYn2UjAuGjR78d-YHL-vUeiVTrKOR508c0CPP8TBio8qL8F6boxkwgYdTc5jBVCSuq8sY1pTUdFoVLaYWV5Fqkdh2hyuwTlbqkRbWAzYou0_Zw-lXHMRr0aMV-L4z3sd6RDk1nT1-_TJINlNmPk_2-7PuYRtgeL50uB6CRiWT7boupR"
+             Authorization: `Bearer ${req.body.userToken}`
             //  "Content-Type": 'application/x-www-form-urlencoded',
             //  Accept: 'application/json'
            }
@@ -44,20 +44,6 @@ exports.getSongId = functions.https.onRequest((req, response) => {
         }
     })
     .catch(console.error);
-});
-
-exports.savePlayistToSpotify = functions.https.onRequest((req, res) => {
-  //given a DB playlist ID and spotify user token, saves the playlist from the database to spotify
-  const userToken = req.body.userToken;
-  const playlistId = req.body.playlistId;
-  admin.database().ref(`/playlists/${playlistId}/songs`).once('value')
-  .then(snap => {
-    let songIds = [];
-    snap.forEach(child => {
-      songIds.push(child.key);
-    });
-    //songIds now contains all of the ids of the songs
-  });
 });
 
 function makeiTunesSongQuery(songTitle, songArtist) {
