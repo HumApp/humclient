@@ -32,22 +32,33 @@ export default class SignUp extends Component {
       isLoading: false
     };
   }
+
+  validateForm() {
+    return (
+      this.state.firstName.length > 0 &&
+      this.state.lastName.length > 0 &&
+      this.state.userName.length > 0 &&
+      this.state.email.length > 0 &&
+      this.state.password.length > 0 &&
+      this.state.confirmPassword.length > 0 &&
+      this.state.password === this.state.confirmPassword
+    );
+  }
+
   handleSignup = async () => {
     this.setState({ isLoading: true });
     try {
-      newUser = await firebase
+      const newUser = await firebase
         .auth()
-        .createUserWithEmailAndPassword(this.state.email, this.state.password)
-        .then(user => {
-          firebase.database().ref(`users/${user.uid}`).set({
-            username: this.state.userName,
-            email: this.state.email,
-            fullname: this.state.firstName + ' ' + this.state.lastName
-          });
-        });
+        .createUserWithEmailAndPassword(this.state.email, this.state.password);
+      await newUser.updateProfile({
+        displayName: this.state.userName
+      });
+      firebase.database().ref(`users/${newUser.uid}`).set({
+        fullname: this.state.firstName + ' ' + this.state.lastName
+      });
       await newUser.sendEmailVerification();
-      const userId = firebase.database().ref('users/').push().key;
-      this.props.navigation.navigate('SignedIn');
+      this.props.navigation.navigate('SignedOut');
       Toast.show({
         text: `Verification email sent to ${this.state.email}`,
         position: 'top',
@@ -71,7 +82,7 @@ export default class SignUp extends Component {
 
   render() {
     const content = this.state.isLoading
-      ? <Spinner color="#FC642D" />
+      ? <Spinner color="red" />
       : <Content>
           <Card>
             <Form style={styles.form}>
@@ -124,6 +135,7 @@ export default class SignUp extends Component {
                 <Input
                   autoCapitalize="none"
                   value={this.state.confirmPassword}
+                  secureTextEntry={true}
                   onChangeText={text =>
                     this.setState({ confirmPassword: text })}
                 />
@@ -134,6 +146,7 @@ export default class SignUp extends Component {
                   style={styles.signup}
                   rounded
                   onPress={this.handleSignup}
+                  disabled={!this.validateForm()}
                 >
                   <Text style={{ fontSize: 18 }}>Sign Up</Text>
                   <Icon name="ios-arrow-forward" style={{ color: '#fff' }} />

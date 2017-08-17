@@ -33,22 +33,29 @@ export default class Friends extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      friends: [{username: "oliviaoddo"}, {username: "brian"}]
+      friends: [{ username: 'oliviaoddo' }, { username: 'brian' }]
     };
   }
 
   friendRequests = () => {
     this.props.navigation.navigate('FriendRequests');
-  }
+  };
 
-
-  deleteFriend = (username) => {
-    console.log('deleted')
-    this.setState({friends: this.state.friends.filter(person => username != person.username)})
-    Toast.show({text: 'Request deleted!', position: 'bottom', duration: 1500, type: 'danger'})
-  }
+  deleteFriend = username => {
+    console.log('deleted');
+    this.setState({
+      friends: this.state.friends.filter(person => username != person.username)
+    });
+    Toast.show({
+      text: 'Request deleted!',
+      position: 'bottom',
+      duration: 1500,
+      type: 'danger'
+    });
+  };
 
   render() {
+    console.log('friend', firebase.auth().currentUser.email);
     return (
       <Container>
         <Header searchBar rounded>
@@ -56,7 +63,13 @@ export default class Friends extends Component {
             <Icon name="ios-search" />
             <Input placeholder="Search for new friends" />
           </Item>
-          <Button light onPress={() => {console.log("clear")}}transparent>
+          <Button
+            light
+            onPress={() => {
+              console.log('clear');
+            }}
+            transparent
+          >
             <Icon name="md-close-circle" />
           </Button>
         </Header>
@@ -66,9 +79,9 @@ export default class Friends extends Component {
               <Badge style={{ backgroundColor: '#FC642D' }}>
                 <Text>2</Text>
               </Badge>
-                <Text style={styles.header}>  Friend Requests</Text>
+              <Text style={styles.header}> Friend Requests</Text>
               <Right>
-                  <Icon name="arrow-forward" style={styles.arrow} />
+                <Icon name="arrow-forward" style={styles.arrow} />
               </Right>
             </CardItem>
           </Card>
@@ -78,7 +91,7 @@ export default class Friends extends Component {
               <Text style={styles.header}>Friends</Text>
             </CardItem>
             {this.state.friends.map(friend => {
-              return(
+              return (
                 <SwipeRow
                   rightOpenValue={-75}
                   key={friend.username}
@@ -88,20 +101,23 @@ export default class Friends extends Component {
                         <FAIcon name="apple" size={25} color="#FF4B63" />
                       </Left>
                       <Body>
-                        <Text style={styles.bodytxt}>{friend.username}</Text>
+                        <Text style={styles.bodytxt}>
+                          {friend.username}
+                        </Text>
                       </Body>
-                      <Right>
-
-                      </Right>
+                      <Right />
                     </CardItem>
                   }
                   right={
-                    <Button danger onPress={() => this.deleteFriend(friend.username)}>
+                    <Button
+                      danger
+                      onPress={() => this.deleteFriend(friend.username)}
+                    >
                       <Icon active name="md-close-circle" />
                     </Button>
                   }
-                  />
-                )
+                />
+              );
             })}
           </Card>
         </Content>

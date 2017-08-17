@@ -79,45 +79,51 @@ export const ProfileStack = StackNavigator({
   }
 });
 
-export const Tabs = TabNavigator({
-  Playlists: {
-    screen: PlaylistsStack,
-    navigationOptions: {
-      tabBarLabel: 'Playlists',
-      tabBarIcon: ({ tintColor }) =>
-        <Icon name="ios-musical-notes" style={{ fontSize: 35, color: tintColor }} />
+export const Tabs = TabNavigator(
+  {
+    Playlists: {
+      screen: PlaylistsStack,
+      navigationOptions: {
+        tabBarLabel: 'Playlists',
+        tabBarIcon: ({ tintColor }) =>
+          <Icon
+            name="ios-musical-notes"
+            style={{ fontSize: 35, color: tintColor }}
+          />
+      }
+    },
+    Collab: {
+      screen: CollabStack,
+      navigationOptions: {
+        tabBarLabel: 'Collab',
+        tabBarIcon: ({ tintColor }) =>
+          <Icon name="md-headset" style={{ fontSize: 35, color: tintColor }} />
+      }
+    },
+    Friends: {
+      screen: FriendsStack,
+      navigationOptions: {
+        tabBarLabel: 'Friends',
+        tabBarIcon: ({ tintColor }) =>
+          <Icon name="md-people" style={{ fontSize: 35, color: tintColor }} />
+      }
+    },
+    Profile: {
+      screen: ProfileStack,
+      navigationOptions: {
+        tabBarLabel: 'Profile',
+        tabBarIcon: ({ tintColor }) =>
+          <Icon name="md-person" style={{ fontSize: 35, color: tintColor }} />
+      }
     }
   },
-  Collab: {
-    screen: CollabStack,
-    navigationOptions: {
-      tabBarLabel: 'Collab',
-      tabBarIcon: ({ tintColor }) =>
-        <Icon name="md-headset" style={{ fontSize: 35, color: tintColor }} />
-    }
-  },
-  Friends: {
-    screen: FriendsStack,
-    navigationOptions: {
-      tabBarLabel: 'Friends',
-      tabBarIcon: ({ tintColor }) =>
-        <Icon name="md-people" style={{ fontSize: 35, color: tintColor }} />
-    }
-  },
-  Profile: {
-    screen: ProfileStack,
-    navigationOptions: {
-      tabBarLabel: 'Profile',
-      tabBarIcon: ({ tintColor }) => (
-        <Icon name="md-person" style={{ fontSize: 35, color: tintColor }} />)
-    }
-  }
-}, {
+  {
     tabBarOptions: {
       activeTintColor: '#ff5a5f',
       inactiveTintColor: '#cecece'
-    },
-  });
+    }
+  }
+);
 
 export const SignedOut = StackNavigator({
   Home: {
@@ -154,7 +160,7 @@ export const SignedIn = StackNavigator(
   }
 );
 
-export const createRootNavigator = (signedIn = true) => {
+export const createRootNavigator = (signedIn = false) => {
   return StackNavigator(
     {
       SignedIn: {

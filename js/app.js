@@ -9,21 +9,21 @@ export default class App extends Component {
     super(props);
     Firebase.initialize();
     this.state = {
-      currentUser: null
+      currentUser: false
     };
   }
 
-  componentWillMount() {
-    AsyncStorage.getItem('user').then(userData => {
-      let user = JSON.parse(userData);
+  componentDidMount() {
+    AsyncStorage.getItem('currentUser').then(userData => {
+      let currentUser = JSON.parse(userData);
       this.setState({
-        user
+        currentUser
       });
     });
   }
 
   render() {
-    const AppNavigator = createRootNavigator(this.state.user);
+    const AppNavigator = createRootNavigator(this.state.currentUser);
     return (
       <Root>
         <AppNavigator />

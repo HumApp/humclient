@@ -37,6 +37,7 @@ export default class Profile extends Component {
       appleAuth: false
     };
   }
+
   signOut = async () => {
     try {
       await AsyncStorage.removeItem('user');
@@ -128,53 +129,65 @@ export default class Profile extends Component {
       .catch(error => console.log(error));
   };
 
-importPlaylist = () => {
+  importPlaylist = () => {
     let firedata = firebase.database().ref(`playlists/-Krh2eGlMXEJxtQEnLUY`);
     let external = [];
-    let id = this.state.id
+    let id = this.state.id;
     let userToken = this.state.token;
-    firedata.on('value', function (snapshot) {
+    firedata.on('value', function(snapshot) {
       const playlist = snapshot.val();
-      console.log(playlist)
+      console.log(playlist);
       playlist.songs.forEach(song => external.push(song));
-      let promises = external.map(song => axios.post(
-        "https://us-central1-hum-app.cloudfunctions.net/getSongId/",
-        { "title": `${song.title}`, "artist": `${song.artist}`, "service": "spotifyId", "userToken": `${userToken}` },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          }
-        }));
-      Promise.all(promises).then(values => {
-        let final = values.map(value => value.data);
-        console.log(final)
+      let promises = external.map(song =>
         axios.post(
-          `https://api.spotify.com/v1/users/${id}/playlists`,
-          `{\"name\":\"A New Hum Playlist\", \"public\":false, \"description\":\"A Hum playlist created by Apple Music\"}`,
+          'https://us-central1-hum-app.cloudfunctions.net/getSongId/',
+          {
+            title: `${song.title}`,
+            artist: `${song.artist}`,
+            service: 'spotifyId',
+            userToken: `${userToken}`
+          },
           {
             headers: {
-              "Authorization": `Bearer ${userToken}`,
-              "Content-Type": "application/json"
+              'Content-Type': 'application/json'
             }
-          })
+          }
+        )
+      );
+      Promise.all(promises).then(values => {
+        let final = values.map(value => value.data);
+        console.log(final);
+        axios
+          .post(
+            `https://api.spotify.com/v1/users/${id}/playlists`,
+            `{\"name\":\"A New Hum Playlist\", \"public\":false, \"description\":\"A Hum playlist created by Apple Music\"}`,
+            {
+              headers: {
+                Authorization: `Bearer ${userToken}`,
+                'Content-Type': 'application/json'
+              }
+            }
+          )
           .then(response => {
             let playlistID = response.data.id;
-            axios.post(
-              `https://api.spotify.com/v1/users/${id}/playlists/${playlistID}/tracks`,
-              { "uris": final },
-              {
-                headers: {
-                  "Authorization": `Bearer ${userToken}`,
-                  "Content-Type": "application/json"
+            axios
+              .post(
+                `https://api.spotify.com/v1/users/${id}/playlists/${playlistID}/tracks`,
+                { uris: final },
+                {
+                  headers: {
+                    Authorization: `Bearer ${userToken}`,
+                    'Content-Type': 'application/json'
+                  }
                 }
-              })
+              )
               .then(response => console.log(response))
-              .catch(error => console.log(error))
+              .catch(error => console.log(error));
           })
-          .catch(error => console.log(error))
-      })
-    })
-  }
+          .catch(error => console.log(error));
+      });
+    });
+  };
 
   requestAppleMusic = () => {
     NativeModules.AuthorizationManager.requestMediaLibraryAuthorization(str => {
@@ -195,6 +208,8 @@ importPlaylist = () => {
   };
 
   render() {
+    console.log('profile', firebase.auth().currentUser);
+
     return (
       <Container>
         <Content>

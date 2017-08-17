@@ -30,20 +30,26 @@ export default class SignUp extends Component {
     };
   }
 
+  validateForm() {
+    return this.state.email.length > 0 && this.state.password.length > 0;
+  }
+
   login = async () => {
     try {
       this.setState({ isLoading: true });
-      const user = await firebase
+      const currentUser = await firebase
         .auth()
         .signInWithEmailAndPassword(this.state.email, this.state.password);
-      AsyncStorage.setItem('user', JSON.stringify(user));
+      AsyncStorage.setItem('currentUser', JSON.stringify(currentUser));
       Toast.show({
         text: `Logged in with ${this.state.email}`,
         position: 'top',
         buttonText: 'Okay',
         duration: 2000
       });
-      this.props.navigation.navigate('SignedIn');
+      if (firebase.auth().currentUser.emailVerified)
+        this.props.navigation.navigate('SignedIn');
+      else throw 'Your email has to be verified! Check your email!';
     } catch (err) {
       Toast.show({
         text: `${err}`,
@@ -87,6 +93,7 @@ export default class SignUp extends Component {
                   iconRight
                   style={styles.login}
                   onPress={this.login}
+                  disabled={!this.validateForm()}
                 >
                   <Text style={{ fontSize: 18 }}>Log in</Text>
                   <Icon name="ios-arrow-forward" style={{ color: '#fff' }} />
