@@ -28,7 +28,23 @@ export default class Database {
     let user = firebase.auth().currentUser;
     firebase.database().ref(`/users/${user.uid}/pending/${friend}`).remove();
   }
-
+  static ignoreMe() {
+    let user = firebase.auth().currentUser;
+    firebase.database().ref(`/users/${user.uid}/pending`).on('child_added')
+    .then(snapshot => {
+      let pending = snapshot.val();
+      firebase.database().ref(`/users/${user.uid}/sent`).once('value', function(sentSnap) {
+        let matches = _.intersection(sentSnap.val(), pending)
+        if (matches) {
+          matches.forEach(match => {
+            firebase.database().ref(`/users/${user.uid}/friends/${match}`).set(true);
+            firebase.database().ref(`/users/${user.uid}/pending/${match}`).remove();
+            firebase.database().ref(`/users/${user.uid}/sent/${match}`).remove();
+          })
+        }
+      })
+    })
+  }
   static saveApplePlaylists(playlists, providerId) {
     playlists.forEach(playlist => {
       let newSong = {};
