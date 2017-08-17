@@ -14,7 +14,7 @@ export default class Database {
   static requestFriend (recievingUser) {
     let user = firebase.auth().currentUser;
     firebase.database().ref(`/users/${recievingUser}/pending/${user.uid}`).set(true);
-    firebase.database().ref(`/users/${recievingUser}/sent/${recievingUser}`).set(true);
+    firebase.database().ref(`/users/${user.uid}/sent/${recievingUser}`).set(true);
   }
 
   static addFriendFromPending (friend) {
