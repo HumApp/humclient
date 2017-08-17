@@ -85,16 +85,22 @@ export default class Playlists extends Component {
           </Card>
           <Card>
             <CardItem header>
-              <Icon active name="musical-note" style={{ color: '#484848', fontSize: 40 }} />
+              <Icon
+                active
+                name="musical-note"
+                style={{ color: '#484848', fontSize: 40 }}
+              />
               <Text style={styles.header}>Shared with Me</Text>
             </CardItem>
             <SwipeRow
               rightOpenValue={-75}
               body={
-                <CardItem >
+                <CardItem>
                   <Body>
                     <Text style={styles.bodytxt}>Party</Text>
-                    <Text note style={styles.bodytxt}>Playlist by Brian</Text>
+                    <Text note style={styles.bodytxt}>
+                      Playlist by Brian
+                    </Text>
                   </Body>
                   <Right>
                     <Icon name="ios-checkmark-circle" />
@@ -110,7 +116,9 @@ export default class Playlists extends Component {
             <CardItem>
               <Body>
                 <Text style={styles.bodytxt}>Beets</Text>
-                <Text note style={styles.bodytxt}>Playlist by One June</Text>
+                <Text note style={styles.bodytxt}>
+                  Playlist by One June
+                </Text>
               </Body>
               <Right>
                 <Icon name="arrow-forward" style={styles.arrow} />

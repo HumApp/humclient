@@ -37,7 +37,6 @@ export default class Profile extends Component {
       appleAuth: false
     };
   }
-
   signOut = async () => {
     try {
       await AsyncStorage.removeItem('user');
@@ -175,6 +174,53 @@ importPlaylist = () => {
           .catch(error => console.log(error))
       })
     })
+  importPlaylist = () => {
+    //import Playlist will take a playlist object or an id by querying database for the playlist
+    //hard coded example for now
+    // const sampleDatabase = firebase.database().ref('playlists/IDHERE');
+    // sampleDatabase.on('value', function (snapshot) {
+    //   const samplePlaylist = snapshot.val();
+    //   console.log(samplePlaylist)
+    // });
+
+    let playlist = {
+      name: 'Sample Playlist',
+      owner: 'Apple Music User',
+      songs: [
+        'spotify:track:4iV5W9uYEdYUVa79Axb7Rh',
+        'spotify:track:1301WleyT98MSxVHPZCA6M'
+      ]
+    };
+
+    axios
+      .post(
+        `https://api.spotify.com/v1/users/${this.state.id}/playlists`,
+        `{\"name\":\"${playlist.name}\", \"public\":false, \"description\":\"Hum playlist created by ${playlist.owner}\"}`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.state.token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      )
+      .then(response => {
+        let playlistID = response.data.id;
+        axios
+          .post(
+            `https://api.spotify.com/v1/users/${this.state
+              .id}/playlists/${playlistID}/tracks`,
+            { uris: playlist.songs },
+            {
+              headers: {
+                Authorization: `Bearer ${this.state.token}`,
+                'Content-Type': 'application/json'
+              }
+            }
+          )
+          .then(response => this.fetchPlaylists)
+          .catch(error => console.log(error));
+      })
+      .catch(error => console.log(error));
   };
 
   requestAppleMusic = () => {
