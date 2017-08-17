@@ -12,7 +12,8 @@ import {
   CardItem,
   Label,
   Toast,
-  Icon
+  Icon,
+  Spinner
 } from 'native-base';
 import styles from './style';
 import { Field, reduxForm } from 'redux-form';
@@ -70,7 +71,7 @@ export default class SignUp extends Component {
 
   render() {
     const content = this.state.isLoading
-      ? <Spinner color="red" />
+      ? <Spinner color="#FC642D" />
       : <Content>
           <Card>
             <Form style={styles.form}>

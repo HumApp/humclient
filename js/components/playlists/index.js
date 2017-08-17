@@ -18,7 +18,9 @@ import {
   Thumbnail,
   Header,
   Item,
-  Input
+  Input,
+  Spinner,
+  Badge
 } from 'native-base';
 import styles from './styles';
 import Database from '../../../utils/database';
@@ -35,12 +37,36 @@ export default class Playlists extends Component {
     this.props.navigation.navigate('SinglePlaylist', playlist);
   };
 
-  // Displaying Playlists:
-  // spotify.get me (state, updated after import)
-  // if description === Hum playlist created by ... then render in shared
-  // else in personal
+  getUserPlaylists = async (userId) => {
+    let playlistArr = [];
+    await firebase
+      .database()
+      .ref(`playlists/`)
+      .orderByChild('creator')
+      .equalTo(userId)
+      .once('value')
+      .then(playlists => {
+        playlists.forEach(playlist => {
+          let newPlaylistObj = Object.assign(playlist.val())
+          newPlaylistObj.playlistRef = playlist.ref
+          playlistArr.push(newPlaylistObj)
+        });
+      });
+      return playlistArr
+  }
+
+  pendingPlaylists = () => {
+    this.props.navigation.navigate('PendingPlaylists');
+  }
+
+
+  componentDidMount() {
+    // Promise.resolve(this.getUserPlaylists("oliviaoddo"))
+    // .then(playlistArr => this.setState({playlists: this.state.playlists.concat(playlistArr)}))
+  }
 
   render() {
+    console.log(this.state.playlists)
     return (
       <Container>
         <Header searchBar rounded>
@@ -53,35 +79,38 @@ export default class Playlists extends Component {
           </Button>
         </Header>
         <Content>
+        <Card>
+          <CardItem button onPress={this.pendingPlaylists} header>
+              <Badge style={{ backgroundColor: '#FC642D' }}>
+                <Text>2</Text>
+              </Badge>
+                <Text style={styles.header}>  Pending Playlists</Text>
+              <Right>
+                  <Icon name="arrow-forward" style={styles.arrow} />
+              </Right>
+            </CardItem>
+          </Card>
           <Card>
             <CardItem header>
               <Icon active name="ios-musical-notes" style={styles.headerIcon} />
               <Text style={styles.header}>Playlists</Text>
             </CardItem>
-            <CardItem button onPress={() => this.goToPlaylist()}>
-              <Body>
-                <Text style={styles.bodytxt}>Summer</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward" style={styles.arrow} />
-              </Right>
-            </CardItem>
-            <CardItem>
-              <Body>
-                <Text style={styles.bodytxt}>Vibes</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward" style={styles.arrow} />
-              </Right>
-            </CardItem>
-            <CardItem>
-              <Body>
-                <Text style={styles.bodytxt}>Chill</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward" style={styles.arrow} />
-              </Right>
-            </CardItem>
+            {!this.state.playlists.length ? <Spinner color="#FC642D" /> :
+              <View>
+              {this.state.playlists.map(playlist => {
+                return (
+                  <CardItem key={playlist.title} button onPress={() => this.goToPlaylist(playlist)}>
+                    <Body>
+                      <Text style={styles.bodytxt}>{playlist.title}</Text>
+                    </Body>
+                    <Right>
+                      <Icon name="arrow-forward" style={styles.arrow} />
+                    </Right>
+                  </CardItem>
+                )
+              })}
+              </View>
+            }
           </Card>
           <Card>
             <CardItem header>

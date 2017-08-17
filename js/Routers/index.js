@@ -10,10 +10,12 @@ import Home from '../components/home';
 import Playlists from '../components/playlists';
 import SinglePlaylist from '../components/playlists/singlePlaylist';
 import SharePlaylist from '../components/playlists/sharePlaylist';
-
+import PendingPlaylists from '../components/playlists/pendingPlaylists';
 
 import Collab from '../components/collab';
 import Friends from '../components/friends';
+import FriendRequests from '../components/friends/friendRequests';
+
 import Profile from '../components/profile';
 import UpdatePassword from '../components/profile/updatePassword';
 
@@ -28,10 +30,16 @@ export const PlaylistsStack = StackNavigator({
     screen: SinglePlaylist,
     navigationOptions: {}
   },
-   SharePlaylist: {
+  SharePlaylist: {
     screen: SharePlaylist,
     navigationOptions: {
       title: 'Share Playlist'
+    }
+  },
+  PendingPlaylists: {
+    screen: PendingPlaylists,
+    navigationOptions: {
+      title: 'Pending Playlists'
     }
   }
 });
@@ -51,6 +59,10 @@ export const FriendsStack = StackNavigator({
     navigationOptions: {
       title: 'Friends'
     }
+  },
+  FriendRequests: {
+    screen: FriendRequests,
+    navigationOptions: {}
   }
 });
 
