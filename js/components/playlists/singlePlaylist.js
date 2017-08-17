@@ -21,13 +21,16 @@ import styles from './styles';
 import Database from '../../../utils/database';
 import { NativeModules } from 'react-native';
 export default class SinglePlaylist extends Component {
+  goToShare = playlistId => {
+    this.props.navigation.navigate('SharePlaylist', playlistId);
+  };
   render() {
     return (
       <Container>
         <Content>
 
           <Card>
-            <CardItem button header onPress= {() => Database.saveAppleMusicPlaylist("-Krh2eGND6mn6A7f2ZOZ", "CHVRCHES", "Olivia")} bordered>
+            <CardItem button header onPress= {() => this.goToShare("-KrklLkFi0xUD2owjZxi")} bordered>
               <Body>
                 <Text style={styles.pheader}>Summer</Text>
                 <Text note style={styles.subtitle}>Playlist by Olivia Oddo</Text>

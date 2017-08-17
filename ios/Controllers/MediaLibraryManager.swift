@@ -191,6 +191,7 @@ class MediaLibraryManager: NSObject {
           let title = String(describing: song.value(forProperty: MPMediaItemPropertyTitle)!)
           let artist = String(describing: song.value(forProperty: MPMediaItemPropertyArtist)!)
           let songId = String(describing: song.value(forProperty: MPMediaItemPropertyPlaybackStoreID)!)
+
           songsInPlaylist.append(Song(title: title, artist: artist, id: songId))
         }
         let playlistName = String(describing: playlist.value(forProperty: MPMediaPlaylistPropertyName)!)

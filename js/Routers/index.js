@@ -9,6 +9,8 @@ import Home from '../components/home';
 
 import Playlists from '../components/playlists';
 import SinglePlaylist from '../components/playlists/singlePlaylist';
+import SharePlaylist from '../components/playlists/sharePlaylist';
+
 
 import Collab from '../components/collab';
 import Friends from '../components/friends';
@@ -25,6 +27,12 @@ export const PlaylistsStack = StackNavigator({
   SinglePlaylist: {
     screen: SinglePlaylist,
     navigationOptions: {}
+  },
+   SharePlaylist: {
+    screen: SharePlaylist,
+    navigationOptions: {
+      title: 'Share Playlist'
+    }
   }
 });
 
