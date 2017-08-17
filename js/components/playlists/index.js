@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import * as firebase from 'firebase';
 import {
   Container,
   Content,
@@ -20,8 +21,16 @@ import {
   Input
 } from 'native-base';
 import styles from './styles';
+import Database from '../../../utils/database';
+import { AsyncStorage } from 'react-native';
 
 export default class Playlists extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      playlists: []
+    }
+  }
   goToPlaylist = playlist => {
     this.props.navigation.navigate('SinglePlaylist', playlist);
   };

@@ -1,4 +1,6 @@
 import * as firebase from 'firebase';
+import axios from 'axios';
+import { NativeModules } from 'react-native';
 
 export default class Database {
   //this might work?
@@ -18,7 +20,8 @@ export default class Database {
     firebase.database().ref();
   }
 
-  static saveApplePlaylists(playlists, providerId) {
+  static savePlaylistToDatabase(playlists, providerId) {
+    let loggedInUser = this.getCurrentUser()
     playlists.forEach(playlist => {
       let newSong = {};
       playlist.songs.forEach((song, index) => {
@@ -30,7 +33,7 @@ export default class Database {
       const newPlaylistId = firebase.database().ref('playlists').push().key;
       firebase.database().ref(`playlists/${newPlaylistId}`).set({
         title: playlist.name,
-        creator: 'Olivia',
+        creator: "oliviaoddo",
         songs: newSong
       });
     });
@@ -151,4 +154,44 @@ export default class Database {
   static getNameFromUrlPath(url) {
     return decodeURIComponent(url);
   }
+
+  static listenUserInfo(userId, callback) {
+    let userNamePath = '/user/' + userId + '/details';
+
+    firebase.database().ref(userNamePath).on('value', snapshot => {
+      var name = '';
+
+      if (snapshot.val()) {
+        name = snapshot.val().name;
+      }
+      callback(name);
+    });
+  }
+  static saveAppleMusicPlaylist = (spotifyPlaylistId, playlistName, author) => {
+    let firedata = firebase.database().ref(`playlists/${spotifyPlaylistId}`);
+    let external = [];
+    firedata.on('value', function (snapshot) {
+      const playlist = snapshot.val();
+      playlist.songs.forEach(song => external.push(song));
+      let promises = external.map(song => axios.post(
+        "https://us-central1-hum-app.cloudfunctions.net/getSongId/",
+        { "title": `${song.title}`, "artist": `${song.artist}`, "service": "appleId"},
+        {
+          headers: {
+            "Content-Type": "application/json",
+          }
+        }));
+      Promise.all(promises).then(values => {
+        let final = values.map(value => value.data.toString());
+        let obj = {
+          name: playlistName,
+          author: author,
+          songs: final
+        }
+        let applePlaylist = JSON.stringify(obj);
+        NativeModules.MediaLibraryManager.createPlaylist(applePlaylist, (str) => {console.log(str);})
+    })
+  })
+  }
 }
+

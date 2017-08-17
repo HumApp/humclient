@@ -56,5 +56,12 @@ export default {
   },
   headerIcon: {
     color: '#484848'
-  }
+  },
+  share: {
+    backgroundColor: '#ff5a5f',
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 };

@@ -65,6 +65,7 @@ class MediaLibraryManager: NSObject {
   
   // needs to create a new playlist with a name, an author display name, and takes song id's
   @objc func createPlaylist(_ playlist: Data, callback: @escaping RCTResponseSenderBlock) {
+          print(playlist)
           struct Playlist: Codable {
               var name : String
               var author : String
@@ -103,6 +104,7 @@ class MediaLibraryManager: NSObject {
                   }
                   self.mediaPlaylist = playlist
                   //call add items in a loop
+                  print("adding songs")
                   for song in newPlaylist.songs {
                     self.addItem(with: song)
                   }
@@ -189,6 +191,7 @@ class MediaLibraryManager: NSObject {
           let title = String(describing: song.value(forProperty: MPMediaItemPropertyTitle)!)
           let artist = String(describing: song.value(forProperty: MPMediaItemPropertyArtist)!)
           let songId = String(describing: song.value(forProperty: MPMediaItemPropertyPlaybackStoreID)!)
+
           songsInPlaylist.append(Song(title: title, artist: artist, id: songId))
         }
         let playlistName = String(describing: playlist.value(forProperty: MPMediaPlaylistPropertyName)!)
