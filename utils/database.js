@@ -1,6 +1,23 @@
 import * as firebase from 'firebase';
 
 export default class Database {
+  //this might work?
+  static getAllUsers() {
+    firebase.database().ref('/users').on('value', function (snapshot){
+      return snapshot.val();
+    })
+  }
+
+  static requestFriend (recievingUser) {
+    let user = firebase.auth().currentUser;
+    firebase.database().ref(`/users/${recievingUser}/pending/${user}`).set(true);
+  }
+
+  static getPendingFriends () {
+    let user = firebase.auth().currentUser;
+    firebase.database().ref();
+  }
+
   static saveApplePlaylists(playlists, providerId) {
     playlists.forEach(playlist => {
       let newSong = {};
@@ -29,26 +46,27 @@ export default class Database {
       .then(playlists => {
         playlists.forEach(playlist => {
           firebase.database().ref(`playlists/${playlist.key}`).remove();
-          
-      console.log(playlists)
-      playlists.forEach(playlist => {
-        let newSong = {}
-        playlist.songs.forEach((song, index) => {
-          this.findOrCreateSong(song, providerId);
-            newSong[index] = {};
-            newSong[index].artist = song.artist;
-            newSong[index].title = song.title;
+
+          console.log(playlists)
+          playlists.forEach(playlist => {
+            let newSong = {}
+            playlist.songs.forEach((song, index) => {
+              this.findOrCreateSong(song, providerId);
+              newSong[index] = {};
+              newSong[index].artist = song.artist;
+              newSong[index].title = song.title;
+            })
+            const newPlaylistId = firebase.database().ref('playlists').push().key;
+            firebase.database().ref(`playlists/${newPlaylistId}`).set({
+              title: playlist.name,
+              creator: "Olivia",
+              songs: newSong
+            });
+          });
         })
-        const newPlaylistId = firebase.database().ref('playlists').push().key;
-          firebase.database().ref(`playlists/${newPlaylistId}`).set({
-          title: playlist.name,
-          creator: "Olivia",
-          songs: newSong
-        });
-      });
+      })
   }
 
-  }
   static getPlaylist(playlist, userId) {
     return firebase.database().ref(`playlists/`).on();
   }
@@ -125,7 +143,7 @@ export default class Database {
   }
 
   static getUrlPath(str) {
-    return encodeURIComponent(str).replace(/\./g, function(c) {
+    return encodeURIComponent(str).replace(/\./g, function (c) {
       return '%' + c.charCodeAt(0).toString(16);
     });
   }

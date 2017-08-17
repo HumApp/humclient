@@ -27,7 +27,7 @@ exports.getSongId = functions.https.onRequest((req, response) => {
       } else {
         axios.get(makeSpotifySongQuery(reqSong.title, reqSong.artist), {
             headers: {
-              "Authorization": "Bearer BQAw6VUAjB7MaLBZv_DIC2X_Z0sMVb5Ya8jGBqVV9lNuzMBjuBt3SsghvSuD6B8jxTr_nb3mTHNwH80JMD2_X3mXowFiI_4IBlqc11SAsRXi1eEyWrSAHoZ4wWd9X-x2Iw8N_LV6sIXrNrIGsZSbrSYn2UjAuGjR78d-YHL-vUeiVTrKOR508c0CPP8TBio8qL8F6boxkwgYdTc5jBVCSuq8sY1pTUdFoVLaYWV5Fqkdh2hyuwTlbqkRbWAzYou0_Zw-lXHMRr0aMV-L4z3sd6RDk1nT1-_TJINlNmPk_2-7PuYRtgeL50uB6CRiWT7boupR"
+              Authorization: 'Bearer BQAw6VUAjB7MaLBZv_DIC2X_Z0sMVb5Ya8jGBqVV9lNuzMBjuBt3SsghvSuD6B8jxTr_nb3mTHNwH80JMD2_X3mXowFiI_4IBlqc11SAsRXi1eEyWrSAHoZ4wWd9X-x2Iw8N_LV6sIXrNrIGsZSbrSYn2UjAuGjR78d-YHL-vUeiVTrKOR508c0CPP8TBio8qL8F6boxkwgYdTc5jBVCSuq8sY1pTUdFoVLaYWV5Fqkdh2hyuwTlbqkRbWAzYou0_Zw-lXHMRr0aMV-L4z3sd6RDk1nT1-_TJINlNmPk_2-7PuYRtgeL50uB6CRiWT7boupR'
               //  "Content-Type": 'application/x-www-form-urlencoded',
               //  Accept: 'application/json'
             }
@@ -66,7 +66,7 @@ exports.savePlayistToSpotify = functions.https.onRequest((req, res) => {
               axios.post('https://us-central1-hum-app.cloudfunctions.net/getSongId', {
                   title: song.title,
                   artist: song.artist,
-                  service: "spotifyId"
+                  service: 'spotifyId'
                 })
                 .then(id => spotifyIds.push(id));
             })
@@ -76,6 +76,12 @@ exports.savePlayistToSpotify = functions.https.onRequest((req, res) => {
         });
       //after that, post to axios with the songs to add the the playlist
     });
+});
+
+exports.friendTest = functions.https.onRequest((req, res) => {
+  admin.database().ref(`/users/${req.body.recieve}/pending/${req.body.sending}`).set(true);
+  res.send(201);
+
 });
 
 function makeiTunesSongQuery(songTitle, songArtist) {
