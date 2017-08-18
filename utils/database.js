@@ -12,6 +12,7 @@ export default class Database {
         newSong[index].title = song.title;
       });
       const newPlaylistId = firebase.database().ref('playlists').push().key;
+      this.addPlaylistToUser(newPlaylistId);
       firebase.database().ref(`playlists/${newPlaylistId}`).set({
         title: playlist.name,
         creator: currentUser,
@@ -50,6 +51,11 @@ export default class Database {
   }
   static getUserFromId(uid) {
     return firebase.database().ref(`/users/${uid}/fullname`).once('value')
+  }
+
+  static addPlaylistToUser(playlistId) {
+    let user = firebase.auth().currentUser;
+    firebase.database().ref(`/users/${uid}/playlists/${playlistId}`).set(true);
   }
 
   static getSharedPlaylists () {
