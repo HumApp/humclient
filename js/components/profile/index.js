@@ -18,7 +18,7 @@ import {
 } from 'native-base';
 import styles from './styles';
 import { default as FAIcon } from 'react-native-vector-icons/FontAwesome';
-import { NativeModules, AsyncStorage } from 'react-native';
+import { NativeModules } from 'react-native';
 import axios from 'axios';
 import Database from '../../../utils/database';
 import Prompt from 'react-native-prompt';
@@ -55,7 +55,6 @@ export default class Profile extends Component {
 
   signOut = async () => {
     try {
-      await AsyncStorage.removeItem('currentUser');
       await firebase.auth().signOut();
       this.props.navigation.navigate('SignedOut');
     } catch (err) {
