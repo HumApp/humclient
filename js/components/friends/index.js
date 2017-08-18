@@ -55,7 +55,7 @@ export default class Friends extends Component {
   };
 
   render() {
-    console.log('friend', firebase.auth().currentUser.email);
+    console.log('friend', firebase.auth().currentUser);
     return (
       <Container>
         <Header searchBar rounded>
