@@ -66,10 +66,12 @@ export default class Playlists extends Component {
     const currentUser = firebase.auth().currentUser
     if(currentUser.accessToken) Database.databasePlaylistToSpotify(playlistId)
     else {
+      console.log("should save to apple")
       // should get playlist by id and stringify it
       // let applePlaylist = JSON.stringify(obj)
       // NativeModules.MediaLibraryManager.createPlaylist(applePlaylist, (str) => {console.log(str)})
     }
+  }
 
 
   componentDidMount() {
@@ -81,7 +83,7 @@ export default class Playlists extends Component {
 
   render() {
     // console.log('playlists', firebase.auth().currentUser.displayName);
-    console.log('playlists');
+    console.log("shared playlists", this.state.sharedPlaylists);
     return (
       <Container>
         <Header searchBar rounded>
@@ -158,7 +160,7 @@ export default class Playlists extends Component {
                   <Text>No one has shared any playlists with you!</Text>
               </CardItem> :
             <View>
-            {this.state.sharedPlaylists.map(playlist => {
+            {Object.keys(this.state.sharedPlaylists).map(key => {
               return (
                         <SwipeRow
                           rightOpenValue={-75}
@@ -176,7 +178,7 @@ export default class Playlists extends Component {
                                 </CardItem>
                           }
                           right={
-                            <Button primary onPress={() => this.savePlaylist(playlistId)}>
+                            <Button primary onPress={() => this.savePlaylist(key)}>
                               <Icon active name="trash" />
                             </Button>
                           }
