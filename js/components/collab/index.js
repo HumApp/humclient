@@ -4,7 +4,9 @@ import firebase from 'firebase';
 
 export default class Collab extends Component {
   render() {
+
     // console.log('collab', firebase.auth().currentUser.uid);
+
     return (
       <Container>
         <Content />
