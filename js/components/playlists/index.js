@@ -31,7 +31,9 @@ export default class Playlists extends Component {
     super(props);
     this.state = {
       playlists: [],
-      isLoading: true
+      sharedPlaylists: [],
+      isLoading: true,
+      sharedLoading: true
     };
   }
   goToPlaylist = playlist => {
@@ -60,10 +62,21 @@ export default class Playlists extends Component {
     this.props.navigation.navigate('PendingPlaylists');
   };
 
+  savePlaylist = playlistId => {
+    const currentUser = firebase.auth().currentUser
+    if(currentUser.accessToken) Database.databasePlaylistToSpotify(playlistId)
+    else {
+      // should get playlist by id and stringify it
+      // let applePlaylist = JSON.stringify(obj)
+      // NativeModules.MediaLibraryManager.createPlaylist(applePlaylist, (str) => {console.log(str)})
+    }
+
+
   componentDidMount() {
     const currentUser = firebase.auth().currentUser.uid
     Promise.resolve(this.getUserPlaylists(currentUser))
     .then(playlistArr => this.setState({playlists: this.state.playlists.concat(playlistArr)}, () => this.setState({isLoading: false})))
+    Promise.resolve(Database.getSharedPlaylists()).then(result =>this.setState({sharedPlaylists: this.state.sharedPlaylists.concat(result.val())}, () => this.setState({sharedLoading: false})))
   }
 
   render() {
@@ -82,7 +95,7 @@ export default class Playlists extends Component {
         </Header>
         <Content>
           <Card>
-            <CardItem button onPress={this.pendingPlaylists} header>
+            <CardItem disabled button onPress={this.pendingPlaylists} header>
               <Badge style={{ backgroundColor: '#FC642D' }}>
                 <Text>2</Text>
               </Badge>
@@ -138,38 +151,46 @@ export default class Playlists extends Component {
               />
               <Text style={styles.header}>Shared with Me</Text>
             </CardItem>
-            <SwipeRow
-              rightOpenValue={-75}
-              body={
-                <CardItem>
-                  <Body>
-                    <Text style={styles.bodytxt}>Party</Text>
-                    <Text note style={styles.bodytxt}>
-                      Playlist by Brian
-                    </Text>
-                  </Body>
-                  <Right>
-                    <Icon name="ios-checkmark-circle" />
-                  </Right>
-                </CardItem>
+            {this.state.sharedLoading ? <Spinner color="#FC642D" /> :
+            <View>
+            {this.state.sharedPlaylists[0] == null ?
+              <CardItem >
+                  <Text>No one has shared any playlists with you!</Text>
+              </CardItem> :
+            <View>
+            {this.state.sharedPlaylists.map(playlist => {
+              return (
+                        <SwipeRow
+                          rightOpenValue={-75}
+                          body={
+                                <CardItem>
+                                  <Body>
+                                    <Text style={styles.bodytxt}>Beets</Text>
+                                    <Text note style={styles.bodytxt}>
+                                      Playlist by One June
+                                    </Text>
+                                  </Body>
+                                  <Right>
+                                    <Icon name="arrow-forward" style={styles.arrow} />
+                                  </Right>
+                                </CardItem>
+                          }
+                          right={
+                            <Button primary onPress={() => this.savePlaylist(playlistId)}>
+                              <Icon active name="trash" />
+                            </Button>
+                          }
+                          />
+                      )
+                })
               }
-              right={
-                <Button danger onPress={() => alert('Trash')}>
-                  <Icon active name="trash" />
-                </Button>
+              </View>
+
               }
-            />
-            <CardItem>
-              <Body>
-                <Text style={styles.bodytxt}>Beets</Text>
-                <Text note style={styles.bodytxt}>
-                  Playlist by One June
-                </Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward" style={styles.arrow} />
-              </Right>
-            </CardItem>
+              </View>
+
+
+            }
           </Card>
         </Content>
       </Container>
