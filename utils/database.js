@@ -48,8 +48,27 @@ export default class Database {
         .ref(`/users/${user.uid}/sent/${recievingUser}`)
         .set(true);
   }
+  static getUserFromId(uid) {
+    return firebase.database().ref(`/users/${uid}/fullname`).once('value')
+  }
 
-  static addFriendFromPending(friend) {
+  static getSharedPlaylists () {
+    let user = firebase.auth().currentUser;
+    return firebase.database().ref(`/users/${user.uid}/sharedPlaylists`).once('value');
+  }
+
+  static sharePlaylistWithFriend(playlistId, friendId) {
+    firebase.database().ref(`/playlists/${playlistId}/sharedWith`).update({friendId: false});
+    firebase.database().ref(`/users/${friendId}/sharedPlaylists/${playlistId}`).set(true);
+  }
+
+  static unfollowPlaylist (playlistId) {
+    let user = firebase.auth().currentUser;
+    firebase.database().ref(`/users/${user.uid}/sharedPlaylists/${playlistId}`).remove();
+    firebase.database().ref(`/playlists/${playlistId}/sharedWith/${user.uid}`).remove();
+  }
+
+  static addFriendFromPending (friend) {
     let user = firebase.auth().currentUser;
     firebase.database().ref(`/users/${user.uid}/pending/${friend}`).remove();
     firebase.database().ref(`/users/${user.uid}/friends/${friend}`).set(true);
