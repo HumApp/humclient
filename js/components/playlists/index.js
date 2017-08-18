@@ -60,8 +60,9 @@ export default class Playlists extends Component {
   };
 
   componentDidMount() {
-    // Promise.resolve(this.getUserPlaylists("oliviaoddo"))
-    // .then(playlistArr => this.setState({playlists: this.state.playlists.concat(playlistArr)}))
+    const currentUser = firebase.auth().currentUser.uid
+    Promise.resolve(this.getUserPlaylists(currentUser))
+    .then(playlistArr => this.setState({playlists: this.state.playlists.concat(playlistArr)}))
   }
 
   render() {

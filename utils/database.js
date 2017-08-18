@@ -1,6 +1,25 @@
 import * as firebase from 'firebase';
 
 export default class Database {
+
+  static savePlaylistToDatabase(playlists, providerId) {
+    const currentUser = firebase.auth().currentUser.uid
+    playlists.forEach(playlist => {
+      let newSong = {};
+      playlist.songs.forEach((song, index) => {
+        this.findOrCreateSong(song, providerId);
+        newSong[index] = {};
+        newSong[index].artist = song.artist;
+        newSong[index].title = song.title;
+      });
+      const newPlaylistId = firebase.database().ref('playlists').push().key;
+      firebase.database().ref(`playlists/${newPlaylistId}`).set({
+        title: playlist.name,
+        creator: currentUser,
+        songs: newSong
+      });
+      });
+    }
   //this might work?
   static getAllUsers() {
     return firebase.database().ref('/users').once('value')
@@ -115,6 +134,7 @@ export default class Database {
       }
     });
   }
+
 
   static saveMultiPlaylists(playlists, providerId) {
     for (playlistName in playlists) {
