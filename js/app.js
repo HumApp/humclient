@@ -17,11 +17,6 @@ export default class App extends Component {
   componentDidMount() {
     firebase.auth().onAuthStateChanged(currentUser => {
       if (currentUser) {
-        // console.log('firebase user ???????????', currentUser);
-        // console.log(
-        //   'firebase currentUser ???????????',
-        //   firebase.auth().currentUser
-        // );
         this.setState({
           currentUser: currentUser
         });
@@ -39,7 +34,9 @@ export default class App extends Component {
       landingPage = <Spinner color="#FC642D" />;
     } else {
       // console.log('are we getting here more than once???');
-      let AppNavigator = createRootNavigator(this.state.currentUser);
+      let AppNavigator = createRootNavigator(
+        this.state.currentUser && firebase.auth().currentUser.emailVerified
+      );
       landingPage = <AppNavigator />;
     }
     return (

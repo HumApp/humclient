@@ -134,20 +134,19 @@ export const Tabs = TabNavigator(
 export const SignedOut = StackNavigator(
   {
     Home: {
-      screen: Home,
-      navigationOptions: {}
+      screen: Home
     },
 
     Signup: {
       screen: Signup,
       navigationOptions: {
-        title: ''
+        title: 'Signup'
       }
     },
     Login: {
       screen: Login,
       navigationOptions: {
-        title: ''
+        title: 'Login'
       }
     }
   },
