@@ -19,7 +19,8 @@ import {
   Header,
   Item,
   Input,
-  Switch
+  Switch,
+  Spinner
 } from 'native-base';
 import styles from './styles';
 import Database from '../../../utils/database';
@@ -30,8 +31,17 @@ export default class SharePlaylist extends Component {
     super(props);
     this.state = {
       playlistId: "",
-      friends: [{username: "oliviaoddo", switchValue: false}, {username: "brian", switchValue: false}]
+      friends: []
     }
+  }
+
+  componentDidMount() {
+    Promise.resolve(Database.getAllFriends()).then(result => {
+      var friendsArr = Object.keys(result.val()).map(key => {
+        return {username: key, switchValue: false}
+      })
+      this.setState({friends: this.state.friends.concat(friendsArr)}, console.log(this.state.friends))
+    })
   }
 
   submitShare = () => {
@@ -42,6 +52,7 @@ export default class SharePlaylist extends Component {
   }
 
   render() {
+    console.log(this.state.friends)
     return (
       <Container>
         <Header searchBar rounded>
@@ -59,9 +70,11 @@ export default class SharePlaylist extends Component {
               <Icon active name="md-people" style={styles.headerIcon} />
               <Text style={styles.header}>Friends</Text>
             </CardItem>
+            {!this.state.friends.length ? <Spinner /> :
+            <View>
             {this.state.friends.map(friend => {
               return (
-                        <CardItem key={friend.username}>
+                        <ListItem key={friend.username}>
                           <Body>
                           <Text style={styles.bodytxt}>{friend.username}</Text>
                           </Body>
@@ -72,9 +85,11 @@ export default class SharePlaylist extends Component {
                               })})}
                                 value={friend.switchValue} />
                             </Right>
-                        </CardItem>
+                        </ListItem>
                       )
             })}
+            </View>
+          }
              <CardItem>
                 <Button
                   rounded

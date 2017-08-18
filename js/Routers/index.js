@@ -15,6 +15,7 @@ import PendingPlaylists from '../components/playlists/pendingPlaylists';
 import Collab from '../components/collab';
 import Friends from '../components/friends';
 import FriendRequests from '../components/friends/friendRequests';
+import SearchResults from '../components/friends/searchResults';
 
 import Profile from '../components/profile';
 import UpdatePassword from '../components/profile/updatePassword';
@@ -62,6 +63,10 @@ export const FriendsStack = StackNavigator({
   },
   FriendRequests: {
     screen: FriendRequests,
+    navigationOptions: {}
+  },
+  SearchResults: {
+    screen: SearchResults,
     navigationOptions: {}
   }
 });
@@ -121,29 +126,39 @@ export const Tabs = TabNavigator(
     tabBarOptions: {
       activeTintColor: '#ff5a5f',
       inactiveTintColor: '#cecece'
-    }
+    },
+    initialRouteName: 'Profile'
   }
 );
 
-export const SignedOut = StackNavigator({
-  Home: {
-    screen: Home,
-    navigationOptions: {}
-  },
+export const SignedOut = StackNavigator(
+  {
+    Home: {
+      screen: Home,
+      navigationOptions: {}
+    },
 
-  Signup: {
-    screen: Signup,
-    navigationOptions: {
-      title: ''
+    Signup: {
+      screen: Signup,
+      navigationOptions: {
+        title: ''
+      }
+    },
+    Login: {
+      screen: Login,
+      navigationOptions: {
+        title: ''
+      }
     }
   },
-  Login: {
-    screen: Login,
-    navigationOptions: {
-      title: ''
+  {
+    mode: 'modal',
+    headerMode: 'none',
+    style: {
+      paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0
     }
   }
-});
+);
 
 export const SignedIn = StackNavigator(
   {

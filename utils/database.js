@@ -3,6 +3,8 @@ import * as firebase from 'firebase';
 export default class Database {
 
   static savePlaylistToDatabase(playlists, providerId) {
+
+    const currentUser = firebase.auth().currentUser.uid
     playlists.forEach(playlist => {
       let newSong = {};
       playlist.songs.forEach((song, index) => {
@@ -14,32 +16,40 @@ export default class Database {
       const newPlaylistId = firebase.database().ref('playlists').push().key;
       firebase.database().ref(`playlists/${newPlaylistId}`).set({
         title: playlist.name,
-        creator: firebase.auth().currentUser.username,
+        creator: currentUser,
         songs: newSong
       });
-    });
-  }
+      });
+    }
+
   //this might work?
   static getAllUsers() {
     return firebase.database().ref('/users').once('value')
   }
 
   static getAllFriends() {
+    console.log("FRRIENDS CALLED")
     let user = firebase.auth().currentUser;
     return firebase.database().ref(`/users/${user.uid}/friends`).once('value')
   }
 
-  static requestFriend(recievingUser) {
+
+  static getPendingFriends() {
+    let user = firebase.auth().currentUser;
+    return firebase.database().ref(`/users/${user.uid}/pending`).once('value')
+  }
+
+  static requestFriend (recievingUser, sendBack) {
     let user = firebase.auth().currentUser;
     firebase.database().ref(`/users/${recievingUser}/pending/${user.uid}`).set(true);
-    firebase.database().ref(`/users/${user.uid}/sent/${recievingUser}`).set(true);
+    if (!sendBack) firebase.database().ref(`/users/${user.uid}/sent/${recievingUser}`).set(true);
   }
 
   static addFriendFromPending(friend) {
     let user = firebase.auth().currentUser;
-    firebase.database().ref(`/users/${user.uid}/pendingFriends/${friend}`).remove();
+    firebase.database().ref(`/users/${user.uid}/pending/${friend}`).remove();
     firebase.database().ref(`/users/${user.uid}/friends/${friend}`).set(true);
-    this.requestFriend(friend);
+    this.requestFriend(friend, true);
   }
 
   static rejectFriendFromPending(friend) {
@@ -127,6 +137,7 @@ export default class Database {
       }
     });
   }
+
 
   static saveMultiPlaylists(playlists, providerId) {
     for (playlistName in playlists) {

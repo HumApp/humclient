@@ -60,12 +60,14 @@ export default class Playlists extends Component {
   };
 
   componentDidMount() {
-    // Promise.resolve(this.getUserPlaylists("oliviaoddo"))
-    // .then(playlistArr => this.setState({playlists: this.state.playlists.concat(playlistArr)}))
+    const currentUser = firebase.auth().currentUser.uid
+    Promise.resolve(this.getUserPlaylists(currentUser))
+    .then(playlistArr => this.setState({playlists: this.state.playlists.concat(playlistArr)}))
   }
 
   render() {
-    console.log('playlists', firebase.auth().currentUser.displayName);
+    // console.log('playlists', firebase.auth().currentUser.displayName);
+    console.log('playlists');
     return (
       <Container>
         <Header searchBar rounded>
@@ -97,11 +99,11 @@ export default class Playlists extends Component {
             {!this.state.playlists.length
               ? <Spinner color="#FC642D" />
               : <View>
-                  {this.state.playlists.map(playlist => {
+                  {this.state.playlists.map((playlist, index) => {
                     return (
                       <CardItem
-                        key={playlist.title}
                         button
+                        key={index}
                         onPress={() => this.goToPlaylist(playlist)}
                       >
                         <Body>

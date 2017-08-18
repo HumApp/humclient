@@ -46,7 +46,7 @@ export default class SinglePlaylist extends Component {
             </CardItem>
             {this.props.navigation.state.params.songs.map((song, index) => {
               return (
-                <ListItem avatar bordered key={index}>
+                <ListItem key={index} avatar bordered key={index}>
                   <Left>
                     <Thumbnail square size={80} source={{ uri: "https://images-na.ssl-images-amazon.com/images/I/71JWCAY6cvL._AC_UL115_.jpg" }} />
                   </Left>
