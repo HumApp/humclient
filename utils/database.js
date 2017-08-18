@@ -17,17 +17,17 @@ export default class Database {
     return firebase.database().ref(`/users/${user.uid}/pending`).once('value')
   }
 
-  static requestFriend (recievingUser) {
+  static requestFriend (recievingUser, sendBack) {
     let user = firebase.auth().currentUser;
     firebase.database().ref(`/users/${recievingUser}/pending/${user.uid}`).set(true);
-    firebase.database().ref(`/users/${user.uid}/sent/${recievingUser}`).set(true);
+    if (!sendBack) firebase.database().ref(`/users/${user.uid}/sent/${recievingUser}`).set(true);
   }
 
   static addFriendFromPending (friend) {
     let user = firebase.auth().currentUser;
-    firebase.database().ref(`/users/${user.uid}/pendingFriends/${friend}`).remove();
+    firebase.database().ref(`/users/${user.uid}/pending/${friend}`).remove();
     firebase.database().ref(`/users/${user.uid}/friends/${friend}`).set(true);
-    this.requestFriend(friend);
+    this.requestFriend(friend, true);
   }
 
   static rejectFriendFromPending (friend) {
