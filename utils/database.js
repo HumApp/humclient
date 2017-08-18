@@ -1,10 +1,8 @@
 import * as firebase from 'firebase';
 
 export default class Database {
-
   static savePlaylistToDatabase(playlists, providerId) {
-
-    const currentUser = firebase.auth().currentUser.uid
+    const currentUser = firebase.auth().currentUser.uid;
     playlists.forEach(playlist => {
       let newSong = {};
       playlist.songs.forEach((song, index) => {
@@ -19,30 +17,36 @@ export default class Database {
         creator: currentUser,
         songs: newSong
       });
-      });
-    }
+    });
+  }
 
   //this might work?
   static getAllUsers() {
-    return firebase.database().ref('/users').once('value')
+    return firebase.database().ref('/users').once('value');
   }
 
   static getAllFriends() {
-    console.log("FRRIENDS CALLED")
+    console.log('FRRIENDS CALLED');
     let user = firebase.auth().currentUser;
-    return firebase.database().ref(`/users/${user.uid}/friends`).once('value')
+    return firebase.database().ref(`/users/${user.uid}/friends`).once('value');
   }
-
 
   static getPendingFriends() {
     let user = firebase.auth().currentUser;
-    return firebase.database().ref(`/users/${user.uid}/pending`).once('value')
+    return firebase.database().ref(`/users/${user.uid}/pending`).once('value');
   }
 
-  static requestFriend (recievingUser, sendBack) {
+  static requestFriend(recievingUser, sendBack) {
     let user = firebase.auth().currentUser;
-    firebase.database().ref(`/users/${recievingUser}/pending/${user.uid}`).set(true);
-    if (!sendBack) firebase.database().ref(`/users/${user.uid}/sent/${recievingUser}`).set(true);
+    firebase
+      .database()
+      .ref(`/users/${recievingUser}/pending/${user.uid}`)
+      .set(true);
+    if (!sendBack)
+      firebase
+        .database()
+        .ref(`/users/${user.uid}/sent/${recievingUser}`)
+        .set(true);
   }
 
   static addFriendFromPending(friend) {
@@ -58,20 +62,35 @@ export default class Database {
   }
   static ignoreMe() {
     let user = firebase.auth().currentUser;
-    firebase.database().ref(`/users/${user.uid}/pending`).on('child_added')
+    firebase
+      .database()
+      .ref(`/users/${user.uid}/pending`)
+      .on('child_added')
       .then(snapshot => {
         let pending = snapshot.val();
-        firebase.database().ref(`/users/${user.uid}/sent`).once('value', function (sentSnap) {
-          let matches = _.intersection(sentSnap.val(), pending)
-          if (matches) {
-            matches.forEach(match => {
-              firebase.database().ref(`/users/${user.uid}/friends/${match}`).set(true);
-              firebase.database().ref(`/users/${user.uid}/pending/${match}`).remove();
-              firebase.database().ref(`/users/${user.uid}/sent/${match}`).remove();
-            })
-          }
-        })
-      })
+        firebase
+          .database()
+          .ref(`/users/${user.uid}/sent`)
+          .once('value', function(sentSnap) {
+            let matches = _.intersection(sentSnap.val(), pending);
+            if (matches) {
+              matches.forEach(match => {
+                firebase
+                  .database()
+                  .ref(`/users/${user.uid}/friends/${match}`)
+                  .set(true);
+                firebase
+                  .database()
+                  .ref(`/users/${user.uid}/pending/${match}`)
+                  .remove();
+                firebase
+                  .database()
+                  .ref(`/users/${user.uid}/sent/${match}`)
+                  .remove();
+              });
+            }
+          });
+      });
   }
   static saveApplePlaylists(playlists, providerId) {
     playlists.forEach(playlist => {
@@ -102,24 +121,25 @@ export default class Database {
         playlists.forEach(playlist => {
           firebase.database().ref(`playlists/${playlist.key}`).remove();
 
-          console.log(playlists)
+          console.log(playlists);
           playlists.forEach(playlist => {
-            let newSong = {}
+            let newSong = {};
             playlist.songs.forEach((song, index) => {
               this.findOrCreateSong(song, providerId);
               newSong[index] = {};
               newSong[index].artist = song.artist;
               newSong[index].title = song.title;
-            })
-            const newPlaylistId = firebase.database().ref('playlists').push().key;
+            });
+            const newPlaylistId = firebase.database().ref('playlists').push()
+              .key;
             firebase.database().ref(`playlists/${newPlaylistId}`).set({
               title: playlist.name,
-              creator: "Olivia",
+              creator: 'Olivia',
               songs: newSong
             });
           });
-        })
-      })
+        });
+      });
   }
 
   static getPlaylist(playlist, userId) {
@@ -137,7 +157,6 @@ export default class Database {
       }
     });
   }
-
 
   static saveMultiPlaylists(playlists, providerId) {
     for (playlistName in playlists) {
@@ -176,9 +195,9 @@ export default class Database {
       const address = firebase
         .database()
         .ref(
-        `songs/${this.getUrlPath(fetchSong.title)}/${this.getUrlPath(
-          fetchSong.artist
-        )}`
+          `songs/${this.getUrlPath(fetchSong.title)}/${this.getUrlPath(
+            fetchSong.artist
+          )}`
         );
       const dataSnapshot = await address.once('value');
       if (!dataSnapshot.val()) {
@@ -199,7 +218,7 @@ export default class Database {
   }
 
   static getUrlPath(str) {
-    return encodeURIComponent(str).replace(/\./g, function (c) {
+    return encodeURIComponent(str).replace(/\./g, function(c) {
       return '%' + c.charCodeAt(0).toString(16);
     });
   }
