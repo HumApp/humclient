@@ -92,7 +92,6 @@ export default class Profile extends Component {
 
   fetchPlaylists = async () => {
     try {
-      let playlistArr = [];
       const responseData = await axios.get(
         'https://api.spotify.com/v1/me/playlists',
         {
@@ -102,7 +101,7 @@ export default class Profile extends Component {
         }
       );
       const returnedPlaylist = responseData.data;
-      returnedPlaylist.items.forEach(async item => {
+       returnedPlaylist.items.forEach(async item => {
         let playlist = {};
         playlist.name = item.name;
         const songsData = await axios.get(`${item.tracks.href}`, {
@@ -120,8 +119,7 @@ export default class Profile extends Component {
           songsArr.push(songObj);
         });
         playlist.songs = songsArr;
-        playlistArr.push(playlist);
-        Database.savePlaylistToDatabase(playlistArr, 'spotifyId');
+        Database.savePlaylistToDatabase([playlist], 'spotifyId');
       });
     } catch (error) {
       console.log(error);
@@ -238,7 +236,7 @@ export default class Profile extends Component {
                 <Text style={styles.bodytxt}>Name</Text>
               </Body>
               <Right>
-                <Text style={styles.bodytxt}>{this.state.name}</Text>
+                <Text style={styles.bodytxt}>{name}</Text>
               </Right>
             </CardItem>
             <CardItem>
@@ -246,7 +244,7 @@ export default class Profile extends Component {
                 <Text style={styles.bodytxt}>Username</Text>
               </Body>
               <Right>
-                <Text style={styles.bodytxt}>@{this.state.username}</Text>
+                <Text style={styles.bodytxt}>@{username}</Text>
               </Right>
             </CardItem>
           </Card>
@@ -392,65 +390,3 @@ export default class Profile extends Component {
   }
 }
 
-// importPlaylist = () => {
-
-//       let samplePlaylist = { "name": "A Sample Playlist", "songs": [{ "artist": "Drake", "track": "Controlla", "album": "Views" }], "creator": "Apple Music User" };
-
-//       axios.post(
-//         `https://api.spotify.com/v1/users/${this.state.id}/playlists`,
-//         `{\"name\":\"${samplePlaylist.name}\", \"public\":false}`,
-//         {
-//           headers: {
-//             "Authorization": `Bearer ${this.state.token}`,
-//             "Content-Type": "application/json"
-//           }
-//         }
-//       )
-//         .then(response => {
-//           let songURI = '';
-//           let playlistID = response.data.id;
-//           samplePlaylist.songs.forEach(song => {
-//             axios.get(
-//               `https://api.spotify.com/v1/search?q=album:${song.album}%20artist:${song.artist}&type=album&limit=1`,
-//               {
-//                 headers: {
-//                   "Authorization": `Bearer ${this.state.token}`
-//                 }
-//               }
-//             )
-//               .then(response => {
-//                 let sampleAlbum = response.data.albums.items[0].id;
-//                 axios.get(
-//                   `https://api.spotify.com/v1/albums/${sampleAlbum}/tracks`,
-//                   {
-//                     headers: {
-//                       "Authorization": `Bearer ${this.state.token}`
-//                     }
-//                   }
-//                 )
-//                   .then(response => {
-//                     let sampleTracks = response.data.items;
-//                     for (let i = 0; i < sampleTracks.length; i++) {
-//                       if (sampleTracks[i].name === song.track) {
-//                         songURI = sampleTracks[i].uri;
-//                         break
-//                       }
-//                     };
-//                     axios.post(
-//                       `https://api.spotify.com/v1/users/${this.state.id}/playlists/${playlistID}/tracks`,
-//                       { "uris": [`${songURI}`] },
-//                       {
-//                         headers: {
-//                           "Authorization": `Bearer ${this.state.token}`,
-//                           "Content-Type": "application/json"
-//                         }
-//                       })
-//                       .catch(error => console.log(error))
-//                   })
-//                   .catch(error => console.log(error))
-//               })
-//               .catch(error => console.log(error))
-//           });
-//         })
-//         .catch(error => console.log(error))
-//     };
