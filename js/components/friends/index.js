@@ -53,8 +53,11 @@ export default class Friends extends Component {
       this.setState({ pending: this.state.pending.concat(result.val()) }, () => console.log(this.state.pending));
     });
     Promise.resolve(Database.getAllFriends()).then(result => {
+      const friendsArr = Object.keys(result.val()).map(key => {
+        return {friendId: key, friendName: result.val()[key]}
+      })
       this.setState(
-        { friends: this.state.friends.concat(result.val()) },
+        { friends: this.state.friends.concat(friendsArr) },
         () => this.setState({isLoading: false})
       );
     });
@@ -75,7 +78,7 @@ export default class Friends extends Component {
 
   render() {
 
-    console.log("loading state", this.state.isLoading);
+    console.log("loading state", this.state.friends);
 
     return (
       <Container>
@@ -90,7 +93,7 @@ export default class Friends extends Component {
         </Header>
         <Content>
           <Card>
-            {this.state.pending.length[0] ?
+            {this.state.pending[0] !==null ?
             <CardItem button onPress={this.friendRequests} header>
               <Badge style={{ backgroundColor: '#FC642D' }}>
                 <Text>
@@ -116,11 +119,11 @@ export default class Friends extends Component {
                     <Text>Search for friends to add them!</Text>
                 </CardItem>
               : <View>
-                  {Object.keys(this.state.friends[0]).map(friend => {
+                  {this.state.friends.map(friend => {
                     return (
                       <SwipeRow
                         rightOpenValue={-75}
-                        key={friend}
+                        key={friend.friendId}
                         body={
                           <CardItem>
                             <Left>
@@ -128,7 +131,7 @@ export default class Friends extends Component {
                             </Left>
                             <Body>
                               <Text style={styles.bodytxt}>
-                                {friend}
+                                {friend.friendName}
                               </Text>
                             </Body>
                             <Right />
@@ -137,7 +140,7 @@ export default class Friends extends Component {
                         right={
                           <Button
                             danger
-                            onPress={() => this.deleteFriend(friend)}
+                            onPress={() => this.deleteFriend(friend.friendId)}
                           >
                             <Icon active name="md-close-circle" />
                           </Button>

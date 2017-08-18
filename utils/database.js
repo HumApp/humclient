@@ -51,12 +51,12 @@ export default class Database {
         .set(true);
   }
   static getUserFromId(uid) {
-    return firebase.database().ref(`/users/${uid}/fullname`).once('value')
+    return Promise.resolve(firebase.database().ref(`/users/${uid}/fullname`).once('value'))
   }
 
   static addPlaylistToUser(playlistId) {
     let user = firebase.auth().currentUser;
-    firebase.database().ref(`/users/${uid}/playlists/${playlistId}`).set(true);
+    firebase.database().ref(`/users/${user.uid}/playlists/${playlistId}`).set(true);
   }
 
   static getSharedPlaylists () {
@@ -65,7 +65,7 @@ export default class Database {
   }
 
   static sharePlaylistWithFriend(playlistId, friendId) {
-    firebase.database().ref(`/playlists/${playlistId}/sharedWith`).update({ friendId: false });
+    firebase.database().ref(`/playlists/${playlistId}/sharedWith/${friendId}`).set(true);
     firebase.database().ref(`/users/${friendId}/sharedPlaylists/${playlistId}`).set(true);
   }
 
@@ -78,7 +78,9 @@ export default class Database {
   static addFriendFromPending(friend) {
     let user = firebase.auth().currentUser;
     firebase.database().ref(`/users/${user.uid}/pending/${friend}`).remove();
-    firebase.database().ref(`/users/${user.uid}/friends/${friend}`).set(true);
+    firebase.database().ref(`/users/${friend}/username`).once('value', function (snap) {
+      firebase.database().ref(`/users/${user.uid}/friends/${friend}`).set(snap.val());
+    })
     this.requestFriend(friend, true);
   }
 
