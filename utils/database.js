@@ -23,6 +23,20 @@ export default class Database {
     if (!sendBack) firebase.database().ref(`/users/${user.uid}/sent/${recievingUser}`).set(true);
   }
 
+  static getUserFromId(uid) {
+    return firebase.database().ref(`/users/${uid}/fullname`).once('value')
+  }
+
+  static sharePlaylistWithFriend(playlistId, friendId) {
+    firebase.database().ref(`/playlists/${playlistId}/sharedWith`).update({friendId: false});
+    firebase.database().ref(`/users/${friendId}/sharedPlaylists/${playlistId}`).set(true);
+  }
+
+  static unfollowPlaylist (playlistId) {
+    let user = firebase.auth().currentUser;
+    firebase.database().ref(`/users/${user.uid}/sharedPlaylists/${playlistId}`).remove();
+  }
+
   static addFriendFromPending (friend) {
     let user = firebase.auth().currentUser;
     firebase.database().ref(`/users/${user.uid}/pending/${friend}`).remove();
