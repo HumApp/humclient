@@ -10,6 +10,7 @@ export default class Database {
         newSong[index] = {};
         newSong[index].artist = song.artist;
         newSong[index].title = song.title;
+        newSong[index].image = song.image;
       });
       const newPlaylistId = firebase.database().ref('playlists').push().key;
       this.addPlaylistToUser(newPlaylistId);
@@ -59,7 +60,7 @@ export default class Database {
     firebase.database().ref(`/users/${user.uid}/playlists/${playlistId}`).set(true);
   }
 
-  static getSharedPlaylists () {
+  static getSharedPlaylists() {
     let user = firebase.auth().currentUser;
     return firebase.database().ref(`/users/${user.uid}/sharedPlaylists`).once('value');
   }

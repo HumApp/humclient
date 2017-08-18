@@ -31,7 +31,7 @@ export default class SinglePlaylist extends Component {
         <Content>
 
           <Card>
-            <CardItem button header onPress= {() => this.goToShare(this.props.navigation.state.params.playlistId)} bordered>
+            <CardItem button header onPress={() => this.goToShare(this.props.navigation.state.params.playlistId)} bordered>
               <Body>
                 <Text style={styles.pheader}>{this.props.navigation.state.params.title}</Text>
                 <Text note style={styles.subtitle}>Playlist by {this.props.navigation.state.params.displayName}</Text>
@@ -51,7 +51,7 @@ export default class SinglePlaylist extends Component {
                   return (
                     <ListItem key={index} avatar bordered key={index}>
                       <Left>
-                        <Thumbnail square size={80} source={{ uri: "https://images-na.ssl-images-amazon.com/images/I/71JWCAY6cvL._AC_UL115_.jpg" }} />
+                        <Thumbnail square size={80} source={{ uri: `${song.image}` }} />
                       </Left>
                       <Body>
                         <Text style={styles.bodytxt}>{song.title}</Text>
