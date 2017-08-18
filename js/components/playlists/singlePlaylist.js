@@ -31,7 +31,7 @@ export default class SinglePlaylist extends Component {
         <Content>
 
           <Card>
-            <CardItem button header onPress= {() => this.goToShare(this.props.navigation.state.params.playlistRef)} bordered>
+            <CardItem button header onPress= {() => this.goToShare(this.props.navigation.state.params.playlistId)} bordered>
               <Body>
                 <Text style={styles.pheader}>{this.props.navigation.state.params.title}</Text>
                 <Text note style={styles.subtitle}>Playlist by {this.props.navigation.state.params.displayName}</Text>

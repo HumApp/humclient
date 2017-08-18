@@ -20,7 +20,8 @@ import {
   Item,
   Input,
   Switch,
-  Spinner
+  Spinner,
+  Toast
 } from 'native-base';
 import styles from './styles';
 import Database from '../../../utils/database';
@@ -37,8 +38,8 @@ export default class SharePlaylist extends Component {
 
   componentDidMount() {
     Promise.resolve(Database.getAllFriends()).then(result => {
-      var friendsArr = Object.keys(result.val()).map(key => {
-        return {username: key, switchValue: false}
+      const friendsArr = Object.keys(result.val()).map(key => {
+        return {friendId: key, friendName: result.val()[key], switchValue: false}
       })
       this.setState({friends: this.state.friends.concat(friendsArr)}, console.log(this.state.friends))
     })
@@ -46,10 +47,9 @@ export default class SharePlaylist extends Component {
 
   submitShare = () => {
     console.log(this.state.friends.filter(friend => friend.switchValue).map(friend => friend.username))
-    console.log(this.props.navigation.state.params)
-    this.state.friends.forEach(friend => database.sharePlaylistWithFriend(this.state.playlistId, friend));
+    this.state.friends.forEach(friend => Database.sharePlaylistWithFriend(this.props.navigation.state.params, friend.friendId));
+    Toast.show({text: 'Playlist shared!', position: 'bottom', duration: 1500, type: 'success'})
     this.props.navigation.goBack()
-    //add toast shared successfully
   }
 
   render() {
@@ -75,9 +75,9 @@ export default class SharePlaylist extends Component {
             <View>
             {this.state.friends.map(friend => {
               return (
-                        <ListItem key={friend.username}>
+                        <ListItem key={friend.friendId}>
                           <Body>
-                          <Text style={styles.bodytxt}>{friend.username}</Text>
+                          <Text style={styles.bodytxt}>{friend.friendName}</Text>
                           </Body>
                             <Right>
                               <Switch onValueChange={(value) => this.setState({friends: this.state.friends.map(user => {

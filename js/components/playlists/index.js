@@ -49,7 +49,7 @@ export default class Playlists extends Component {
       .then(playlists => {
         playlists.forEach(playlist => {
           let newPlaylistObj = Object.assign(playlist.val());
-          newPlaylistObj.playlistRef = playlist.ref;
+          newPlaylistObj.playlistId = playlist.key;
           playlistArr.push(newPlaylistObj);
         });
       });
