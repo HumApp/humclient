@@ -65,7 +65,8 @@ export default class Playlists extends Component {
   }
 
   render() {
-    console.log('playlists', firebase.auth().currentUser.displayName);
+    // console.log('playlists', firebase.auth().currentUser.displayName);
+    console.log('playlists');
     return (
       <Container>
         <Header searchBar rounded>

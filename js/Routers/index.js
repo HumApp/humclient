@@ -126,29 +126,39 @@ export const Tabs = TabNavigator(
     tabBarOptions: {
       activeTintColor: '#ff5a5f',
       inactiveTintColor: '#cecece'
-    }
+    },
+    initialRouteName: 'Profile'
   }
 );
 
-export const SignedOut = StackNavigator({
-  Home: {
-    screen: Home,
-    navigationOptions: {}
-  },
+export const SignedOut = StackNavigator(
+  {
+    Home: {
+      screen: Home,
+      navigationOptions: {}
+    },
 
-  Signup: {
-    screen: Signup,
-    navigationOptions: {
-      title: ''
+    Signup: {
+      screen: Signup,
+      navigationOptions: {
+        title: ''
+      }
+    },
+    Login: {
+      screen: Login,
+      navigationOptions: {
+        title: ''
+      }
     }
   },
-  Login: {
-    screen: Login,
-    navigationOptions: {
-      title: ''
+  {
+    mode: 'modal',
+    headerMode: 'none',
+    style: {
+      paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0
     }
   }
-});
+);
 
 export const SignedIn = StackNavigator(
   {

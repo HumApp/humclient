@@ -47,31 +47,44 @@ export default class SignUp extends Component {
 
   handleSignup = async () => {
     this.setState({ isLoading: true });
+    let newUser = null;
     try {
-      const newUser = await firebase
+      newUser = await firebase
         .auth()
         .createUserWithEmailAndPassword(this.state.email, this.state.password);
       await newUser.updateProfile({
         displayName: this.state.userName
       });
-      firebase.database().ref(`users/${newUser.uid}`).set({
-        fullname: this.state.firstName + ' ' + this.state.lastName,
-        username: this.state.userName
-      });
+      const warning = await firebase
+        .database()
+        .ref(`users/${newUser.uid}`)
+        .set(
+          {
+            fullname: this.state.firstName + ' ' + this.state.lastName,
+            username: this.state.userName
+          },
+          function(error) {
+            if (error && error.code === 'PERMISSION_DENIED') {
+              console.log('ERROR is => ', error.code);
+              error.message = 'Sorry, your username already exists';
+            }
+          }
+        );
       await newUser.sendEmailVerification();
       this.props.navigation.navigate('SignedOut');
       Toast.show({
         text: `Verification email sent to ${this.state.email}`,
         position: 'top',
         buttonText: 'Okay',
-        duration: 2000
+        duration: 3500
       });
     } catch (err) {
+      newUser.delete();
       Toast.show({
         text: `${err}`,
         position: 'top',
         buttonText: 'Okay',
-        duration: 2000
+        duration: 3500
       });
       this.setState({ isLoading: false });
     }

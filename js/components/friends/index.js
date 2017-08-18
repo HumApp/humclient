@@ -45,15 +45,18 @@ export default class Friends extends Component {
 
   searchPeople = () => {
     this.props.navigation.navigate('SearchResults');
-  }
+  };
 
   componentDidMount() {
     Promise.resolve(Database.getPendingFriends()).then(result => {
-      this.setState({pending: this.state.pending.concat(result.val())})
-    })
+      this.setState({ pending: this.state.pending.concat(result.val()) });
+    });
     Promise.resolve(Database.getAllFriends()).then(result => {
-      this.setState({friends: this.state.friends.concat(result.val())}, console.log(Object.keys(this.state.friends)))
-    })
+      this.setState(
+        { friends: this.state.friends.concat(result.val()) },
+        console.log(Object.keys(this.state.friends))
+      );
+    });
   }
 
   deleteFriend = username => {
@@ -70,7 +73,7 @@ export default class Friends extends Component {
   };
 
   render() {
-    console.log(this.state.friends)
+    console.log(this.state.friends);
     return (
       <Container>
         <Header searchBar rounded>
@@ -78,11 +81,7 @@ export default class Friends extends Component {
             <Icon name="ios-search" />
             <Input placeholder="Search for new friends" />
           </Item>
-          <Button
-            light
-            onPress={this.searchPeople}
-            transparent
-          >
+          <Button light onPress={this.searchPeople} transparent>
             <Icon name="md-close-circle" />
           </Button>
         </Header>
@@ -90,7 +89,9 @@ export default class Friends extends Component {
           <Card>
             <CardItem button onPress={this.friendRequests} header>
               <Badge style={{ backgroundColor: '#FC642D' }}>
-                <Text>{this.state.pending.length}</Text>
+                <Text>
+                  {this.state.pending.length}
+                </Text>
               </Badge>
               <Text style={styles.header}> Friend Requests</Text>
               <Right>
@@ -103,40 +104,39 @@ export default class Friends extends Component {
               <Icon active name="md-people" style={styles.headerIcon} />
               <Text style={styles.header}>Friends</Text>
             </CardItem>
-            {!this.state.friends.length ? <Spinner /> :
-            <View>
-            {Object.keys(this.state.friends[0]).map((friend) => {
-              return (
-                <SwipeRow
-                  rightOpenValue={-75}
-                  key={friend}
-                  body={
-                    <CardItem>
-                      <Left>
-                        <FAIcon name="apple" size={25} color="#FF4B63" />
-                      </Left>
-                      <Body>
-                        <Text style={styles.bodytxt}>
-                          {friend}
-                        </Text>
-                      </Body>
-                      <Right />
-                    </CardItem>
-                  }
-                  right={
-                    <Button
-                      danger
-                      onPress={() => this.deleteFriend(friend)}
-                    >
-                      <Icon active name="md-close-circle" />
-                    </Button>
-                  }
-                />
-              );
-            })}
-
-            </View>
-          }
+            {!this.state.friends.length
+              ? <Spinner />
+              : <View>
+                  {Object.keys(this.state.friends[0]).map(friend => {
+                    return (
+                      <SwipeRow
+                        rightOpenValue={-75}
+                        key={friend}
+                        body={
+                          <CardItem>
+                            <Left>
+                              <FAIcon name="apple" size={25} color="#FF4B63" />
+                            </Left>
+                            <Body>
+                              <Text style={styles.bodytxt}>
+                                {friend}
+                              </Text>
+                            </Body>
+                            <Right />
+                          </CardItem>
+                        }
+                        right={
+                          <Button
+                            danger
+                            onPress={() => this.deleteFriend(friend)}
+                          >
+                            <Icon active name="md-close-circle" />
+                          </Button>
+                        }
+                      />
+                    );
+                  })}
+                </View>}
           </Card>
         </Content>
       </Container>
