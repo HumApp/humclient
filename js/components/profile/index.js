@@ -46,7 +46,7 @@ export default class Profile extends Component {
         return user
       }
       console.log("getting user")
-      this.setState({username: currentUser.username, name: currentUser.fullname})
+      this.setState({ username: currentUser.username, name: currentUser.fullname })
     });
 
   }
@@ -117,7 +117,7 @@ export default class Profile extends Component {
         }
       );
       const returnedPlaylist = responseData.data;
-       returnedPlaylist.items.forEach(async item => {
+      returnedPlaylist.items.forEach(async item => {
         let playlist = {};
         playlist.name = item.name;
         let songsData = await axios.get(`${item.tracks.href}`, {
@@ -252,7 +252,7 @@ export default class Profile extends Component {
                 <Text style={styles.bodytxt}>Name</Text>
               </Body>
               <Right>
-                <Text style={styles.bodytxt}>{name}</Text>
+                <Text style={styles.bodytxt}>Name</Text>
               </Right>
             </CardItem>
             <CardItem>
@@ -260,7 +260,7 @@ export default class Profile extends Component {
                 <Text style={styles.bodytxt}>Username</Text>
               </Body>
               <Right>
-                <Text style={styles.bodytxt}>@{username}</Text>
+                <Text style={styles.bodytxt}>@Username</Text>
               </Right>
             </CardItem>
           </Card>
