@@ -125,25 +125,34 @@ export const Tabs = TabNavigator(
   }
 );
 
-export const SignedOut = StackNavigator({
-  Home: {
-    screen: Home,
-    navigationOptions: {}
-  },
+export const SignedOut = StackNavigator(
+  {
+    Home: {
+      screen: Home,
+      navigationOptions: {}
+    },
 
-  Signup: {
-    screen: Signup,
-    navigationOptions: {
-      title: ''
+    Signup: {
+      screen: Signup,
+      navigationOptions: {
+        title: ''
+      }
+    },
+    Login: {
+      screen: Login,
+      navigationOptions: {
+        title: ''
+      }
     }
   },
-  Login: {
-    screen: Login,
-    navigationOptions: {
-      title: ''
+  {
+    mode: 'modal',
+    headerMode: 'none',
+    style: {
+      paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0
     }
   }
-});
+);
 
 export const SignedIn = StackNavigator(
   {
@@ -161,6 +170,8 @@ export const SignedIn = StackNavigator(
 );
 
 export const createRootNavigator = (signedIn = false) => {
+  // console.log('=========================', Boolean(signedIn));
+  // console.log('=========================ROUTER', signedIn);
   return StackNavigator(
     {
       SignedIn: {

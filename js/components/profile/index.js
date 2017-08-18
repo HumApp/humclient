@@ -40,7 +40,7 @@ export default class Profile extends Component {
 
   signOut = async () => {
     try {
-      await AsyncStorage.removeItem('user');
+      await AsyncStorage.removeItem('currentUser');
       await firebase.auth().signOut();
       this.props.navigation.navigate('SignedOut');
     } catch (err) {
@@ -209,6 +209,7 @@ export default class Profile extends Component {
 
   render() {
     console.log('profile', firebase.auth().currentUser);
+    console.log('profile');
 
     return (
       <Container>

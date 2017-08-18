@@ -69,7 +69,7 @@ export default class SignUp extends Component {
             <Text style={styles.loginTxt}>Log in</Text>
             <Form style={styles.form}>
               <Item floatingLabel>
-                <Label>Username</Label>
+                <Label>Email</Label>
                 <Input
                   autoCapitalize="none"
                   autoCorrect={false}
