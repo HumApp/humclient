@@ -16,6 +16,7 @@ import {
   View,
   Badge,
   Header,
+  Spinner,
   Item,
   Input,
   Toast
@@ -33,13 +34,27 @@ export default class Friends extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      friends: [{ username: 'oliviaoddo' }, { username: 'brian' }]
+      friends: [],
+      pending: []
     };
   }
 
   friendRequests = () => {
-    this.props.navigation.navigate('FriendRequests');
+    this.props.navigation.navigate('FriendRequests', this.state.pending);
   };
+
+  searchPeople = () => {
+    this.props.navigation.navigate('SearchResults');
+  }
+
+  componentDidMount() {
+    Promise.resolve(Database.getPendingFriends()).then(result => {
+      this.setState({pending: this.state.pending.concat(result.val())})
+    })
+    Promise.resolve(Database.getAllFriends()).then(result => {
+      this.setState({friends: this.state.friends.concat(result.val())}, console.log(Object.keys(this.state.friends)))
+    })
+  }
 
   deleteFriend = username => {
     console.log('deleted');
@@ -55,7 +70,7 @@ export default class Friends extends Component {
   };
 
   render() {
-    console.log('friend', firebase.auth().currentUser.email);
+    console.log(this.state.friends)
     return (
       <Container>
         <Header searchBar rounded>
@@ -65,9 +80,7 @@ export default class Friends extends Component {
           </Item>
           <Button
             light
-            onPress={() => {
-              console.log('clear');
-            }}
+            onPress={this.searchPeople}
             transparent
           >
             <Icon name="md-close-circle" />
@@ -77,7 +90,7 @@ export default class Friends extends Component {
           <Card>
             <CardItem button onPress={this.friendRequests} header>
               <Badge style={{ backgroundColor: '#FC642D' }}>
-                <Text>2</Text>
+                <Text>{this.state.pending.length}</Text>
               </Badge>
               <Text style={styles.header}> Friend Requests</Text>
               <Right>
@@ -90,11 +103,13 @@ export default class Friends extends Component {
               <Icon active name="md-people" style={styles.headerIcon} />
               <Text style={styles.header}>Friends</Text>
             </CardItem>
-            {this.state.friends.map(friend => {
+            {!this.state.friends.length ? <Spinner /> :
+            <View>
+            {Object.keys(this.state.friends[0]).map((friend) => {
               return (
                 <SwipeRow
                   rightOpenValue={-75}
-                  key={friend.username}
+                  key={friend}
                   body={
                     <CardItem>
                       <Left>
@@ -102,7 +117,7 @@ export default class Friends extends Component {
                       </Left>
                       <Body>
                         <Text style={styles.bodytxt}>
-                          {friend.username}
+                          {friend}
                         </Text>
                       </Body>
                       <Right />
@@ -111,7 +126,7 @@ export default class Friends extends Component {
                   right={
                     <Button
                       danger
-                      onPress={() => this.deleteFriend(friend.username)}
+                      onPress={() => this.deleteFriend(friend)}
                     >
                       <Icon active name="md-close-circle" />
                     </Button>
@@ -119,6 +134,9 @@ export default class Friends extends Component {
                 />
               );
             })}
+
+            </View>
+          }
           </Card>
         </Content>
       </Container>

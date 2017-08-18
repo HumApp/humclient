@@ -7,8 +7,14 @@ export default class Database {
   }
 
   static getAllFriends() {
+    console.log("FRRIENDS CALLED")
     let user = firebase.auth().currentUser;
     return firebase.database().ref(`/users/${user.uid}/friends`).once('value')
+  }
+
+  static getPendingFriends() {
+    let user = firebase.auth().currentUser;
+    return firebase.database().ref(`/users/${user.uid}/pending`).once('value')
   }
 
   static requestFriend (recievingUser) {

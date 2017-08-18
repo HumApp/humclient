@@ -32,20 +32,18 @@ const SpotifyModule = NativeModules.SpotifyModule;
 export default class FriendRequests extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      requests: [{username: "oliviaoddo"}, {username: "brian"}]
-    };
+
   }
 
-  deleteRequest = (username) => {
-    console.log('deleted')
-    this.setState({requests: this.state.requests.filter(person => username != person.username)})
+  deleteRequest = (usernameId) => {
+    Database.rejectFriendFromPending(usernameId)
+    // this.setState({requests: this.state.requests.filter(person => username != person.username)})
     Toast.show({text: 'Request deleted!', position: 'bottom', duration: 1500, type: 'danger'})
   }
 
-  acceptRequest = (username) => {
-    console.log("accepted")
-    this.setState({requests: this.state.requests.filter(person => username != person.username)})
+  acceptRequest = (usernameId) => {
+    Database.addFriendFromPending(usernameId)
+    // this.setState({requests: this.state.requests.filter(person => username != person.username)})
     Toast.show({text: 'Friend added!', position: 'bottom', duration: 1500, type: 'success'})
 
   }
@@ -59,21 +57,21 @@ export default class FriendRequests extends Component {
               <Icon active name="md-people" style={styles.headerIcon} />
               <Text style={styles.header}>Requests</Text>
             </CardItem>
-            {this.state.requests.map(friend => {
+            {this.props.navigation.state.params.map(friendId => {
               return(
                 <SwipeRow
                   leftOpenValue={75}
                   rightOpenValue={-75}
-                  key={friend.username}
+                  key={friendId}
                   left={
-                    <Button success onPress={() => this.acceptRequest(friend.username)}>
+                    <Button success onPress={() => this.acceptRequest(Object.keys(friendId)[0])}>
                       <Icon active name="md-add-circle" />
                     </Button>
                   }
                   body={
                     <CardItem>
                       <Body>
-                        <Text style={styles.bodytxt}>{friend.username}</Text>
+                        <Text style={styles.bodytxt}>{Object.keys(friendId)[0]}</Text>
                       </Body>
                       <Right>
 
@@ -81,7 +79,7 @@ export default class FriendRequests extends Component {
                     </CardItem>
                   }
                   right={
-                    <Button danger onPress={() => this.deleteRequest(friend.username)}>
+                    <Button danger onPress={() => this.deleteRequest(Object.keys(friendId)[0])}>
                       <Icon active name="md-close-circle" />
                     </Button>
                   }
