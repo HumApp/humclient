@@ -79,24 +79,41 @@ exports.getSongId = functions.https.onRequest((req, response) => {
 //     });
 // });
 
-exports.sentPendingWatch = functions.database.ref(`/users/{uid}/pending`).onCreate('child_added', function (event) {
+exports.sentPendingWatch = functions.database.ref(`/users/{uid}/pending`).onWrite(function (event) {
   let uid = event.params.uid;
-  admin.database().ref(`/users/${uid}/pending`).on('child_added', function (snapshot) {
-    console.log('CHILD ADDED ===========');
-    let pending = snapshot.val();
-    admin.database().ref(`/users/${uid}/sent`).once('value', function(sentSnap) {
-      let matches = _.intersection(sentSnap.val(), pending);
-      if (matches) {
-        matches.forEach(match => {
-          admin.database().ref(`/users/${uid}/friends/${match}`).set(true);
-          admin.database().ref(`/users/${uid}/pending/${match}`).remove();
-          admin.database().ref(`/users/${uid}/sent/${match}`).remove();
-        });
-      }
-    });
+  let pending = Object.keys(event.data.val());
+  admin.database().ref(`/users/${uid}/sent`).once('value', function (sentSnap) {
+    let sent = Object.keys(sentSnap.val());
+    console.log('pending:', pending, 'Sent:', sent);
+    let matches = _.intersection(sent, pending);
+    if (matches.length > 0) {
+      console.log('matches found:', matches);
+      matches.forEach(match => {
+        admin.database().ref(`/users/${uid}/friends/${match}`).set(true);
+        admin.database().ref(`/users/${uid}/pending/${match}`).remove();
+        admin.database().ref(`/users/${uid}/sent/${match}`).remove();
+      });
+    }
   });
 });
 
+
+/*
+function (event) {
+  let uid = event.params.uid;
+  console.log('CHILD ADDED ===========');
+  let pending = event.data.val();
+  admin.database().ref(`/users/${uid}/sent`).once('value', function (sentSnap) {
+    let matches = _.intersection(sentSnap.val(), pending);
+    if (matches) {
+      matches.forEach(match => {
+        admin.database().ref(`/users/${uid}/friends/${match}`).set(true);
+        admin.database().ref(`/users/${uid}/pending/${match}`).remove();
+        admin.database().ref(`/users/${uid}/sent/${match}`).remove();
+      });
+    }
+  });
+*/
 function makeiTunesSongQuery(songTitle, songArtist) {
   return `https://itunes.apple.com/search?term=${songTitle} ${songArtist}&media=music`;
 }
