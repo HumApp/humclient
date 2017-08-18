@@ -52,7 +52,7 @@ export default class Profile extends Component {
           name: snapshot.val().fullname,
           id: snapshot.val().spotifyId,
           token: snapshot.val().accessToken
-        }, () => console.log(this.state.username, this.state.id, this.state.token, snapshot));
+        });
       });
   }
 
