@@ -1,6 +1,27 @@
 import * as firebase from 'firebase';
 
 export default class Database {
+
+  static savePlaylistToDatabase(playlists, providerId) {
+
+    const currentUser = firebase.auth().currentUser.uid
+    playlists.forEach(playlist => {
+      let newSong = {};
+      playlist.songs.forEach((song, index) => {
+        this.findOrCreateSong(song, providerId);
+        newSong[index] = {};
+        newSong[index].artist = song.artist;
+        newSong[index].title = song.title;
+      });
+      const newPlaylistId = firebase.database().ref('playlists').push().key;
+      firebase.database().ref(`playlists/${newPlaylistId}`).set({
+        title: playlist.name,
+        creator: currentUser,
+        songs: newSong
+      });
+      });
+    }
+
   //this might work?
   static getAllUsers() {
     return firebase.database().ref('/users').once('value')
@@ -12,6 +33,7 @@ export default class Database {
     return firebase.database().ref(`/users/${user.uid}/friends`).once('value')
   }
 
+
   static getPendingFriends() {
     let user = firebase.auth().currentUser;
     return firebase.database().ref(`/users/${user.uid}/pending`).once('value')
@@ -22,7 +44,6 @@ export default class Database {
     firebase.database().ref(`/users/${recievingUser}/pending/${user.uid}`).set(true);
     if (!sendBack) firebase.database().ref(`/users/${user.uid}/sent/${recievingUser}`).set(true);
   }
-
   static getUserFromId(uid) {
     return firebase.database().ref(`/users/${uid}/fullname`).once('value')
   }
@@ -44,26 +65,26 @@ export default class Database {
     this.requestFriend(friend, true);
   }
 
-  static rejectFriendFromPending (friend) {
+  static rejectFriendFromPending(friend) {
     let user = firebase.auth().currentUser;
     firebase.database().ref(`/users/${user.uid}/pending/${friend}`).remove();
   }
   static ignoreMe() {
     let user = firebase.auth().currentUser;
     firebase.database().ref(`/users/${user.uid}/pending`).on('child_added')
-    .then(snapshot => {
-      let pending = snapshot.val();
-      firebase.database().ref(`/users/${user.uid}/sent`).once('value', function(sentSnap) {
-        let matches = _.intersection(sentSnap.val(), pending)
-        if (matches) {
-          matches.forEach(match => {
-            firebase.database().ref(`/users/${user.uid}/friends/${match}`).set(true);
-            firebase.database().ref(`/users/${user.uid}/pending/${match}`).remove();
-            firebase.database().ref(`/users/${user.uid}/sent/${match}`).remove();
-          })
-        }
+      .then(snapshot => {
+        let pending = snapshot.val();
+        firebase.database().ref(`/users/${user.uid}/sent`).once('value', function (sentSnap) {
+          let matches = _.intersection(sentSnap.val(), pending)
+          if (matches) {
+            matches.forEach(match => {
+              firebase.database().ref(`/users/${user.uid}/friends/${match}`).set(true);
+              firebase.database().ref(`/users/${user.uid}/pending/${match}`).remove();
+              firebase.database().ref(`/users/${user.uid}/sent/${match}`).remove();
+            })
+          }
+        })
       })
-    })
   }
   static saveApplePlaylists(playlists, providerId) {
     playlists.forEach(playlist => {
@@ -130,6 +151,7 @@ export default class Database {
     });
   }
 
+
   static saveMultiPlaylists(playlists, providerId) {
     for (playlistName in playlists) {
       if (playlists.hasOwnProperty(playlistName)) {
@@ -167,9 +189,9 @@ export default class Database {
       const address = firebase
         .database()
         .ref(
-          `songs/${this.getUrlPath(fetchSong.title)}/${this.getUrlPath(
-            fetchSong.artist
-          )}`
+        `songs/${this.getUrlPath(fetchSong.title)}/${this.getUrlPath(
+          fetchSong.artist
+        )}`
         );
       const dataSnapshot = await address.once('value');
       if (!dataSnapshot.val()) {

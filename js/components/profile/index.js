@@ -21,21 +21,34 @@ import { NativeModules, AsyncStorage } from 'react-native';
 import axios from 'axios';
 import Database from '../../../utils/database';
 import Prompt from 'react-native-prompt';
-import firebase from 'firebase';
+import * as firebase from 'firebase';
 const SpotifyModule = NativeModules.SpotifyModule;
 
 export default class Profile extends Component {
   constructor(props) {
     super(props);
-    //this state object is temporary until I'm done testing.
     this.state = {
       playlist: '',
       promptVisible: false,
       token: '',
       id: '',
       usersPlaylists: {},
-      appleAuth: false
+      appleAuth: false,
+      name: "",
+      username: ""
     };
+  }
+
+  componentWillMount() {
+    const currentUser = firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        console.log("firebase done")
+        return user
+      }
+      console.log("getting user")
+      this.setState({username: currentUser.username, name: currentUser.fullname})
+    });
+
   }
 
   signOut = async () => {
@@ -71,14 +84,30 @@ export default class Profile extends Component {
         }
       })
       .then(response => {
-        this.setState({ id: response.data.id }, this.fetchPlaylists);
+        this.setState({ id: response.data.id }, this.saveUserInfoToDatabase);
       })
       .catch(error => console.log(error));
   };
 
+  saveUserInfoToDatabase = () => {
+    let accessToken = this.state.token;
+    let spotifyId = this.state.id;
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        console.log(user);
+        firebase.database().ref('users/' + user.uid).update({
+          accessToken,
+          spotifyId
+        });
+      } else {
+        console.log("No user is signed in")
+      }
+    });
+    this.fetchPlaylists();
+  };
+
   fetchPlaylists = async () => {
     try {
-      let playlistArr = [];
       const responseData = await axios.get(
         'https://api.spotify.com/v1/me/playlists',
         {
@@ -88,10 +117,10 @@ export default class Profile extends Component {
         }
       );
       const returnedPlaylist = responseData.data;
-      returnedPlaylist.items.forEach(async item => {
+       returnedPlaylist.items.forEach(async item => {
         let playlist = {};
         playlist.name = item.name;
-        const songsData = await axios.get(`${item.tracks.href}`, {
+        let songsData = await axios.get(`${item.tracks.href}`, {
           headers: {
             Authorization: `Bearer ${this.state.token}`
           }
@@ -106,8 +135,7 @@ export default class Profile extends Component {
           songsArr.push(songObj);
         });
         playlist.songs = songsArr;
-        playlistArr.push(playlist);
-        Database.savePlaylistToDatabase(playlistArr, 'spotifyId');
+        Database.savePlaylistToDatabase([playlist], 'spotifyId');
       });
     } catch (error) {
       console.log(error);
@@ -117,14 +145,14 @@ export default class Profile extends Component {
   createPlaylists = () => {
     axios
       .post(
-        `https://api.spotify.com/v1/users/${this.state.id}/playlists`,
-        `{\"name\":\"${this.state.playlist}\", \"public\":false}`,
-        {
-          headers: {
-            Authorization: `Bearer ${this.state.token}`,
-            'Content-Type': 'application/json'
-          }
+      `https://api.spotify.com/v1/users/${this.state.id}/playlists`,
+      `{\"name\":\"${this.state.playlist}\", \"public\":false}`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.state.token}`,
+          'Content-Type': 'application/json'
         }
+      }
       )
       .catch(error => console.log(error));
   };
@@ -134,7 +162,7 @@ export default class Profile extends Component {
     let external = [];
     let id = this.state.id;
     let userToken = this.state.token;
-    firedata.on('value', function(snapshot) {
+    firedata.on('value', function (snapshot) {
       const playlist = snapshot.val();
       console.log(playlist);
       playlist.songs.forEach(song => external.push(song));
@@ -159,27 +187,27 @@ export default class Profile extends Component {
         console.log(final);
         axios
           .post(
-            `https://api.spotify.com/v1/users/${id}/playlists`,
-            `{\"name\":\"A New Hum Playlist\", \"public\":false, \"description\":\"A Hum playlist created by Apple Music\"}`,
-            {
-              headers: {
-                Authorization: `Bearer ${userToken}`,
-                'Content-Type': 'application/json'
-              }
+          `https://api.spotify.com/v1/users/${id}/playlists`,
+          `{\"name\":\"A New Hum Playlist\", \"public\":false, \"description\":\"A Hum playlist created by Apple Music\"}`,
+          {
+            headers: {
+              Authorization: `Bearer ${userToken}`,
+              'Content-Type': 'application/json'
             }
+          }
           )
           .then(response => {
             let playlistID = response.data.id;
             axios
               .post(
-                `https://api.spotify.com/v1/users/${id}/playlists/${playlistID}/tracks`,
-                { uris: final },
-                {
-                  headers: {
-                    Authorization: `Bearer ${userToken}`,
-                    'Content-Type': 'application/json'
-                  }
+              `https://api.spotify.com/v1/users/${id}/playlists/${playlistID}/tracks`,
+              { uris: final },
+              {
+                headers: {
+                  Authorization: `Bearer ${userToken}`,
+                  'Content-Type': 'application/json'
                 }
+              }
               )
               .then(response => console.log(response))
               .catch(error => console.log(error));
@@ -224,7 +252,7 @@ export default class Profile extends Component {
                 <Text style={styles.bodytxt}>Name</Text>
               </Body>
               <Right>
-                <Text style={styles.bodytxt}>SomeUser</Text>
+                <Text style={styles.bodytxt}>{name}</Text>
               </Right>
             </CardItem>
             <CardItem>
@@ -232,7 +260,7 @@ export default class Profile extends Component {
                 <Text style={styles.bodytxt}>Username</Text>
               </Body>
               <Right>
-                <Text style={styles.bodytxt}>@SomeUser</Text>
+                <Text style={styles.bodytxt}>@{username}</Text>
               </Right>
             </CardItem>
           </Card>
@@ -276,9 +304,9 @@ export default class Profile extends Component {
                     {this.state.id === ''
                       ? <Icon name="ios-add" style={styles.header} />
                       : <Icon
-                          name="ios-checkmark-circle"
-                          style={styles.header}
-                        />}
+                        name="ios-checkmark-circle"
+                        style={styles.header}
+                      />}
                   </Right>
                 </CardItem>
               }
@@ -378,65 +406,3 @@ export default class Profile extends Component {
   }
 }
 
-// importPlaylist = () => {
-
-//       let samplePlaylist = { "name": "A Sample Playlist", "songs": [{ "artist": "Drake", "track": "Controlla", "album": "Views" }], "creator": "Apple Music User" };
-
-//       axios.post(
-//         `https://api.spotify.com/v1/users/${this.state.id}/playlists`,
-//         `{\"name\":\"${samplePlaylist.name}\", \"public\":false}`,
-//         {
-//           headers: {
-//             "Authorization": `Bearer ${this.state.token}`,
-//             "Content-Type": "application/json"
-//           }
-//         }
-//       )
-//         .then(response => {
-//           let songURI = '';
-//           let playlistID = response.data.id;
-//           samplePlaylist.songs.forEach(song => {
-//             axios.get(
-//               `https://api.spotify.com/v1/search?q=album:${song.album}%20artist:${song.artist}&type=album&limit=1`,
-//               {
-//                 headers: {
-//                   "Authorization": `Bearer ${this.state.token}`
-//                 }
-//               }
-//             )
-//               .then(response => {
-//                 let sampleAlbum = response.data.albums.items[0].id;
-//                 axios.get(
-//                   `https://api.spotify.com/v1/albums/${sampleAlbum}/tracks`,
-//                   {
-//                     headers: {
-//                       "Authorization": `Bearer ${this.state.token}`
-//                     }
-//                   }
-//                 )
-//                   .then(response => {
-//                     let sampleTracks = response.data.items;
-//                     for (let i = 0; i < sampleTracks.length; i++) {
-//                       if (sampleTracks[i].name === song.track) {
-//                         songURI = sampleTracks[i].uri;
-//                         break
-//                       }
-//                     };
-//                     axios.post(
-//                       `https://api.spotify.com/v1/users/${this.state.id}/playlists/${playlistID}/tracks`,
-//                       { "uris": [`${songURI}`] },
-//                       {
-//                         headers: {
-//                           "Authorization": `Bearer ${this.state.token}`,
-//                           "Content-Type": "application/json"
-//                         }
-//                       })
-//                       .catch(error => console.log(error))
-//                   })
-//                   .catch(error => console.log(error))
-//               })
-//               .catch(error => console.log(error))
-//           });
-//         })
-//         .catch(error => console.log(error))
-//     };

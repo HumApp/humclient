@@ -73,7 +73,9 @@ export default class Friends extends Component {
   };
 
   render() {
+
     console.log(this.state.friends);
+
     return (
       <Container>
         <Header searchBar rounded>
