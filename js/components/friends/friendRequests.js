@@ -64,7 +64,7 @@ export default class FriendRequests extends Component {
                   rightOpenValue={-75}
                   key={friendId}
                   left={
-                    <Button success onPress={() => this.acceptRequest(Object.keys(friendId)[0])}>
+                    <Button primary onPress={() => this.acceptRequest(Object.keys(friendId)[0])}>
                       <Icon active name="md-add-circle" />
                     </Button>
                   }

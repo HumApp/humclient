@@ -30,7 +30,8 @@ export default class Playlists extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      playlists: []
+      playlists: [],
+      isLoading: true
     };
   }
   goToPlaylist = playlist => {
@@ -62,7 +63,7 @@ export default class Playlists extends Component {
   componentDidMount() {
     const currentUser = firebase.auth().currentUser.uid
     Promise.resolve(this.getUserPlaylists(currentUser))
-    .then(playlistArr => this.setState({playlists: this.state.playlists.concat(playlistArr)}))
+    .then(playlistArr => this.setState({playlists: this.state.playlists.concat(playlistArr)}, () => this.setState({isLoading: false})))
   }
 
   render() {
@@ -96,8 +97,14 @@ export default class Playlists extends Component {
               <Icon active name="ios-musical-notes" style={styles.headerIcon} />
               <Text style={styles.header}>Playlists</Text>
             </CardItem>
+
+            {this.state.isLoading ? <Spinner color="#FC642D" /> :
+            <View>
             {!this.state.playlists.length
-              ? <Spinner color="#FC642D" />
+              ?
+                <CardItem>
+                  <Text style={styles.header}>Connect a music streaming service to view playlists!</Text>
+                </CardItem>
               : <View>
                   {this.state.playlists.map((playlist, index) => {
                     return (
@@ -117,7 +124,10 @@ export default class Playlists extends Component {
                       </CardItem>
                     );
                   })}
-                </View>}
+                </View>
+              }
+              </View>
+            }
           </Card>
           <Card>
             <CardItem header>

@@ -67,7 +67,7 @@ export default class PendingPlaylists extends Component {
                   rightOpenValue={-75}
                   key={friend.username}
                   left={
-                    <Button success onPress={() => this.acceptRequest(friend.username)}>
+                    <Button primary onPress={() => this.acceptRequest(friend.username)}>
                       <Icon active name="md-add-circle" />
                     </Button>
                   }

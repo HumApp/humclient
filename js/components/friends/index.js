@@ -35,7 +35,8 @@ export default class Friends extends Component {
     super(props);
     this.state = {
       friends: [],
-      pending: []
+      pending: [],
+      isLoading: true
     };
   }
 
@@ -49,12 +50,12 @@ export default class Friends extends Component {
 
   componentDidMount() {
     Promise.resolve(Database.getPendingFriends()).then(result => {
-      this.setState({ pending: this.state.pending.concat(result.val()) });
+      this.setState({ pending: this.state.pending.concat(result.val()) }, () => console.log(this.state.pending));
     });
     Promise.resolve(Database.getAllFriends()).then(result => {
       this.setState(
         { friends: this.state.friends.concat(result.val()) },
-        console.log(Object.keys(this.state.friends))
+        () => this.setState({isLoading: false})
       );
     });
   }
@@ -74,7 +75,7 @@ export default class Friends extends Component {
 
   render() {
 
-    console.log(this.state.friends);
+    console.log("loading state", this.state.isLoading);
 
     return (
       <Container>
@@ -89,6 +90,7 @@ export default class Friends extends Component {
         </Header>
         <Content>
           <Card>
+            {this.state.pending.length[0] ?
             <CardItem button onPress={this.friendRequests} header>
               <Badge style={{ backgroundColor: '#FC642D' }}>
                 <Text>
@@ -100,14 +102,19 @@ export default class Friends extends Component {
                 <Icon name="arrow-forward" style={styles.arrow} />
               </Right>
             </CardItem>
+            : null}
           </Card>
           <Card>
             <CardItem header>
               <Icon active name="md-people" style={styles.headerIcon} />
               <Text style={styles.header}>Friends</Text>
             </CardItem>
+            {this.state.isLoading ? <Spinner color="#FC642D" /> :
+            <View>
             {!this.state.friends.length
-              ? <Spinner />
+              ?  <CardItem>
+                    <Text>Search for friends to add them!</Text>
+                </CardItem>
               : <View>
                   {Object.keys(this.state.friends[0]).map(friend => {
                     return (
@@ -138,6 +145,10 @@ export default class Friends extends Component {
                       />
                     );
                   })}
+                </View>
+              }
+
+
                 </View>}
           </Card>
         </Content>
