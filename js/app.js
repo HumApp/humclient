@@ -15,41 +15,17 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    // AsyncStorage.getAllKeys(function(err, keys) {
-    //   keys.forEach(key => {
-    //     console.log('asyncStorage Keys!!!', key);
-    //   });
-    // });
-    // AsyncStorage.getItem(
-    //   'firebase:authUser:AIzaSyAeIvTA7pcQQZ1i80667rYhX2a5oJhzaR4:[DEFAULT]'
-    // ).then(userData => {
-    //   let currentUser = JSON.parse(userData);
-    //   console.log('this is firebase currentUser ==========', currentUser);
-    //   this.setState({
-    //     currentUser
-    //   });
-    // });
-    // AsyncStorage.getItem('currentUser').then(userData => {
-    //   let currentUser = JSON.parse(userData);
-    //   console.log('this is async currentUser ==========', currentUser);
-    //   this.setState({
-    //     currentUser
-    //   });
-    // });
-
     firebase.auth().onAuthStateChanged(currentUser => {
       if (currentUser) {
-        // User is signed in.
-        console.log('firebase user ???????????', currentUser);
-        console.log(
-          'firebase currentUser ???????????',
-          firebase.auth().currentUser
-        );
+        // console.log('firebase user ???????????', currentUser);
+        // console.log(
+        //   'firebase currentUser ???????????',
+        //   firebase.auth().currentUser
+        // );
         this.setState({
           currentUser: currentUser
         });
       } else {
-        // No user is signed in.
         this.setState({
           currentUser: false
         });
@@ -58,11 +34,12 @@ export default class App extends Component {
   }
 
   render() {
-    let AppNavigator = createRootNavigator(this.state.currentUser);
     let landingPage;
-    if (this.state.currentUser == null) {
+    if (this.state.currentUser === null) {
       landingPage = <Spinner color="#FC642D" />;
     } else {
+      // console.log('are we getting here more than once???');
+      let AppNavigator = createRootNavigator(this.state.currentUser);
       landingPage = <AppNavigator />;
     }
     return (

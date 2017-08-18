@@ -98,11 +98,11 @@ export default class Playlists extends Component {
             {!this.state.playlists.length
               ? <Spinner color="#FC642D" />
               : <View>
-                  {this.state.playlists.map(playlist => {
+                  {this.state.playlists.map((playlist, index) => {
                     return (
                       <CardItem
-                        key={playlist.title}
                         button
+                        key={index}
                         onPress={() => this.goToPlaylist(playlist)}
                       >
                         <Body>
