@@ -3,9 +3,11 @@ const axios = require('axios');
 // The Firebase Admin SDK to access the Firebase Realtime Database.
 const admin = require('firebase-admin');
 admin.initializeApp(functions.config().firebase);
+const _ = require('lodash');
 
 exports.getSongId = functions.https.onRequest((req, response) => {
   let reqSong = req.body;
+  const userToken = req.body.userToken;
   const urlTitle = getURL(req.body.title);
   const urlArtist = getURL(req.body.artist);
   let foundId;
@@ -27,7 +29,7 @@ exports.getSongId = functions.https.onRequest((req, response) => {
       } else {
         axios.get(makeSpotifySongQuery(reqSong.title, reqSong.artist), {
             headers: {
-              Authorization: 'Bearer BQAw6VUAjB7MaLBZv_DIC2X_Z0sMVb5Ya8jGBqVV9lNuzMBjuBt3SsghvSuD6B8jxTr_nb3mTHNwH80JMD2_X3mXowFiI_4IBlqc11SAsRXi1eEyWrSAHoZ4wWd9X-x2Iw8N_LV6sIXrNrIGsZSbrSYn2UjAuGjR78d-YHL-vUeiVTrKOR508c0CPP8TBio8qL8F6boxkwgYdTc5jBVCSuq8sY1pTUdFoVLaYWV5Fqkdh2hyuwTlbqkRbWAzYou0_Zw-lXHMRr0aMV-L4z3sd6RDk1nT1-_TJINlNmPk_2-7PuYRtgeL50uB6CRiWT7boupR'
+              Authorization: `Bearer ${userToken}`
               //  "Content-Type": 'application/x-www-form-urlencoded',
               //  Accept: 'application/json'
             }
@@ -44,44 +46,55 @@ exports.getSongId = functions.https.onRequest((req, response) => {
     .catch(console.error);
 });
 
-exports.savePlayistToSpotify = functions.https.onRequest((req, res) => {
-  //given a DB playlist ID and spotify user token, saves the playlist from the database to spotify
-  const userToken = req.body.userToken;
-  const playlistId = req.body.playlistId;
-  admin.database().ref(`/playlists/${playlistId}/songs`).once('value')
-    .then(snap => {
-      let songIds = [];
-      let spotifyIds = [];
-      snap.forEach(child => {
-        songIds.push(child.key);
-      });
-      //songIds now contains all of the ids of the songs
-      let promArr = [];
-      songIds.forEach(songId => {
-        promArr.push(admin.database().ref(`/songs/${songId}`).once('value'));
-      });
-      Promise.all(promArr)
-        .then(arr => {
-          arr.forEach(song => {
-              axios.post('https://us-central1-hum-app.cloudfunctions.net/getSongId', {
-                  title: song.title,
-                  artist: song.artist,
-                  service: 'spotifyId'
-                })
-                .then(id => spotifyIds.push(id));
-            })
-            .then(() => {
-              axios.post(`POST https://api.spotify.com/v1/users/${userToken}/playlists/{playlist_id}/${spotifyIds.join(',')}`);
-            });
+// exports.savePlayistToSpotify = functions.https.onRequest((req, res) => {
+//   //given a DB playlist ID and spotify user token, saves the playlist from the database to spotify
+//   const userToken = req.body.userToken;
+//   const playlistId = req.body.playlistId;
+//   admin.database().ref(`/playlists/${playlistId}/songs`).once('value')
+//     .then(snap => {
+//       let songIds = [];
+//       let spotifyIds = [];
+//       snap.forEach(child => {
+//         songIds.push(child.key);
+//       });
+//       //songIds now contains all of the ids of the songs
+//       let promArr = [];
+//       songIds.forEach(songId => {
+//         promArr.push(admin.database().ref(`/songs/${songId}`).once('value'));
+//       });
+//       Promise.all(promArr)
+//         .then(arr => {
+//           arr.forEach(song => {
+//               axios.post('https://us-central1-hum-app.cloudfunctions.net/getSongId', {
+//                   title: song.title,
+//                   artist: song.artist,
+//                   service: 'spotifyId'
+//                 })
+//                 .then(id => spotifyIds.push(id));
+//             })
+//             .then(() => {
+//               axios.post(`POST https://api.spotify.com/v1/users/${userToken}/playlists/{playlist_id}/${spotifyIds.join(',')}`);
+//             });
+//         });
+//     });
+// });
+
+exports.sentPendingWatch = functions.database.ref(`/users/{uid}/pending`).onCreate('child_added', function (event) {
+  let uid = event.params.uid;
+  admin.database().ref(`/users/${uid}/pending`).on('child_added', function (snapshot) {
+    console.log('CHILD ADDED ===========');
+    let pending = snapshot.val();
+    admin.database().ref(`/users/${uid}/sent`).once('value', function(sentSnap) {
+      let matches = _.intersection(sentSnap.val(), pending);
+      if (matches) {
+        matches.forEach(match => {
+          admin.database().ref(`/users/${uid}/friends/${match}`).set(true);
+          admin.database().ref(`/users/${uid}/pending/${match}`).remove();
+          admin.database().ref(`/users/${uid}/sent/${match}`).remove();
         });
-      //after that, post to axios with the songs to add the the playlist
+      }
     });
-});
-
-exports.friendTest = functions.https.onRequest((req, res) => {
-  admin.database().ref(`/users/${req.body.recieve}/pending/${req.body.sending}`).set(true);
-  res.send(201);
-
+  });
 });
 
 function makeiTunesSongQuery(songTitle, songArtist) {
