@@ -3,8 +3,7 @@ import * as firebase from 'firebase';
 export default class Database {
 
   static savePlaylistToDatabase(playlists, providerId) {
-
-    const currentUser = firebase.auth().currentUser.uid
+    const currentUser = firebase.auth().currentUser
     playlists.forEach(playlist => {
       let newSong = {};
       playlist.songs.forEach((song, index) => {
@@ -16,8 +15,9 @@ export default class Database {
       const newPlaylistId = firebase.database().ref('playlists').push().key;
       firebase.database().ref(`playlists/${newPlaylistId}`).set({
         title: playlist.name,
-        creator: currentUser,
-        songs: newSong
+        creator: currentUser.uid,
+        songs: newSong,
+        displayName: currentUser.displayName
       });
       });
     }
