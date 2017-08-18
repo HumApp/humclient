@@ -21,7 +21,7 @@ import { NativeModules, AsyncStorage } from 'react-native';
 import axios from 'axios';
 import Database from '../../../utils/database';
 import Prompt from 'react-native-prompt';
-import firebase from 'firebase';
+import * as firebase from 'firebase';
 const SpotifyModule = NativeModules.SpotifyModule;
 
 export default class Profile extends Component {
@@ -34,8 +34,22 @@ export default class Profile extends Component {
       token: '',
       id: '',
       usersPlaylists: {},
-      appleAuth: false
+      appleAuth: false,
+      name: "",
+      username: ""
     };
+  }
+
+  componentWillMount() {
+    const currentUser = firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        console.log("firebase done")
+        return user
+      }
+      console.log("getting user")
+      this.setState({username: currentUser.username, name: currentUser.fullname})
+    });
+
   }
 
   signOut = async () => {
@@ -208,7 +222,8 @@ export default class Profile extends Component {
   };
 
   render() {
-    console.log('profile', firebase.auth().currentUser);
+    console.log('profile', firebase.auth().currentUser.fullname);
+        console.log('playlists', firebase.auth().currentUser.username);
 
     return (
       <Container>
@@ -223,7 +238,7 @@ export default class Profile extends Component {
                 <Text style={styles.bodytxt}>Name</Text>
               </Body>
               <Right>
-                <Text style={styles.bodytxt}>SomeUser</Text>
+                <Text style={styles.bodytxt}>{this.state.name}</Text>
               </Right>
             </CardItem>
             <CardItem>
@@ -231,7 +246,7 @@ export default class Profile extends Component {
                 <Text style={styles.bodytxt}>Username</Text>
               </Body>
               <Right>
-                <Text style={styles.bodytxt}>@SomeUser</Text>
+                <Text style={styles.bodytxt}>@{this.state.username}</Text>
               </Right>
             </CardItem>
           </Card>

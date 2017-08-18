@@ -60,8 +60,8 @@ export default class Playlists extends Component {
   };
 
   componentDidMount() {
-    // Promise.resolve(this.getUserPlaylists("oliviaoddo"))
-    // .then(playlistArr => this.setState({playlists: this.state.playlists.concat(playlistArr)}))
+    Promise.resolve(this.getUserPlaylists("oliviaoddo"))
+    .then(playlistArr => this.setState({playlists: this.state.playlists.concat(playlistArr)}))
   }
 
   render() {
