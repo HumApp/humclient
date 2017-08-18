@@ -135,6 +135,7 @@ export default class Profile extends Component {
         songs.forEach(song => {
           let songObj = {};
           songObj.title = song.track.name;
+          songObj.image = song.track.album.images[0].url;
           songObj.artist = song.track.album.artists[0].name;
           songObj.id = song.track.uri;
           songsArr.push(songObj);
@@ -179,22 +180,6 @@ export default class Profile extends Component {
       return <Icon name="ios-checkmark-circle" style={styles.header} />;
     else return <Icon name="ios-add" style={styles.header} />;
   };
-
-
-
-
-  // firebase
-  //   .database()
-  //   .ref(`users/${firebase.auth().currentUser.uid}`)
-  //   .once('value')
-  //   .then(snapshot => {
-  //     let { accessToken, spotifyId } = snapshot.val();
-  //     console.log(accessToken, spotifyId);
-  //     (!accessToken || !spotifyId) ? (<Icon name="ios-add" style={styles.header} />) : (<Icon name="ios-checkmark-circle" style={styles.header} />)
-
-  //   })
-  //   .catch(error => console.log(error))
-
 
   render() {
     return (
@@ -301,7 +286,7 @@ export default class Profile extends Component {
                   </CardItem>
                 }
                 right={
-                  <Button danger onPress={() => alert('Trash')}>
+                  <Button danger onPress={() => console.log('Coming soon!')}>
                     <Icon active name="ios-close-circle-outline" />
                   </Button>
                 }
@@ -340,7 +325,7 @@ export default class Profile extends Component {
                 onPress={() => this.setState({ promptVisible: true })}
               >
                 <Body>
-                  <Text style={styles.bodytxt}>Create a New Spotify Playlist</Text>
+                  <Text style={styles.bodytxt}>New Spotify Playlist</Text>
                 </Body>
                 <Right>
                   <Icon name="arrow-forward" style={styles.arrow} />
