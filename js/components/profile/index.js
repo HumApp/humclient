@@ -41,15 +41,18 @@ export default class Profile extends Component {
   }
 
   componentDidMount() {
+    console.log("Mounting...")
     firebase
       .database()
-      .ref(`users/${firebase.auth().currentUser.uid}/fullname`)
+      .ref(`users/${firebase.auth().currentUser.uid}`)
       .once('value')
       .then(snapshot => {
         this.setState({
           username: firebase.auth().currentUser.displayName,
-          name: snapshot.val()
-        });
+          name: snapshot.val().fullname,
+          id: snapshot.val().spotifyId,
+          token: snapshot.val().accessToken
+        }, () => console.log(this.state.username, this.state.id, this.state.token, snapshot));
       });
   }
 
@@ -94,7 +97,7 @@ export default class Profile extends Component {
   saveUserInfoToDatabase = () => {
     let accessToken = this.state.token;
     let spotifyId = this.state.id;
-    firebase.auth().onAuthStateChanged(function(user) {
+    firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
         console.log(user);
         firebase.database().ref('users/' + user.uid).update({
@@ -147,76 +150,16 @@ export default class Profile extends Component {
   createPlaylists = () => {
     axios
       .post(
-        `https://api.spotify.com/v1/users/${this.state.id}/playlists`,
-        `{\"name\":\"${this.state.playlist}\", \"public\":false}`,
-        {
-          headers: {
-            Authorization: `Bearer ${this.state.token}`,
-            'Content-Type': 'application/json'
-          }
+      `https://api.spotify.com/v1/users/${this.state.id}/playlists`,
+      `{\"name\":\"${this.state.playlist}\", \"public\":false}`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.state.token}`,
+          'Content-Type': 'application/json'
         }
+      }
       )
       .catch(error => console.log(error));
-  };
-
-  importPlaylist = () => {
-    let firedata = firebase.database().ref(`playlists/-Krh2eGlMXEJxtQEnLUY`);
-    let external = [];
-    let id = this.state.id;
-    let userToken = this.state.token;
-    firedata.on('value', function(snapshot) {
-      const playlist = snapshot.val();
-      console.log(playlist);
-      playlist.songs.forEach(song => external.push(song));
-      let promises = external.map(song =>
-        axios.post(
-          'https://us-central1-hum-app.cloudfunctions.net/getSongId/',
-          {
-            title: `${song.title}`,
-            artist: `${song.artist}`,
-            service: 'spotifyId',
-            userToken: `${userToken}`
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-        )
-      );
-      Promise.all(promises).then(values => {
-        let final = values.map(value => value.data);
-        console.log(final);
-        axios
-          .post(
-            `https://api.spotify.com/v1/users/${id}/playlists`,
-            `{\"name\":\"A New Hum Playlist\", \"public\":false, \"description\":\"A Hum playlist created by Apple Music\"}`,
-            {
-              headers: {
-                Authorization: `Bearer ${userToken}`,
-                'Content-Type': 'application/json'
-              }
-            }
-          )
-          .then(response => {
-            let playlistID = response.data.id;
-            axios
-              .post(
-                `https://api.spotify.com/v1/users/${id}/playlists/${playlistID}/tracks`,
-                { uris: final },
-                {
-                  headers: {
-                    Authorization: `Bearer ${userToken}`,
-                    'Content-Type': 'application/json'
-                  }
-                }
-              )
-              .then(response => console.log(response))
-              .catch(error => console.log(error));
-          })
-          .catch(error => console.log(error));
-      });
-    });
   };
 
   requestAppleMusic = () => {
@@ -237,179 +180,182 @@ export default class Profile extends Component {
     else return <Icon name="ios-add" style={styles.header} />;
   };
 
+
+
+
+  // firebase
+  //   .database()
+  //   .ref(`users/${firebase.auth().currentUser.uid}`)
+  //   .once('value')
+  //   .then(snapshot => {
+  //     let { accessToken, spotifyId } = snapshot.val();
+  //     console.log(accessToken, spotifyId);
+  //     (!accessToken || !spotifyId) ? (<Icon name="ios-add" style={styles.header} />) : (<Icon name="ios-checkmark-circle" style={styles.header} />)
+
+  //   })
+  //   .catch(error => console.log(error))
+
+
   render() {
     return (
       <Container>
         {this.state.name
           ? <Content>
-              <Card>
-                <CardItem header>
-                  <Icon active name="ios-person" style={styles.headerIcon} />
-                  <Text style={styles.header}>Personal Information</Text>
-                </CardItem>
-                <CardItem>
-                  <Body>
-                    <Text style={styles.bodytxt}>Name</Text>
-                  </Body>
-                  <Right>
-                    <Text style={styles.bodytxt}>
-                      {this.state.name}
-                    </Text>
-                  </Right>
-                </CardItem>
-                <CardItem>
-                  <Body>
-                    <Text style={styles.bodytxt}>Username</Text>
-                  </Body>
-                  <Right>
-                    <Text style={styles.bodytxt}>
-                      {this.state.username}
-                    </Text>
-                  </Right>
-                </CardItem>
-              </Card>
-              <Card>
-                <CardItem header>
-                  <Icon
-                    active
-                    name="ios-musical-notes"
-                    style={styles.headerIcon}
-                  />
-                  <Text style={styles.header}>Integrations</Text>
-                </CardItem>
-                <SwipeRow
-                  rightOpenValue={-75}
-                  body={
-                    <CardItem button onPress={this.requestAppleMusic}>
-                      <Left>
-                        <FAIcon name="apple" size={25} color="#FF4B63" />
-                      </Left>
-                      <Body>
-                        <Text style={styles.bodytxt}>Apple Music</Text>
-                      </Body>
-                      <Right>
-                        {this.appleConnected()}
-                      </Right>
-                    </CardItem>
-                  }
-                  right={
-                    <Button danger onPress={() => alert('Trash')}>
-                      <Icon active name="ios-close-circle-outline" />
-                    </Button>
-                  }
+            <Card>
+              <CardItem header>
+                <Icon active name="ios-person" style={styles.headerIcon} />
+                <Text style={styles.header}>Personal Information</Text>
+              </CardItem>
+              <CardItem>
+                <Body>
+                  <Text style={styles.bodytxt}>Name</Text>
+                </Body>
+                <Right>
+                  <Text style={styles.bodytxt}>
+                    {this.state.name}
+                  </Text>
+                </Right>
+              </CardItem>
+              <CardItem>
+                <Body>
+                  <Text style={styles.bodytxt}>Username</Text>
+                </Body>
+                <Right>
+                  <Text style={styles.bodytxt}>
+                    {this.state.username}
+                  </Text>
+                </Right>
+              </CardItem>
+            </Card>
+            <Card>
+              <CardItem header>
+                <Icon
+                  active
+                  name="ios-musical-notes"
+                  style={styles.headerIcon}
                 />
-                <SwipeRow
-                  rightOpenValue={-75}
-                  body={
-                    <CardItem button onPress={this.authSpotify}>
-                      <Left>
-                        <FAIcon name="spotify" size={25} color="#1db954" />
-                      </Left>
-                      <Body>
-                        <Text style={styles.bodytxt}>Spotify</Text>
-                      </Body>
-                      <Right>
-                        {this.state.id === ''
-                          ? <Icon name="ios-add" style={styles.header} />
-                          : <Icon
-                              name="ios-checkmark-circle"
-                              style={styles.header}
-                            />}
-                      </Right>
-                    </CardItem>
-                  }
-                  right={
-                    <Button
-                      danger
-                      onPress={() => this.setState({ id: '', token: '' })}
-                    >
-                      <Icon active name="ios-close-circle-outline" />
-                    </Button>
-                  }
-                />
-                <SwipeRow
-                  rightOpenValue={-75}
-                  body={
-                    <CardItem>
-                      <Left>
-                        <FAIcon name="youtube-play" size={25} color="#FF0404" />
-                      </Left>
-                      <Body>
-                        <Text style={styles.bodytxt}>Youtube</Text>
-                      </Body>
-                      <Right>
-                        <Icon
-                          onPress={() => console.log('hello')}
-                          name="ios-add"
-                          style={styles.header}
-                        />
-                      </Right>
-                    </CardItem>
-                  }
-                  right={
-                    <Button danger onPress={() => alert('Trash')}>
-                      <Icon active name="ios-close-circle-outline" />
-                    </Button>
-                  }
-                />
-              </Card>
-              <Card>
-                <CardItem header>
-                  <Icon active name="ios-settings" style={styles.headerIcon} />
-                  <Text style={styles.header}>Settings</Text>
-                </CardItem>
-                <CardItem
-                  button
-                  onPress={() =>
-                    this.props.navigation.navigate('UpdatePassword')}
-                >
-                  <Body>
-                    <Text style={styles.bodytxt}>Update Password</Text>
-                  </Body>
-                  <Right>
-                    <Icon name="arrow-forward" style={styles.arrow} />
-                  </Right>
-                </CardItem>
-                <Prompt
-                  title="Enter a playlist name"
-                  placeholder="My New Playlist"
-                  visible={this.state.promptVisible}
-                  onCancel={() => this.setState({ promptVisible: false })}
-                  onSubmit={value =>
-                    this.setState(
-                      { promptVisible: false, playlist: `${value}` },
-                      this.createPlaylists
-                    )}
-                />
-                <CardItem
-                  button
-                  onPress={() => this.setState({ promptVisible: true })}
-                >
-                  <Body>
-                    <Text style={styles.bodytxt}>Create a Playlist</Text>
-                  </Body>
-                  <Right>
-                    <Icon name="arrow-forward" style={styles.arrow} />
-                  </Right>
-                </CardItem>
-                <CardItem button onPress={this.importPlaylist}>
-                  <Body>
-                    <Text style={styles.bodytxt}>Import Playlist</Text>
-                  </Body>
-                  <Right>
-                    <Icon name="arrow-forward" style={styles.arrow} />
-                  </Right>
-                </CardItem>
-                <CardItem button onPress={this.signOut}>
-                  <Body>
-                    <Text style={styles.bodytxt}>Sign Out</Text>
-                  </Body>
-                  <Right>
-                    <Icon name="arrow-forward" style={styles.arrow} />
-                  </Right>
-                </CardItem>
-              </Card>
-            </Content>
+                <Text style={styles.header}>Integrations</Text>
+              </CardItem>
+              <SwipeRow
+                rightOpenValue={-75}
+                body={
+                  <CardItem button onPress={(this.state.appleAuth) ? console.log("already authorized") : this.requestAppleMusic}>
+                    <Left>
+                      <FAIcon name="apple" size={25} color="#FF4B63" />
+                    </Left>
+                    <Body>
+                      <Text style={styles.bodytxt}>Apple Music</Text>
+                    </Body>
+                    <Right>
+                      {this.appleConnected()}
+                    </Right>
+                  </CardItem>
+                }
+                right={
+                  <Button danger onPress={() => alert('Trash')}>
+                    <Icon active name="ios-close-circle-outline" />
+                  </Button>
+                }
+              />
+              <SwipeRow
+                rightOpenValue={-75}
+                body={
+                  <CardItem button onPress={(this.state.token) ? () => console.log("already authorized") : this.authSpotify}>
+                    <Left>
+                      <FAIcon name="spotify" size={25} color="#1db954" />
+                    </Left>
+                    <Body>
+                      <Text style={styles.bodytxt}>Spotify</Text>
+                    </Body>
+                    <Right>
+                      {(this.state.token) ? (<Icon name="ios-checkmark-circle" style={styles.header} />) : (<Icon name="ios-add" style={styles.header} />)}
+                    </Right>
+                  </CardItem>
+                }
+                right={
+                  <Button
+                    danger
+                    onPress={() => this.setState({ id: '', token: '' })}
+                  >
+                    <Icon active name="ios-close-circle-outline" />
+                  </Button>
+                }
+              />
+              <SwipeRow
+                rightOpenValue={-75}
+                body={
+                  <CardItem>
+                    <Left>
+                      <FAIcon name="youtube-play" size={25} color="#FF0404" />
+                    </Left>
+                    <Body>
+                      <Text style={styles.bodytxt}>Youtube</Text>
+                    </Body>
+                    <Right>
+                      <Icon
+                        onPress={() => console.log('hello')}
+                        name="ios-add"
+                        style={styles.header}
+                      />
+                    </Right>
+                  </CardItem>
+                }
+                right={
+                  <Button danger onPress={() => alert('Trash')}>
+                    <Icon active name="ios-close-circle-outline" />
+                  </Button>
+                }
+              />
+            </Card>
+            <Card>
+              <CardItem header>
+                <Icon active name="ios-settings" style={styles.headerIcon} />
+                <Text style={styles.header}>Settings</Text>
+              </CardItem>
+              <CardItem
+                button
+                onPress={() =>
+                  this.props.navigation.navigate('UpdatePassword')}
+              >
+                <Body>
+                  <Text style={styles.bodytxt}>Update Password</Text>
+                </Body>
+                <Right>
+                  <Icon name="arrow-forward" style={styles.arrow} />
+                </Right>
+              </CardItem>
+              <Prompt
+                title="Enter a playlist name"
+                placeholder="My New Playlist"
+                visible={this.state.promptVisible}
+                onCancel={() => this.setState({ promptVisible: false })}
+                onSubmit={value =>
+                  this.setState(
+                    { promptVisible: false, playlist: `${value}` },
+                    this.createPlaylists
+                  )}
+              />
+              <CardItem
+                button
+                onPress={() => this.setState({ promptVisible: true })}
+              >
+                <Body>
+                  <Text style={styles.bodytxt}>Create a New Spotify Playlist</Text>
+                </Body>
+                <Right>
+                  <Icon name="arrow-forward" style={styles.arrow} />
+                </Right>
+              </CardItem>
+              <CardItem button onPress={this.signOut}>
+                <Body>
+                  <Text style={styles.bodytxt}>Sign Out</Text>
+                </Body>
+                <Right>
+                  <Icon name="arrow-forward" style={styles.arrow} />
+                </Right>
+              </CardItem>
+            </Card>
+          </Content>
           : <Spinner color="#FC642D" />}
       </Container>
     );
