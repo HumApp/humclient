@@ -52,6 +52,12 @@ export default class Database {
     return firebase.database().ref(`/users/${uid}/fullname`).once('value')
   }
 
+  static addPlaylistToUser(playlistId) {
+    let user = firebase.auth().currentUser;
+    firebase.database().ref(`/users/${uid}/playlists/${playlistId}`).set(true);
+
+  }
+
   static getSharedPlaylists () {
     let user = firebase.auth().currentUser;
     return firebase.database().ref(`/users/${user.uid}/sharedPlaylists`).once('value');
