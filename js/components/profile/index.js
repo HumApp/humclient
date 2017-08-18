@@ -52,7 +52,7 @@ export default class Profile extends Component {
           name: snapshot.val().fullname,
           id: snapshot.val().spotifyId,
           token: snapshot.val().accessToken
-        }, () => console.log(this.state.username, this.state.id, this.state.token, snapshot));
+        });
       });
   }
 
@@ -134,7 +134,8 @@ export default class Profile extends Component {
         songs.forEach(song => {
           let songObj = {};
           songObj.title = song.track.name;
-          songObj.image = song.track.album.images[0].url;
+          songObj.image = (!song.track.album.images || !song.track.album || !song.track.album.images[0]) ? "https://orig01.deviantart.net/26aa/f/2011/185/f/9/no_cover_itunes_by_stainless2-d3kxnbe.png" : song.track.album.images[0].url;
+          console.log(songObj.image);
           songObj.artist = song.track.album.artists[0].name;
           songObj.id = song.track.uri;
           songsArr.push(songObj);
