@@ -47,6 +47,7 @@ export default class SharePlaylist extends Component {
   submitShare = () => {
     console.log(this.state.friends.filter(friend => friend.switchValue).map(friend => friend.username))
     console.log(this.props.navigation.state.params)
+    this.state.friends.forEach(friend => database.sharePlaylistWithFriend(this.state.playlistId, friend));
     this.props.navigation.goBack()
     //add toast shared successfully
   }

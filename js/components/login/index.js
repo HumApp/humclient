@@ -18,20 +18,19 @@ import {
 import styles from './style';
 import { Field, reduxForm } from 'redux-form';
 import firebase from 'firebase';
-import { AsyncStorage } from 'react-native';
 
 export default class SignUp extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isLoading: false,
-      email: '',
+      user: '',
       password: ''
     };
   }
 
   validateForm() {
-    return this.state.email.length > 0 && this.state.password.length > 0;
+    return this.state.user.length > 0 && this.state.password.length > 0;
   }
 
   login = async () => {
@@ -39,10 +38,9 @@ export default class SignUp extends Component {
       this.setState({ isLoading: true });
       const currentUser = await firebase
         .auth()
-        .signInWithEmailAndPassword(this.state.email, this.state.password);
-      AsyncStorage.setItem('currentUser', JSON.stringify(currentUser));
+        .signInWithEmailAndPassword(this.state.user, this.state.password);
       Toast.show({
-        text: `Logged in with ${this.state.email}`,
+        text: `Logged in with ${this.state.user}`,
         position: 'top',
         buttonText: 'Okay',
         duration: 2000
@@ -69,12 +67,12 @@ export default class SignUp extends Component {
             <Text style={styles.loginTxt}>Log in</Text>
             <Form style={styles.form}>
               <Item floatingLabel>
-                <Label>Email</Label>
+                <Label>Email or Username</Label>
                 <Input
                   autoCapitalize="none"
                   autoCorrect={false}
-                  value={this.state.email}
-                  onChangeText={text => this.setState({ email: text })}
+                  value={this.state.user}
+                  onChangeText={text => this.setState({ user: text })}
                 />
               </Item>
               <Item floatingLabel>
@@ -96,6 +94,17 @@ export default class SignUp extends Component {
                   disabled={!this.validateForm()}
                 >
                   <Text style={{ fontSize: 18 }}>Log in</Text>
+                  <Icon name="ios-arrow-forward" style={{ color: '#fff' }} />
+                </Button>
+              </CardItem>
+              <CardItem>
+                <Button
+                  rounded
+                  iconRight
+                  style={styles.login}
+                  onPress={() => this.props.navigation.navigate('Signup')}
+                >
+                  <Text style={{ fontSize: 18 }}>go to sign up</Text>
                   <Icon name="ios-arrow-forward" style={{ color: '#fff' }} />
                 </Button>
               </CardItem>
