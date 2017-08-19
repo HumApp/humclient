@@ -10,7 +10,7 @@ export default class Database {
         newSong[index] = {};
         newSong[index].artist = song.artist;
         newSong[index].title = song.title;
-        newSong[index].image = song.image;
+        // newSong[index].image = song.image;
       });
       const newPlaylistId = firebase.database().ref('playlists').push().key;
       this.addPlaylistToUser(newPlaylistId);
@@ -29,7 +29,6 @@ export default class Database {
   }
 
   static getAllFriends() {
-    console.log('FRRIENDS CALLED');
     let user = firebase.auth().currentUser;
     return firebase.database().ref(`/users/${user.uid}/friends`).once('value');
   }
@@ -51,8 +50,9 @@ export default class Database {
         .ref(`/users/${user.uid}/sent/${recievingUser}`)
         .set(true);
   }
+
   static getUserFromId(uid) {
-    return Promise.resolve(firebase.database().ref(`/users/${uid}/fullname`).once('value'))
+    return Promise.resolve(firebase.database().ref(`/users/${uid}`).once('value'))
   }
 
   static addPlaylistToUser(playlistId) {
