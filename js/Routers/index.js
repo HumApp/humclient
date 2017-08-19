@@ -1,5 +1,10 @@
 import React from 'react';
-import { TabNavigator, StackNavigator } from 'react-navigation';
+import {
+  TabNavigator,
+  StackNavigator,
+  TabBarBottom,
+  NavigationActions
+} from 'react-navigation';
 import { Platform, StatusBar } from 'react-native';
 import { Icon } from 'native-base';
 
@@ -123,11 +128,35 @@ export const Tabs = TabNavigator(
     }
   },
   {
+    tabBarComponent: TabBarBottom,
+    tabBarPosition: 'bottom',
     tabBarOptions: {
       activeTintColor: '#ff5a5f',
       inactiveTintColor: '#cecece'
     },
-    initialRouteName: 'Profile'
+    initialRouteName: 'Profile',
+    navigationOptions: ({ navigation }) => ({
+      tabBarOnPress: (tab, jumpToIndex) => {
+        if (tab.focused) {
+          // if tab currently focused tab
+          if (tab.route.index !== 0) {
+            // if not on first screen of the StackNavigator in focused tab.
+            navigation.dispatch(
+              NavigationActions.reset({
+                index: 0,
+                actions: [
+                  NavigationActions.navigate({
+                    routeName: tab.route.routes[0].routeName
+                  }) // go to first screen of the StackNavigator
+                ]
+              })
+            );
+          }
+        } else {
+          jumpToIndex(tab.index); // go to another tab (the default behavior)
+        }
+      }
+    })
   }
 );
 
