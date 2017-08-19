@@ -50,7 +50,11 @@ export default class Friends extends Component {
 
   componentDidMount() {
     Promise.resolve(Database.getPendingFriends()).then(result => {
-      this.setState({ pending: this.state.pending.concat(result.val()) }, () => console.log(this.state.pending));
+      Object.keys(result.val()).map(key => {
+        let user = {}
+        Promise.resolve(Database.getUserFromId(key)).then(result => {user.username = result.val().username; user.fullname = result.val().fullname; user.userId = key})
+         this.setState({ pending: this.state.pending.concat(user) }, () => console.log(this.state.pending));
+      })
     });
     Promise.resolve(Database.getAllFriends()).then(result => {
       const friendsArr = Object.keys(result.val()).map(key => {
@@ -78,7 +82,7 @@ export default class Friends extends Component {
 
   render() {
 
-    console.log("loading state", this.state.friends);
+    console.log("pending", this.state.pending);
 
     return (
       <Container>
@@ -93,7 +97,7 @@ export default class Friends extends Component {
         </Header>
         <Content>
           <Card>
-            {this.state.pending[0] !==null ?
+            {this.state.pending.length  ?
             <CardItem button onPress={this.friendRequests} header>
               <Badge style={{ backgroundColor: '#FC642D' }}>
                 <Text>

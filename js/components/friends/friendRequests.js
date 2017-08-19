@@ -32,18 +32,25 @@ const SpotifyModule = NativeModules.SpotifyModule;
 export default class FriendRequests extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      requests: this.props.navigation.state.params
+    }
 
   }
 
-  deleteRequest = (usernameId) => {
-    Database.rejectFriendFromPending(usernameId)
-    // this.setState({requests: this.state.requests.filter(person => username != person.username)})
+  deleteRequest = (userId) => {
+    Database.rejectFriendFromPending(userId)
+    this.setState({requests: this.state.requests.filter(person => userId != person.userId)}, () => {
+        if(!this.state.requests.length) this.props.navigation.goBack()
+    })
     Toast.show({text: 'Request deleted!', position: 'bottom', duration: 1500, type: 'danger'})
   }
 
-  acceptRequest = (usernameId) => {
-    Database.addFriendFromPending(usernameId)
-    // this.setState({requests: this.state.requests.filter(person => username != person.username)})
+  acceptRequest = (userId) => {
+    Database.addFriendFromPending(userId)
+    this.setState({requests: this.state.requests.filter(person => userId != person.userId)}, () => {
+         if(!this.state.requests.length) this.props.navigation.goBack()
+    })
     Toast.show({text: 'Friend added!', position: 'bottom', duration: 1500, type: 'success'})
 
   }
@@ -57,33 +64,23 @@ export default class FriendRequests extends Component {
               <Icon active name="md-people" style={styles.headerIcon} />
               <Text style={styles.header}>Requests</Text>
             </CardItem>
-            {this.props.navigation.state.params.map(friendId => {
+            {this.state.requests.map(friend => {
               return(
-                <SwipeRow
-                  leftOpenValue={75}
-                  rightOpenValue={-75}
-                  key={friendId}
-                  left={
-                    <Button primary onPress={() => this.acceptRequest(Object.keys(friendId)[0])}>
-                      <Icon active name="md-add-circle" />
-                    </Button>
-                  }
-                  body={
-                    <CardItem>
+                   <CardItem bordered key={friend.userId}>
                       <Body>
-                        <Text style={styles.bodytxt}>{Object.keys(friendId)[0]}</Text>
+                        <Text>{friend.fullname}</Text>
+                        <Text note >@{friend.username}</Text>
                       </Body>
-                      <Right>
 
-                      </Right>
+                        <Button small style={{backgroundColor: "#FC642D", margin: 5}} onPress={() => this.acceptRequest(friend.userId)}>
+                                <Icon name="ios-add" />
+                          </Button>
+                        <Button small danger style={{margin: 5}} onPress={() => this.deleteRequest(friend.userId)}>
+                                <Icon name="ios-close" />
+                        </Button>
+
                     </CardItem>
-                  }
-                  right={
-                    <Button danger onPress={() => this.deleteRequest(Object.keys(friendId)[0])}>
-                      <Icon active name="md-close-circle" />
-                    </Button>
-                  }
-                  />
+
                 )
             })}
           </Card>
