@@ -163,7 +163,10 @@ export const Tabs = TabNavigator(
 export const SignedOut = StackNavigator(
   {
     Home: {
-      screen: Home
+      screen: Home,
+      navigationOptions: {
+        header: null
+      }
     },
 
     Signup: {
@@ -180,8 +183,6 @@ export const SignedOut = StackNavigator(
     }
   },
   {
-    mode: 'modal',
-    headerMode: 'none',
     style: {
       paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0
     }
