@@ -47,7 +47,7 @@ export default class SearchResults extends Component {
   addRequest = (name, requestedFriendId) => {
     console.log(requestedFriendId)
     Database.requestFriend(requestedFriendId)
-    Toast.show({text: `${name} added!`, position: 'bottom', duration: 1500, type: 'success'})
+    Toast.show({text: `Friend request sent to ${name}!`, position: 'bottom', duration: 1500, type: 'success'})
   }
 
 

@@ -59,7 +59,7 @@ export default class Playlists extends Component {
   };
 
   pendingPlaylists = () => {
-    this.props.navigation.navigate('PendingPlaylists');
+    this.props.navigation.navigate('PendingPlaylists', this.state.sharedPlaylists);
   };
 
   savePlaylist = playlistId => {
@@ -78,7 +78,15 @@ export default class Playlists extends Component {
     const currentUser = firebase.auth().currentUser.uid
     Promise.resolve(this.getUserPlaylists(currentUser))
     .then(playlistArr => this.setState({playlists: this.state.playlists.concat(playlistArr)}, () => this.setState({isLoading: false})))
-    Promise.resolve(Database.getSharedPlaylists()).then(result =>this.setState({sharedPlaylists: this.state.sharedPlaylists.concat(result.val())}, () => this.setState({sharedLoading: false})))
+    Promise.resolve(Database.getSharedPlaylists()).then(result =>
+        Object.keys(result.val()).map(key => {
+          Promise.resolve(Database.getPlaylistFromId(key)).then(result => {
+            let playlistObj = Object.assign(result.val())
+            playlistObj.playlistId = key
+            this.setState({sharedPlaylists: this.state.sharedPlaylists.concat(playlistObj)})
+          })
+          }
+        ))
   }
 
   render() {
@@ -96,10 +104,11 @@ export default class Playlists extends Component {
           </Button>
         </Header>
         <Content>
+          {this.state.sharedPlaylists.length ?
           <Card>
-            <CardItem disabled button onPress={this.pendingPlaylists} header>
+            <CardItem button onPress={this.pendingPlaylists} header>
               <Badge style={{ backgroundColor: '#FC642D' }}>
-                <Text>2</Text>
+                <Text>{this.state.sharedPlaylists.length}</Text>
               </Badge>
               <Text style={styles.header}> Pending Playlists</Text>
               <Right>
@@ -107,6 +116,7 @@ export default class Playlists extends Component {
               </Right>
             </CardItem>
           </Card>
+          : null}
           <Card>
             <CardItem header>
               <Icon active name="ios-musical-notes" style={styles.headerIcon} />
