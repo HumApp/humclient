@@ -29,23 +29,51 @@ export const PlaylistsStack = StackNavigator({
   Playlists: {
     screen: Playlists,
     navigationOptions: {
-      title: 'Playlists'
+      title: 'Playlists',
+      headerStyle: {
+        backgroundColor: '#06db77'
+      },
+      headerTitleStyle: {
+        color: 'white'
+      }
     }
   },
   SinglePlaylist: {
     screen: SinglePlaylist,
-    navigationOptions: {}
+    navigationOptions: {
+      headerTintColor: 'white',
+      headerStyle: {
+        backgroundColor: '#06db77'
+      },
+      headerTitleStyle: {
+        color: 'white'
+      }
+    }
   },
   SharePlaylist: {
     screen: SharePlaylist,
     navigationOptions: {
-      title: 'Share Playlist'
+      title: 'Share Playlist',
+      headerTintColor: 'white',
+      headerStyle: {
+        backgroundColor: '#06db77'
+      },
+      headerTitleStyle: {
+        color: 'white'
+      }
     }
   },
   PendingPlaylists: {
     screen: PendingPlaylists,
     navigationOptions: {
-      title: 'Pending Playlists'
+      title: 'Pending Playlists',
+      headerTintColor: 'white',
+      headerStyle: {
+        backgroundColor: '#06db77'
+      },
+      headerTitleStyle: {
+        color: 'white'
+      }
     }
   }
 });
@@ -54,7 +82,13 @@ export const CollabStack = StackNavigator({
   Collab: {
     screen: Collab,
     navigationOptions: {
-      title: 'Collab'
+      title: 'Collab',
+      headerStyle: {
+        backgroundColor: '#06db77'
+      },
+      headerTitleStyle: {
+        color: 'white'
+      }
     }
   }
 });
@@ -63,7 +97,13 @@ export const FriendsStack = StackNavigator({
   Friends: {
     screen: Friends,
     navigationOptions: {
-      title: 'Friends'
+      title: 'Friends',
+      headerStyle: {
+        backgroundColor: '#06db77'
+      },
+      headerTitleStyle: {
+        color: 'white'
+      }
     }
   },
   FriendRequests: {
@@ -80,12 +120,23 @@ export const ProfileStack = StackNavigator({
   Profile: {
     screen: Profile,
     navigationOptions: {
-      title: 'Profile'
+      title: 'Profile',
+      headerStyle: {
+        backgroundColor: '#06db77'
+      },
+      headerTitleStyle: {
+        color: 'white'
+      }
     }
   },
   UpdatePassword: {
     screen: UpdatePassword,
-    navigationOptions: {}
+    navigationOptions: {
+      headerTintColor: 'white',
+      headerStyle: {
+        backgroundColor: '#06db77'
+      }
+    }
   }
 });
 
@@ -172,13 +223,27 @@ export const SignedOut = StackNavigator(
     Signup: {
       screen: Signup,
       navigationOptions: {
-        title: 'Signup'
+        title: 'Signup',
+        headerTintColor: '#FC642D',
+        headerStyle: {
+          backgroundColor: 'white'
+        },
+        headerTitleStyle: {
+          color: '#FC642D'
+        }
       }
     },
     Login: {
       screen: Login,
       navigationOptions: {
-        title: 'Login'
+        title: 'Login',
+        headerTintColor: '#FC642D',
+        headerStyle: {
+          backgroundColor: 'white'
+        },
+        headerTitleStyle: {
+          color: '#FC642D'
+        }
       }
     }
   },
@@ -204,7 +269,7 @@ export const SignedIn = StackNavigator(
   }
 );
 
-export const createRootNavigator = (signedIn = false) => {
+export const createRootNavigator = signedIn => {
   return StackNavigator(
     {
       SignedIn: {
