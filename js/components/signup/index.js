@@ -157,7 +157,8 @@ export default class SignUp extends Component {
               <CardItem>
                 <Button
                   iconRight
-                  style={!this.validateForm() ? styles.disabled : styles.signup}
+                  danger
+                  style={styles.signup}
                   rounded
                   onPress={this.handleSignup}
                   disabled={!this.validateForm()}

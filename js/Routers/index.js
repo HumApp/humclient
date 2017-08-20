@@ -34,7 +34,7 @@ export const PlaylistsStack = StackNavigator({
     navigationOptions: {
       title: 'Playlists',
       headerStyle: {
-        backgroundColor: '#06db77'
+        backgroundColor: '#ff5a5f'
       },
       headerTitleStyle: {
         color: 'white'
@@ -58,7 +58,7 @@ export const PlaylistsStack = StackNavigator({
     navigationOptions: {
       headerTintColor: 'white',
       headerStyle: {
-        backgroundColor: '#06db77'
+        backgroundColor: '#ff5a5f'
       },
       headerTitleStyle: {
         color: 'white'
@@ -71,7 +71,7 @@ export const PlaylistsStack = StackNavigator({
       title: 'Share Playlist',
       headerTintColor: 'white',
       headerStyle: {
-        backgroundColor: '#06db77'
+        backgroundColor: '#ff5a5f'
       },
       headerTitleStyle: {
         color: 'white'
@@ -84,7 +84,7 @@ export const PlaylistsStack = StackNavigator({
       title: 'Pending Playlists',
       headerTintColor: 'white',
       headerStyle: {
-        backgroundColor: '#06db77'
+        backgroundColor: '#ff5a5f'
       },
       headerTitleStyle: {
         color: 'white'
@@ -99,7 +99,7 @@ export const CollabStack = StackNavigator({
     navigationOptions: {
       title: 'Collab',
       headerStyle: {
-        backgroundColor: '#06db77'
+        backgroundColor: '#ff5a5f'
       },
       headerTitleStyle: {
         color: 'white'
@@ -114,7 +114,7 @@ export const FriendsStack = StackNavigator({
     navigationOptions: {
       title: 'Friends',
       headerStyle: {
-        backgroundColor: '#06db77'
+        backgroundColor: '#ff5a5f'
       },
       headerTitleStyle: {
         color: 'white'
@@ -137,7 +137,7 @@ export const ProfileStack = StackNavigator({
     navigationOptions: {
       title: 'Profile',
       headerStyle: {
-        backgroundColor: '#06db77'
+        backgroundColor: '#ff5a5f'
       },
       headerTitleStyle: {
         color: 'white'
@@ -149,7 +149,7 @@ export const ProfileStack = StackNavigator({
     navigationOptions: {
       headerTintColor: 'white',
       headerStyle: {
-        backgroundColor: '#06db77'
+        backgroundColor: '#ff5a5f'
       }
     }
   }
