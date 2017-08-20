@@ -105,6 +105,13 @@ export default class Database {
     let user = firebase.auth().currentUser;
     firebase.database().ref(`/users/${user.uid}/pending/${friend}`).remove();
   }
+
+  static deleteFriend(friend) {
+    let user = firebase.auth().currentUser;
+    firebase.database().ref(`/users/${user.uid}/friends/${friend}`).remove();
+    firebase.database().ref(`/users/${friend}/friends/${user.uid}`).remove();
+  }
+
   static ignoreMe() {
     let user = firebase.auth().currentUser;
     firebase
