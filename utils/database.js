@@ -1,4 +1,5 @@
 import * as firebase from 'firebase';
+import axios from 'axios'
 
 export default class Database {
   static savePlaylistToDatabase(playlists, providerId) {
@@ -23,7 +24,6 @@ export default class Database {
     });
   }
 
-  //this might work?
   static getAllUsers() {
     return firebase.database().ref('/users').once('value');
   }
@@ -55,19 +55,35 @@ export default class Database {
     return Promise.resolve(firebase.database().ref(`/users/${uid}`).once('value'))
   }
 
+
   static addPlaylistToUser(playlistId) {
     let user = firebase.auth().currentUser;
-    firebase.database().ref(`/users/${user.uid}/playlists/${playlistId}`).set(true);
+    firebase.database().ref(`/users/${user.uid}/playlists/${playlistId}`).set("original");
   }
 
+
+  //get playlist from id
+  static getPlaylistFromId(pid) {
+    return Promise.resolve(firebase.database().ref(`/playlists/${pid}`).once('value'))
+  }
+
+  //get pending playlists
   static getSharedPlaylists() {
     let user = firebase.auth().currentUser;
     return firebase.database().ref(`/users/${user.uid}/sharedPlaylists`).once('value');
   }
 
+  //the pending folder
   static sharePlaylistWithFriend(playlistId, friendId) {
     firebase.database().ref(`/playlists/${playlistId}/sharedWith/${friendId}`).set(true);
     firebase.database().ref(`/users/${friendId}/sharedPlaylists/${playlistId}`).set(true);
+  }
+
+  //add playlist from pending folder to playlists folder and remove it from the pending folder
+  static addPlaylistFromPending(playlistId) {
+    let user = firebase.auth().currentUser;
+    firebase.database().ref(`/users/${user.uid}/sharedPlaylists/${playlistId}`).remove();
+    firebase.database().ref(`/users/${user.uid}/playlists/${playlistId}`).set("shared");
   }
 
   static unfollowPlaylist(playlistId) {

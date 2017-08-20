@@ -65,7 +65,6 @@ class MediaLibraryManager: NSObject {
   
   // needs to create a new playlist with a name, an author display name, and takes song id's
   @objc func createPlaylist(_ playlist: Data, callback: @escaping RCTResponseSenderBlock) {
-          print(playlist)
           struct Playlist: Codable {
               var name : String
               var author : String
