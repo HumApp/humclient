@@ -30,8 +30,9 @@ export default class Home extends Component {
         colors={['#FF5A5F', '#FC642D', '#ebcbb9']}
         style={styles.container}
       >
+        <Text style={styles.subtitle}>Back to the basics</Text>
         <Text style={styles.title}>HUM</Text>
-        <Text style={styles.subtitle}>Welcome to Hum.</Text>
+        <Text style={styles.subtitle}>of sharing music</Text>
         <View style={styles.buttonContainer}>
           <View style={{ marginTop: 5, marginBottom: 5 }}>
             <Button

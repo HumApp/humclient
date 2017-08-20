@@ -18,7 +18,7 @@
 		"react-native-prompt": "^1.0.0",
 		"react-native-search-bar": "^3.0.0",
 		"react-native-vector-icons": "^4.3.0",
-		"react-navigation": "^1.0.0-beta.11",
+		"react-navigation": "git://github.com/cribspot/react-navigation.git#1879137",
 		"react-redux": "^5.0.6",
 		"redux": "^3.7.2",
 		"redux-devtools-extension": "^2.13.2",

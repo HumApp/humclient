@@ -1,5 +1,10 @@
 import React from 'react';
-import { TabNavigator, StackNavigator } from 'react-navigation';
+import {
+  TabNavigator,
+  StackNavigator,
+  TabBarBottom,
+  NavigationActions
+} from 'react-navigation';
 import { Platform, StatusBar } from 'react-native';
 import { Icon } from 'native-base';
 
@@ -24,23 +29,51 @@ export const PlaylistsStack = StackNavigator({
   Playlists: {
     screen: Playlists,
     navigationOptions: {
-      title: 'Playlists'
+      title: 'Playlists',
+      headerStyle: {
+        backgroundColor: '#06db77'
+      },
+      headerTitleStyle: {
+        color: 'white'
+      }
     }
   },
   SinglePlaylist: {
     screen: SinglePlaylist,
-    navigationOptions: {}
+    navigationOptions: {
+      headerTintColor: 'white',
+      headerStyle: {
+        backgroundColor: '#06db77'
+      },
+      headerTitleStyle: {
+        color: 'white'
+      }
+    }
   },
   SharePlaylist: {
     screen: SharePlaylist,
     navigationOptions: {
-      title: 'Share Playlist'
+      title: 'Share Playlist',
+      headerTintColor: 'white',
+      headerStyle: {
+        backgroundColor: '#06db77'
+      },
+      headerTitleStyle: {
+        color: 'white'
+      }
     }
   },
   PendingPlaylists: {
     screen: PendingPlaylists,
     navigationOptions: {
-      title: 'Pending Playlists'
+      title: 'Pending Playlists',
+      headerTintColor: 'white',
+      headerStyle: {
+        backgroundColor: '#06db77'
+      },
+      headerTitleStyle: {
+        color: 'white'
+      }
     }
   }
 });
@@ -49,7 +82,13 @@ export const CollabStack = StackNavigator({
   Collab: {
     screen: Collab,
     navigationOptions: {
-      title: 'Collab'
+      title: 'Collab',
+      headerStyle: {
+        backgroundColor: '#06db77'
+      },
+      headerTitleStyle: {
+        color: 'white'
+      }
     }
   }
 });
@@ -58,7 +97,13 @@ export const FriendsStack = StackNavigator({
   Friends: {
     screen: Friends,
     navigationOptions: {
-      title: 'Friends'
+      title: 'Friends',
+      headerStyle: {
+        backgroundColor: '#06db77'
+      },
+      headerTitleStyle: {
+        color: 'white'
+      }
     }
   },
   FriendRequests: {
@@ -75,12 +120,23 @@ export const ProfileStack = StackNavigator({
   Profile: {
     screen: Profile,
     navigationOptions: {
-      title: 'Profile'
+      title: 'Profile',
+      headerStyle: {
+        backgroundColor: '#06db77'
+      },
+      headerTitleStyle: {
+        color: 'white'
+      }
     }
   },
   UpdatePassword: {
     screen: UpdatePassword,
-    navigationOptions: {}
+    navigationOptions: {
+      headerTintColor: 'white',
+      headerStyle: {
+        backgroundColor: '#06db77'
+      }
+    }
   }
 });
 
@@ -123,36 +179,75 @@ export const Tabs = TabNavigator(
     }
   },
   {
+    tabBarComponent: TabBarBottom,
+    tabBarPosition: 'bottom',
     tabBarOptions: {
       activeTintColor: '#ff5a5f',
       inactiveTintColor: '#cecece'
     },
-    initialRouteName: 'Profile'
+    initialRouteName: 'Profile',
+    navigationOptions: ({ navigation }) => ({
+      tabBarOnPress: (tab, jumpToIndex) => {
+        if (tab.focused) {
+          // if tab currently focused tab
+          if (tab.route.index !== 0) {
+            // if not on first screen of the StackNavigator in focused tab.
+            navigation.dispatch(
+              NavigationActions.reset({
+                index: 0,
+                actions: [
+                  NavigationActions.navigate({
+                    routeName: tab.route.routes[0].routeName
+                  }) // go to first screen of the StackNavigator
+                ]
+              })
+            );
+          }
+        } else {
+          jumpToIndex(tab.index); // go to another tab (the default behavior)
+        }
+      }
+    })
   }
 );
 
 export const SignedOut = StackNavigator(
   {
     Home: {
-      screen: Home
+      screen: Home,
+      navigationOptions: {
+        header: null
+      }
     },
 
     Signup: {
       screen: Signup,
       navigationOptions: {
-        title: 'Signup'
+        title: 'Signup',
+        headerTintColor: '#FC642D',
+        headerStyle: {
+          backgroundColor: 'white'
+        },
+        headerTitleStyle: {
+          color: '#FC642D'
+        }
       }
     },
     Login: {
       screen: Login,
       navigationOptions: {
-        title: 'Login'
+        title: 'Login',
+        headerTintColor: '#FC642D',
+        headerStyle: {
+          backgroundColor: 'white'
+        },
+        headerTitleStyle: {
+          color: '#FC642D'
+        }
       }
     }
   },
   {
-    mode: 'modal',
-    headerMode: 'none',
     style: {
       paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0
     }
@@ -174,7 +269,7 @@ export const SignedIn = StackNavigator(
   }
 );
 
-export const createRootNavigator = (signedIn = false) => {
+export const createRootNavigator = signedIn => {
   return StackNavigator(
     {
       SignedIn: {
