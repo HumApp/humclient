@@ -67,10 +67,11 @@ export default class Friends extends Component {
     });
   }
 
-  deleteFriend = username => {
+  deleteFriend = friendId => {
+    Database.deleteFriend(friendId)
     console.log('deleted');
     this.setState({
-      friends: this.state.friends.filter(person => username != person.username)
+      friends: this.state.friends.filter(person => friendId != person.friendId)
     });
     Toast.show({
       text: 'Request deleted!',

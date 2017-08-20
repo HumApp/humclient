@@ -39,6 +39,7 @@ export default class PendingPlaylists extends Component {
   }
 
   deleteRequest = playlistId => {
+    Database.unfollowPlaylist(playlistId)
     this.setState(
       {
         requests: this.state.requests.filter(
@@ -89,7 +90,6 @@ export default class PendingPlaylists extends Component {
         author: result.val().displayName
       };
       for (let song of result.val().songs) {
-        console.log('cloud function');
         let songNum = await axios.post(
           'https://us-central1-hum-app.cloudfunctions.net/getSongId/',
           {
@@ -124,36 +124,51 @@ export default class PendingPlaylists extends Component {
             </CardItem>
             {this.state.requests.map(playlist => {
               return (
-                <CardItem bordered key={playlist.playlistId}>
-                  <Body>
-                    <Text>
-                      {playlist.title}
-                    </Text>
-                    <Text note>
-                      Playlist by {playlist.displayName}
-                    </Text>
-                    <Text note>
-                      {playlist.songs.length} songs
-                    </Text>
-                  </Body>
+                  <SwipeRow
+                        rightOpenValue={-75}
+                        key={playlist.playlistId}
+                        body={
+                          <CardItem bordered>
+                            <Body>
+                              <Text>
+                                {playlist.title}
+                              </Text>
+                              <Text note>
+                                Playlist by {playlist.displayName}
+                              </Text>
+                              <Text note>
+                                {playlist.songs.length} songs
+                              </Text>
+                            </Body>
 
-                  <Button
-                    small
-                    light
-                    style={{ margin: 5 }}
-                    onPress={() => this.spotify(playlist.playlistId)}
-                  >
-                    <FAIcon name="spotify" size={25} color="#1db954" />
-                  </Button>
-                  <Button
-                    small
-                    light
-                    style={{ margin: 5 }}
-                    onPress={() => this.apple(playlist.playlistId)}
-                  >
-                    <FAIcon name="apple" size={25} color="#FF4B63" />
-                  </Button>
-                </CardItem>
+                            <Button
+                              small
+                              light
+                              style={{ margin: 5 }}
+                              onPress={() => this.spotify(playlist.playlistId)}
+                            >
+                              <FAIcon name="spotify" size={25} color="#1db954" />
+                            </Button>
+                            <Button
+                              small
+                              light
+                              style={{ margin: 5 }}
+                              onPress={() => this.apple(playlist.playlistId)}
+                            >
+                              <FAIcon name="apple" size={25} color="#FF4B63" />
+                            </Button>
+                          </CardItem>
+                        }
+                        right={
+                          <Button
+                            danger
+                            onPress={() => this.deleteRequest(playlist.playlistId)}
+                          >
+                            <Icon active name="md-close-circle" />
+                          </Button>
+                        }
+                      />
+
               );
             })}
           </Card>
