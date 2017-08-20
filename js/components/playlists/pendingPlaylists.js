@@ -38,53 +38,80 @@ export default class PendingPlaylists extends Component {
     };
   }
 
-  deleteRequest = (playlistId) => {
-    this.setState({requests: this.state.requests.filter(playlist => playlistId != playlist.playlistId)}, () => {if(!this.state.requests.length) this.props.navigation.goBack()})
-    Toast.show({text: 'Playlist request deleted!', position: 'bottom', duration: 1500, type: 'danger'})
-  }
+  deleteRequest = playlistId => {
+    this.setState(
+      {
+        requests: this.state.requests.filter(
+          playlist => playlistId != playlist.playlistId
+        )
+      },
+      () => {
+        if (!this.state.requests.length) this.props.navigation.goBack();
+      }
+    );
+    Toast.show({
+      text: 'Playlist request deleted!',
+      position: 'bottom',
+      duration: 1500,
+      type: 'danger'
+    });
+  };
 
-  spotify = (playlistId) => {
+  spotify = playlistId => {
     Database.addPlaylistFromPending(playlistId);
-    Database.databasePlaylistToSpotify(playlistId)
-    this.setState({requests: this.state.requests.filter(playlist => playlistId != playlist.playlistId)}, () => {if(!this.state.requests.length) this.props.navigation.goBack()})
-    Toast.show({text: 'Playlist added!', position: 'bottom', duration: 1500, type: 'success'})
+    Database.databasePlaylistToSpotify(playlistId);
+    this.setState(
+      {
+        requests: this.state.requests.filter(
+          playlist => playlistId != playlist.playlistId
+        )
+      },
+      () => {
+        if (!this.state.requests.length) this.props.navigation.goBack();
+      }
+    );
+    Toast.show({
+      text: 'Playlist added!',
+      position: 'bottom',
+      duration: 1500,
+      type: 'success'
+    });
+  };
 
-  }
-
-   // let obj = { name: 'Fullstack', author: 'One June', songs: [ '736211860', '712330693', '897279570']}
-
-  apple = (playlistId) => {
-    let playlistObj = null
-    let songArr = []
-    Database.addPlaylistFromPending(playlistId);
-    Promise.resolve(Database.getPlaylistFromId(playlistId)).then(result => {
-      playlistObj = {name: result.val().title, author: result.val().displayName}
-      Promise.resolve(result.val().songs.forEach(song => {
-              console.log("cloud function")
-              await axios.post(
-              'https://us-central1-hum-app.cloudfunctions.net/getSongId/',
-              {
-                title: `${song.title}`,
-                artist: `${song.artist}`,
-                service: 'appleId',
-              },
-              {
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              }
-            ).then(result => {console.log(result); songArr.push(result.data.toString())})
-      })).then(() => {playlistObj.songs = songArr; console.log(playlistObj)})
-
-      // let applePlaylist = JSON.stringify(result.val())
-      // NativeModules.MediaLibraryManager.createPlaylist(applePlaylist, (str) => {console.log(str)})
-    })
-    // let applePlaylist = JSON.stringify(obj)
-    // NativeModules.MediaLibraryManager.createPlaylist(applePlaylist, (str) => {console.log(str)})
-    // this.setState({requests: this.state.requests.filter(playlist => playlistId != playlist.playlistId)}, () => {if(!this.state.requests.length) this.props.navigation.goBack()})
-    // Toast.show({text: 'Playlist added!', position: 'bottom', duration: 1500, type: 'success'})
-
-  }
+  apple = async playlistId => {
+    try {
+      let playlistObj = null;
+      let songArr = [];
+      Database.addPlaylistFromPending(playlistId);
+      let result = await Database.getPlaylistFromId(playlistId);
+      playlistObj = {
+        name: result.val().title,
+        author: result.val().displayName
+      };
+      for (let song of result.val().songs) {
+        console.log('cloud function');
+        let songNum = await axios.post(
+          'https://us-central1-hum-app.cloudfunctions.net/getSongId/',
+          {
+            title: `${song.title}`,
+            artist: `${song.artist}`,
+            service: 'appleId'
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+        songArr.push(songNum.data.toString());
+      }
+      playlistObj.songs = songArr;
+      let applePlaylist = JSON.stringify(playlistObj)
+      NativeModules.MediaLibraryManager.createPlaylist(applePlaylist, (str) => {console.log(str)})
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   render() {
     return (
@@ -96,23 +123,38 @@ export default class PendingPlaylists extends Component {
               <Text style={styles.header}>Requests</Text>
             </CardItem>
             {this.state.requests.map(playlist => {
-              return(
-                    <CardItem bordered key={playlist.playlistId}>
-                      <Body>
-                        <Text>{playlist.title}</Text>
-                        <Text note >Playlist by {playlist.displayName}</Text>
-                        <Text note >{playlist.songs.length} songs</Text>
-                      </Body>
+              return (
+                <CardItem bordered key={playlist.playlistId}>
+                  <Body>
+                    <Text>
+                      {playlist.title}
+                    </Text>
+                    <Text note>
+                      Playlist by {playlist.displayName}
+                    </Text>
+                    <Text note>
+                      {playlist.songs.length} songs
+                    </Text>
+                  </Body>
 
-                        <Button small light style={{margin: 5}} onPress={() => this.spotify(playlist.playlistId)}>
-                                <FAIcon name="spotify" size={25} color="#1db954" />
-                          </Button>
-                        <Button small light style={{margin: 5}} onPress={() => this.apple(playlist.playlistId)}>
-                                <FAIcon name="apple" size={25} color="#FF4B63" />
-                        </Button>
-
-                    </CardItem>
-                )
+                  <Button
+                    small
+                    light
+                    style={{ margin: 5 }}
+                    onPress={() => this.spotify(playlist.playlistId)}
+                  >
+                    <FAIcon name="spotify" size={25} color="#1db954" />
+                  </Button>
+                  <Button
+                    small
+                    light
+                    style={{ margin: 5 }}
+                    onPress={() => this.apple(playlist.playlistId)}
+                  >
+                    <FAIcon name="apple" size={25} color="#FF4B63" />
+                  </Button>
+                </CardItem>
+              );
             })}
           </Card>
         </Content>

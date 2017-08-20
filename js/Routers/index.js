@@ -11,6 +11,9 @@ import Playlists from '../components/playlists';
 import SinglePlaylist from '../components/playlists/singlePlaylist';
 import SharePlaylist from '../components/playlists/sharePlaylist';
 import PendingPlaylists from '../components/playlists/pendingPlaylists';
+import MyPlaylists from '../components/playlists/myPlaylists'
+import SharedPlaylists from '../components/playlists/sharedPlaylists'
+
 
 import Collab from '../components/collab';
 import Friends from '../components/friends';
@@ -23,6 +26,18 @@ import UpdatePassword from '../components/profile/updatePassword';
 export const PlaylistsStack = StackNavigator({
   Playlists: {
     screen: Playlists,
+    navigationOptions: {
+      title: 'Playlists'
+    }
+  },
+  SharedPlaylists: {
+    screen: SharedPlaylists,
+    navigationOptions: {
+      title: 'Playlists'
+    }
+  },
+  MyPlaylists: {
+    screen: MyPlaylists,
     navigationOptions: {
       title: 'Playlists'
     }

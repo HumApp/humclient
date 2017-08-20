@@ -24,7 +24,6 @@ export default class Database {
     });
   }
 
-  //this might work?
   static getAllUsers() {
     return firebase.database().ref('/users').once('value');
   }
@@ -59,7 +58,7 @@ export default class Database {
 
   static addPlaylistToUser(playlistId) {
     let user = firebase.auth().currentUser;
-    firebase.database().ref(`/users/${user.uid}/playlists/${playlistId}`).set(true);
+    firebase.database().ref(`/users/${user.uid}/playlists/${playlistId}`).set("original");
   }
 
 
@@ -84,7 +83,7 @@ export default class Database {
   static addPlaylistFromPending(playlistId) {
     let user = firebase.auth().currentUser;
     firebase.database().ref(`/users/${user.uid}/sharedPlaylists/${playlistId}`).remove();
-    firebase.database().ref(`/users/${user.uid}/playlists/${playlistId}`).set(true);
+    firebase.database().ref(`/users/${user.uid}/playlists/${playlistId}`).set("shared");
   }
 
   static unfollowPlaylist(playlistId) {
