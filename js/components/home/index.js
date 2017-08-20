@@ -27,7 +27,7 @@ export default class Home extends Component {
   render() {
     return (
       <LinearGradient
-        colors={['#FF5A5F', '#FC642D', '#ebcbb9']}
+        colors={['#06db77', '#0fc3bd', '#14b9dc']}
         style={styles.container}
       >
         <Text style={styles.subtitle}>Back to the basics</Text>
@@ -40,7 +40,7 @@ export default class Home extends Component {
               style={styles.signup}
               onPress={() => this.goToSignUp()}
             >
-              <Text style={{ color: '#FC642D' }}>Sign Up</Text>
+              <Text style={{ color: '#14b9dc' }}>Sign Up</Text>
             </Button>
           </View>
           <View style={{ marginTop: 5, marginBottom: 5 }}>

@@ -96,7 +96,7 @@ export default class SignUp extends Component {
 
   render() {
     const content = this.state.isLoading
-      ? <Spinner color="red" />
+      ? <Spinner />
       : <Content>
           <Card>
             <Form style={styles.form}>

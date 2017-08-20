@@ -61,7 +61,7 @@ export default class SignUp extends Component {
 
   render() {
     const content = this.state.isLoading
-      ? <Spinner color="#FC642D" />
+      ? <Spinner />
       : <Card>
           <Content>
             <Text style={styles.loginTxt}>Log in</Text>

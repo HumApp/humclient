@@ -31,7 +31,7 @@ export const PlaylistsStack = StackNavigator({
     navigationOptions: {
       title: 'Playlists',
       headerStyle: {
-        backgroundColor: '#06db77'
+        backgroundColor: '#0fc3bd'
       },
       headerTitleStyle: {
         color: 'white'
@@ -43,7 +43,7 @@ export const PlaylistsStack = StackNavigator({
     navigationOptions: {
       headerTintColor: 'white',
       headerStyle: {
-        backgroundColor: '#06db77'
+        backgroundColor: '#0fc3bd'
       },
       headerTitleStyle: {
         color: 'white'
@@ -56,7 +56,7 @@ export const PlaylistsStack = StackNavigator({
       title: 'Share Playlist',
       headerTintColor: 'white',
       headerStyle: {
-        backgroundColor: '#06db77'
+        backgroundColor: '#0fc3bd'
       },
       headerTitleStyle: {
         color: 'white'
@@ -69,7 +69,7 @@ export const PlaylistsStack = StackNavigator({
       title: 'Pending Playlists',
       headerTintColor: 'white',
       headerStyle: {
-        backgroundColor: '#06db77'
+        backgroundColor: '#0fc3bd'
       },
       headerTitleStyle: {
         color: 'white'
@@ -84,7 +84,7 @@ export const CollabStack = StackNavigator({
     navigationOptions: {
       title: 'Collab',
       headerStyle: {
-        backgroundColor: '#06db77'
+        backgroundColor: '#0fc3bd'
       },
       headerTitleStyle: {
         color: 'white'
@@ -99,7 +99,7 @@ export const FriendsStack = StackNavigator({
     navigationOptions: {
       title: 'Friends',
       headerStyle: {
-        backgroundColor: '#06db77'
+        backgroundColor: '#0fc3bd'
       },
       headerTitleStyle: {
         color: 'white'
@@ -122,7 +122,7 @@ export const ProfileStack = StackNavigator({
     navigationOptions: {
       title: 'Profile',
       headerStyle: {
-        backgroundColor: '#06db77'
+        backgroundColor: '#0fc3bd'
       },
       headerTitleStyle: {
         color: 'white'
@@ -134,7 +134,7 @@ export const ProfileStack = StackNavigator({
     navigationOptions: {
       headerTintColor: 'white',
       headerStyle: {
-        backgroundColor: '#06db77'
+        backgroundColor: '#0fc3bd'
       }
     }
   }
@@ -182,7 +182,7 @@ export const Tabs = TabNavigator(
     tabBarComponent: TabBarBottom,
     tabBarPosition: 'bottom',
     tabBarOptions: {
-      activeTintColor: '#ff5a5f',
+      activeTintColor: '#06db77',
       inactiveTintColor: '#cecece'
     },
     initialRouteName: 'Profile',
@@ -224,12 +224,12 @@ export const SignedOut = StackNavigator(
       screen: Signup,
       navigationOptions: {
         title: 'Signup',
-        headerTintColor: '#FC642D',
+        headerTintColor: '#06db77',
         headerStyle: {
           backgroundColor: 'white'
         },
         headerTitleStyle: {
-          color: '#FC642D'
+          color: '#06db77'
         }
       }
     },
@@ -237,12 +237,12 @@ export const SignedOut = StackNavigator(
       screen: Login,
       navigationOptions: {
         title: 'Login',
-        headerTintColor: '#FC642D',
+        headerTintColor: '#06db77',
         headerStyle: {
           backgroundColor: 'white'
         },
         headerTitleStyle: {
-          color: '#FC642D'
+          color: '#06db77'
         }
       }
     }

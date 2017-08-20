@@ -63,27 +63,35 @@ export default class Playlists extends Component {
   };
 
   savePlaylist = playlistId => {
-    const currentUser = firebase.auth().currentUser
-    if(currentUser.accessToken) Database.databasePlaylistToSpotify(playlistId)
+    const currentUser = firebase.auth().currentUser;
+    if (currentUser.accessToken) Database.databasePlaylistToSpotify(playlistId);
     else {
-      console.log("should save to apple")
+      console.log('should save to apple');
       // should get playlist by id and stringify it
       // let applePlaylist = JSON.stringify(obj)
       // NativeModules.MediaLibraryManager.createPlaylist(applePlaylist, (str) => {console.log(str)})
     }
-  }
-
+  };
 
   componentDidMount() {
-    const currentUser = firebase.auth().currentUser.uid
-    Promise.resolve(this.getUserPlaylists(currentUser))
-    .then(playlistArr => this.setState({playlists: this.state.playlists.concat(playlistArr)}, () => this.setState({isLoading: false})))
-    Promise.resolve(Database.getSharedPlaylists()).then(result =>this.setState({sharedPlaylists: this.state.sharedPlaylists.concat(result.val())}, () => this.setState({sharedLoading: false})))
+    const currentUser = firebase.auth().currentUser.uid;
+    Promise.resolve(this.getUserPlaylists(currentUser)).then(playlistArr =>
+      this.setState(
+        { playlists: this.state.playlists.concat(playlistArr) },
+        () => this.setState({ isLoading: false })
+      )
+    );
+    Promise.resolve(Database.getSharedPlaylists()).then(result =>
+      this.setState(
+        { sharedPlaylists: this.state.sharedPlaylists.concat(result.val()) },
+        () => this.setState({ sharedLoading: false })
+      )
+    );
   }
 
   render() {
     // console.log('playlists', firebase.auth().currentUser.displayName);
-    console.log("shared playlists", this.state.sharedPlaylists);
+    console.log('shared playlists', this.state.sharedPlaylists);
     return (
       <Container>
         <Header searchBar rounded>
@@ -113,36 +121,39 @@ export default class Playlists extends Component {
               <Text style={styles.header}>Playlists</Text>
             </CardItem>
 
-            {this.state.isLoading ? <Spinner color="#FC642D" /> :
-            <View>
-            {!this.state.playlists.length
-              ?
-                <CardItem>
-                  <Text style={styles.header}>Connect a music streaming service to view playlists!</Text>
-                </CardItem>
+            {this.state.isLoading
+              ? <Spinner />
               : <View>
-                  {this.state.playlists.map((playlist, index) => {
-                    return (
-                      <CardItem
-                        button
-                        key={index}
-                        onPress={() => this.goToPlaylist(playlist)}
-                      >
-                        <Body>
-                          <Text style={styles.bodytxt}>
-                            {playlist.title}
-                          </Text>
-                        </Body>
-                        <Right>
-                          <Icon name="arrow-forward" style={styles.arrow} />
-                        </Right>
+                  {!this.state.playlists.length
+                    ? <CardItem>
+                        <Text style={styles.header}>
+                          Connect a music streaming service to view playlists!
+                        </Text>
                       </CardItem>
-                    );
-                  })}
-                </View>
-              }
-              </View>
-            }
+                    : <View>
+                        {this.state.playlists.map((playlist, index) => {
+                          return (
+                            <CardItem
+                              button
+                              key={index}
+                              onPress={() => this.goToPlaylist(playlist)}
+                            >
+                              <Body>
+                                <Text style={styles.bodytxt}>
+                                  {playlist.title}
+                                </Text>
+                              </Body>
+                              <Right>
+                                <Icon
+                                  name="arrow-forward"
+                                  style={styles.arrow}
+                                />
+                              </Right>
+                            </CardItem>
+                          );
+                        })}
+                      </View>}
+                </View>}
           </Card>
           <Card>
             <CardItem header>
@@ -153,18 +164,19 @@ export default class Playlists extends Component {
               />
               <Text style={styles.header}>Shared with Me</Text>
             </CardItem>
-            {this.state.sharedLoading ? <Spinner color="#FC642D" /> :
-            <View>
-            {this.state.sharedPlaylists[0] == null ?
-              <CardItem >
-                  <Text>No one has shared any playlists with you!</Text>
-              </CardItem> :
-            <View>
-            {Object.keys(this.state.sharedPlaylists).map(key => {
-              return (
-                        <SwipeRow
-                          rightOpenValue={-75}
-                          body={
+            {this.state.sharedLoading
+              ? <Spinner />
+              : <View>
+                  {this.state.sharedPlaylists[0] == null
+                    ? <CardItem>
+                        <Text>No one has shared any playlists with you!</Text>
+                      </CardItem>
+                    : <View>
+                        {Object.keys(this.state.sharedPlaylists).map(key => {
+                          return (
+                            <SwipeRow
+                              rightOpenValue={-75}
+                              body={
                                 <CardItem>
                                   <Body>
                                     <Text style={styles.bodytxt}>Beets</Text>
@@ -173,26 +185,26 @@ export default class Playlists extends Component {
                                     </Text>
                                   </Body>
                                   <Right>
-                                    <Icon name="arrow-forward" style={styles.arrow} />
+                                    <Icon
+                                      name="arrow-forward"
+                                      style={styles.arrow}
+                                    />
                                   </Right>
                                 </CardItem>
-                          }
-                          right={
-                            <Button primary onPress={() => this.savePlaylist(key)}>
-                              <Icon active name="trash" />
-                            </Button>
-                          }
-                          />
-                      )
-                })
-              }
-              </View>
-
-              }
-              </View>
-
-
-            }
+                              }
+                              right={
+                                <Button
+                                  primary
+                                  onPress={() => this.savePlaylist(key)}
+                                >
+                                  <Icon active name="trash" />
+                                </Button>
+                              }
+                            />
+                          );
+                        })}
+                      </View>}
+                </View>}
           </Card>
         </Content>
       </Container>

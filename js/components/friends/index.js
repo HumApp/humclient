@@ -51,18 +51,23 @@ export default class Friends extends Component {
   componentDidMount() {
     Promise.resolve(Database.getPendingFriends()).then(result => {
       Object.keys(result.val()).map(key => {
-        let user = {}
-        Promise.resolve(Database.getUserFromId(key)).then(result => {user.username = result.val().username; user.fullname = result.val().fullname; user.userId = key})
-         this.setState({ pending: this.state.pending.concat(user) }, () => console.log(this.state.pending));
-      })
+        let user = {};
+        Promise.resolve(Database.getUserFromId(key)).then(result => {
+          user.username = result.val().username;
+          user.fullname = result.val().fullname;
+          user.userId = key;
+        });
+        this.setState({ pending: this.state.pending.concat(user) }, () =>
+          console.log(this.state.pending)
+        );
+      });
     });
     Promise.resolve(Database.getAllFriends()).then(result => {
       const friendsArr = Object.keys(result.val()).map(key => {
-        return {friendId: key, friendName: result.val()[key]}
-      })
-      this.setState(
-        { friends: this.state.friends.concat(friendsArr) },
-        () => this.setState({isLoading: false})
+        return { friendId: key, friendName: result.val()[key] };
+      });
+      this.setState({ friends: this.state.friends.concat(friendsArr) }, () =>
+        this.setState({ isLoading: false })
       );
     });
   }
@@ -81,8 +86,7 @@ export default class Friends extends Component {
   };
 
   render() {
-
-    console.log("pending", this.state.pending);
+    console.log('pending', this.state.pending);
 
     return (
       <Container>
@@ -97,65 +101,68 @@ export default class Friends extends Component {
         </Header>
         <Content>
           <Card>
-            {this.state.pending.length  ?
-            <CardItem button onPress={this.friendRequests} header>
-              <Badge style={{ backgroundColor: '#FC642D' }}>
-                <Text>
-                  {this.state.pending.length}
-                </Text>
-              </Badge>
-              <Text style={styles.header}> Friend Requests</Text>
-              <Right>
-                <Icon name="arrow-forward" style={styles.arrow} />
-              </Right>
-            </CardItem>
-            : null}
+            {this.state.pending.length
+              ? <CardItem button onPress={this.friendRequests} header>
+                  <Badge style={{ backgroundColor: '#FC642D' }}>
+                    <Text>
+                      {this.state.pending.length}
+                    </Text>
+                  </Badge>
+                  <Text style={styles.header}> Friend Requests</Text>
+                  <Right>
+                    <Icon name="arrow-forward" style={styles.arrow} />
+                  </Right>
+                </CardItem>
+              : null}
           </Card>
           <Card>
             <CardItem header>
               <Icon active name="md-people" style={styles.headerIcon} />
               <Text style={styles.header}>Friends</Text>
             </CardItem>
-            {this.state.isLoading ? <Spinner color="#FC642D" /> :
-            <View>
-            {!this.state.friends.length
-              ?  <CardItem>
-                    <Text>Search for friends to add them!</Text>
-                </CardItem>
+            {this.state.isLoading
+              ? <Spinner />
               : <View>
-                  {this.state.friends.map(friend => {
-                    return (
-                      <SwipeRow
-                        rightOpenValue={-75}
-                        key={friend.friendId}
-                        body={
-                          <CardItem>
-                            <Left>
-                              <FAIcon name="apple" size={25} color="#FF4B63" />
-                            </Left>
-                            <Body>
-                              <Text style={styles.bodytxt}>
-                                {friend.friendName}
-                              </Text>
-                            </Body>
-                            <Right />
-                          </CardItem>
-                        }
-                        right={
-                          <Button
-                            danger
-                            onPress={() => this.deleteFriend(friend.friendId)}
-                          >
-                            <Icon active name="md-close-circle" />
-                          </Button>
-                        }
-                      />
-                    );
-                  })}
-                </View>
-              }
-
-
+                  {!this.state.friends.length
+                    ? <CardItem>
+                        <Text>Search for friends to add them!</Text>
+                      </CardItem>
+                    : <View>
+                        {this.state.friends.map(friend => {
+                          return (
+                            <SwipeRow
+                              rightOpenValue={-75}
+                              key={friend.friendId}
+                              body={
+                                <CardItem>
+                                  <Left>
+                                    <FAIcon
+                                      name="apple"
+                                      size={25}
+                                      color="#FF4B63"
+                                    />
+                                  </Left>
+                                  <Body>
+                                    <Text style={styles.bodytxt}>
+                                      {friend.friendName}
+                                    </Text>
+                                  </Body>
+                                  <Right />
+                                </CardItem>
+                              }
+                              right={
+                                <Button
+                                  danger
+                                  onPress={() =>
+                                    this.deleteFriend(friend.friendId)}
+                                >
+                                  <Icon active name="md-close-circle" />
+                                </Button>
+                              }
+                            />
+                          );
+                        })}
+                      </View>}
                 </View>}
           </Card>
         </Content>

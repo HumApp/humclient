@@ -39,7 +39,7 @@ export default class App extends Component {
     console.log('render start');
     if (this.state.currentUser === null) {
       console.log('render spinner');
-      landingPage = <Spinner color="#FC642D" />;
+      landingPage = <Spinner />;
     } else {
       console.log('render app navigator');
       console.log('are we getting here more than once???');

@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   signup: {
-    backgroundColor: '#ff5a5f',
+    backgroundColor: '#06db77',
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
@@ -10,7 +10,7 @@ export default StyleSheet.create({
   },
   disabled: {
     opacity: 0.5,
-    backgroundColor: '#ff5a5f',
+    backgroundColor: '#06db77',
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',

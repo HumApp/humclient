@@ -365,7 +365,7 @@ export default class Profile extends Component {
                 </CardItem>
               </Card>
             </Content>
-          : <Spinner color="#FC642D" />}
+          : <Spinner />}
       </Container>
     );
   }
