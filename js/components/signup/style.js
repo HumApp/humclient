@@ -2,15 +2,6 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   signup: {
-    backgroundColor: '#ff5a5f',
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  disabled: {
-    opacity: 0.5,
-    backgroundColor: '#ff5a5f',
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',

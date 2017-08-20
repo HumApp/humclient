@@ -89,7 +89,8 @@ export default class SignUp extends Component {
                 <Button
                   rounded
                   iconRight
-                  style={!this.validateForm() ? styles.disabled : styles.login}
+                  danger
+                  style={styles.login}
                   onPress={this.login}
                   disabled={!this.validateForm()}
                 >
@@ -101,6 +102,7 @@ export default class SignUp extends Component {
                 <Button
                   rounded
                   iconRight
+                  danger
                   style={styles.login}
                   onPress={() => this.props.navigation.navigate('Signup')}
                 >

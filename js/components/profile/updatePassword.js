@@ -13,7 +13,7 @@ import {
   Card,
   Icon
 } from 'native-base';
-import styles from './styles'
+import styles from '../login/style';
 import { Field, reduxForm } from 'redux-form';
 
 export default class UpdatePassword extends Component {
@@ -36,12 +36,16 @@ export default class UpdatePassword extends Component {
                 <Input autoCapitalize="none" secureTextEntry={true} />
               </Item>
               <CardItem>
-                <Button rounded iconRight style={styles.login}
-                  onPress={() =>
-                    this.props.navigation.navigate('Profile')}
+                <Button
+                  danger
+                  rounded
+                  iconRight
+                  disabled
+                  style={styles.login}
+                  onPress={() => this.props.navigation.navigate('Profile')}
                 >
                   <Text style={{ fontSize: 18 }}>Confirm</Text>
-                  <Icon name='ios-arrow-forward' style={{ color: '#fff' }} />
+                  <Icon name="ios-arrow-forward" style={{ color: '#fff' }} />
                 </Button>
               </CardItem>
             </Form>
