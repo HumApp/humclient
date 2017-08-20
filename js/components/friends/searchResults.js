@@ -44,17 +44,12 @@ export default class SearchResults extends Component {
     Promise.resolve(Database.getAllUsers()).then(result => this.setState({results: result.val()}))
   }
 
-  addRequest = (requestedFriendId) => {
+  addRequest = (name, requestedFriendId) => {
     console.log(requestedFriendId)
     Database.requestFriend(requestedFriendId)
+    Toast.show({text: `${name} added!`, position: 'bottom', duration: 1500, type: 'success'})
   }
 
-  acceptRequest = (username) => {
-    console.log("accepted")
-    this.setState({requests: this.state.requests.filter(person => username != person.username)})
-    Toast.show({text: 'Friend added!', position: 'bottom', duration: 1500, type: 'success'})
-
-  }
 
   render() {
     return (
@@ -76,30 +71,22 @@ export default class SearchResults extends Component {
             <CardItem header>
               <Text style={styles.header}> Search Results</Text>
             </CardItem>
-            {!this.state.results ? <Spinner /> :
+            {!this.state.results ? <Spinner color="#FC642D"/> :
               <View>
-                {Object.keys(this.state.results).map(friendKey => {
+                {Object.keys(this.state.results).map((friendKey, index) => {
                   return (
-                          <SwipeRow
-                            rightOpenValue={-75}
-                            key={friendKey}
-                            body={
-                              <CardItem>
-                                <Body>
-                                  <Text style={styles.bodytxt}>{this.state.results[friendKey].fullname}</Text>
-                                  <Text style={styles.bodytxt}>{this.state.results[friendKey].username}</Text>
-                                </Body>
-                                <Right>
 
-                                </Right>
-                              </CardItem>
-                            }
-                            right={
-                              <Button primary onPress={() => this.addRequest(friendKey)}>
-                                <Icon active name="md-add-circle" />
+                           <CardItem key={index} bordered={true}>
+                            <Body>
+                              <Text style={styles.bodytxt}>{this.state.results[friendKey].fullname}</Text>
+                              <Text style={styles.bodytxt}>{this.state.results[friendKey].username}</Text>
+                            </Body>
+                            <Right>
+                              <Button small  style={{backgroundColor: '#ff5a5f'}} onPress={() => this.addRequest(this.state.results[friendKey].fullname, friendKey)}>
+                                <Icon name="md-add" />
                               </Button>
-                            }
-                            />
+                            </Right>
+                          </CardItem>
                           )
                 })}
               </View>
