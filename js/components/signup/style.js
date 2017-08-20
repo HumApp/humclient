@@ -6,7 +6,15 @@ export default StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
+  },
+  disabled: {
+    opacity: 0.5,
+    backgroundColor: '#ff5a5f',
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   header: {
     color: '#484848',
@@ -14,7 +22,7 @@ export default StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    alignItems: 'flex-start'
   },
   form: {
     padding: 15

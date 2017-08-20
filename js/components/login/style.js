@@ -6,6 +6,14 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  disabled: {
+    opacity: 0.5,
+    backgroundColor: '#ff5a5f',
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   login: {
     backgroundColor: '#ff5a5f',
     flex: 1,

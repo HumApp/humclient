@@ -89,7 +89,7 @@ export default class SignUp extends Component {
                 <Button
                   rounded
                   iconRight
-                  style={styles.login}
+                  style={!this.validateForm() ? styles.disabled : styles.login}
                   onPress={this.login}
                   disabled={!this.validateForm()}
                 >
