@@ -53,7 +53,8 @@ export default class Profile extends Component {
           token: snapshot.val().accessToken,
           appleAuth: snapshot.val().appleAuth
         });
-      });
+      })
+      .catch(error => console.log("Profile ", error));
   }
 
   signOut = async () => {
@@ -142,7 +143,8 @@ export default class Profile extends Component {
           headers: {
             Authorization: `Bearer ${this.state.token}`
           }
-        });
+        })
+          .catch(error => console.log("Profile ", error));
         let songs = songsData.data.items;
         let songsArr = [];
         songs.forEach(song => {

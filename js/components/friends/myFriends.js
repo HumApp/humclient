@@ -28,16 +28,16 @@ export default class MyFriends extends Component {
         <Card>
           {this.props.pending.length
             ? <CardItem button onPress={this.friendRequests} header>
-                <Badge style={{ backgroundColor: '#FC642D' }}>
-                  <Text>
-                    {this.props.pending.length}
-                  </Text>
-                </Badge>
-                <Text style={styles.header}> Friend Requests</Text>
-                <Right>
-                  <Icon name="arrow-forward" style={styles.arrow} />
-                </Right>
-              </CardItem>
+              <Badge style={{ backgroundColor: '#FC642D' }}>
+                <Text>
+                  {this.props.pending.length}
+                </Text>
+              </Badge>
+              <Text style={styles.header}> Friend Requests</Text>
+              <Right>
+                <Icon name="arrow-forward" style={styles.arrow} />
+              </Right>
+            </CardItem>
             : null}
         </Card>
         <Card>
@@ -48,47 +48,42 @@ export default class MyFriends extends Component {
           {this.props.isLoading
             ? <Spinner color="#FC642D" />
             : <View>
-                {!this.props.friends.length
-                  ? <CardItem>
-                      <Text>Search for friends to add them!</Text>
-                    </CardItem>
-                  : <View>
-                      {this.props.friends.map(friend => {
-                        return (
-                          <SwipeRow
-                            rightOpenValue={-75}
-                            key={friend.friendId}
-                            body={
-                              <CardItem>
-                                <Left>
-                                  <FAIcon
-                                    name="apple"
-                                    size={25}
-                                    color="#FF4B63"
-                                  />
-                                </Left>
-                                <Body>
-                                  <Text style={styles.bodytxt}>
-                                    {friend.friendName}
-                                  </Text>
-                                </Body>
-                                <Right />
-                              </CardItem>
-                            }
-                            right={
-                              <Button
-                                danger
-                                onPress={() =>
-                                  this.deleteFriend(friend.friendId)}
-                              >
-                                <Icon active name="md-close-circle" />
-                              </Button>
-                            }
-                          />
-                        );
-                      })}
-                    </View>}
-              </View>}
+              {!this.props.friends.length
+                ? <CardItem>
+                  <Text>Search for friends to add them!</Text>
+                </CardItem>
+                : <View>
+                  {this.props.friends.map(friend => {
+                    return (
+                      <SwipeRow
+                        rightOpenValue={-75}
+                        key={friend.friendId}
+                        body={
+                          <CardItem>
+                            <Left>
+                              <FAIcon
+                                name="apple"
+                                size={25}
+                                color="#FF4B63"
+                              />
+                            </Left>
+                            <Body>
+                              <Text style={styles.bodytxt}>
+                                {friend.friendName}
+                              </Text>
+                            </Body>
+                            <Right />
+                          </CardItem>
+                        }
+                        right={
+                          <Button danger onPress={() => this.deleteFriend(friend.friendId)}>
+                            <Icon active name="md-close-circle" />
+                          </Button>
+                        }
+                      />);
+                  })}
+                </View>}
+            </View>}
         </Card>
       </Content>
     );

@@ -49,7 +49,6 @@ export default class Friends extends Component {
     //   return friend.match(this.state.)
     // })
     console.log('hi brian');
-
   };
 
   friendRequests = () => {

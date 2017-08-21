@@ -16,6 +16,7 @@ import {
   Header,
   Right,
   Left,
+  Toast,
   SwipeRow
 } from 'native-base';
 import { default as FAIcon } from 'react-native-vector-icons/FontAwesome';
@@ -40,7 +41,7 @@ export default class SearchFriends extends Component {
     // Promise.resolve(Database.getAllUsers()).then(result => this.setState({results: this.state.results.concat(result.val())}))
     Promise.resolve(Database.getAllUsers()).then(result =>
       this.setState({ results: result.val() })
-    );
+    ).catch(error => console.log("Search Friends ", error));
   }
 
   addRequest = (name, requestedFriendId) => {
@@ -64,34 +65,34 @@ export default class SearchFriends extends Component {
           {!this.state.results
             ? <Spinner color="#FC642D" />
             : <View>
-                {Object.keys(this.state.results).map((friendKey, index) => {
-                  return (
-                    <CardItem key={index} bordered={true}>
-                      <Body>
-                        <Text style={styles.bodytxt}>
-                          {this.state.results[friendKey].fullname}
-                        </Text>
-                        <Text style={styles.bodytxt}>
-                          {this.state.results[friendKey].username}
-                        </Text>
-                      </Body>
-                      <Right>
-                        <Button
-                          small
-                          style={{ backgroundColor: '#ff5a5f' }}
-                          onPress={() =>
-                            this.addRequest(
-                              this.state.results[friendKey].fullname,
-                              friendKey
-                            )}
-                        >
-                          <Icon name="md-add" />
-                        </Button>
-                      </Right>
-                    </CardItem>
-                  );
-                })}
-              </View>}
+              {Object.keys(this.state.results).map((friendKey, index) => {
+                return (
+                  <CardItem key={index} bordered={true}>
+                    <Body>
+                      <Text style={styles.bodytxt}>
+                        {this.state.results[friendKey].fullname}
+                      </Text>
+                      <Text style={styles.bodytxt}>
+                        {this.state.results[friendKey].username}
+                      </Text>
+                    </Body>
+                    <Right>
+                      <Button
+                        small
+                        style={{ backgroundColor: '#ff5a5f' }}
+                        onPress={() =>
+                          this.addRequest(
+                            this.state.results[friendKey].fullname,
+                            friendKey
+                          )}
+                      >
+                        <Icon name="md-add" />
+                      </Button>
+                    </Right>
+                  </CardItem>
+                );
+              })}
+            </View>}
         </Card>
       </Content>
     );
