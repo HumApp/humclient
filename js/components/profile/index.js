@@ -201,20 +201,39 @@ export default class Profile extends Component {
     else return <Icon name="ios-add" style={styles.header} />;
   };
 
-  // disconnectApple = () => {
-  //   let appleAuth = false
-  //   firebase.auth().onAuthStateChanged(function(user) {
-  //   if (user) {
-  //     console.log(user);
-  //     firebase.database().ref('users/' + user.uid).update({
-  //       appleAuth
-  //     });
-  //     Database.deleteAllUserPlaylists(user.uid)
-  //   } else {
-  //     console.log('No user is signed in');
-  //   }
-  //   });
-  // }
+  disconnectApple = () => {
+    let appleAuth = false
+    this.setState({appleAuth: false})
+    firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      console.log(user);
+      firebase.database().ref('users/' + user.uid).update({
+        appleAuth
+      });
+      Database.deleteAllUserPlaylists(user.uid, "appleId")
+    } else {
+      console.log('No user is signed in');
+    }
+    });
+  }
+
+  disconnectSpotify = () => {
+    let accessToken = '';
+    let spotifyId = '';
+    this.setState({token: accessToken, id: spotifyId})
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        console.log(user);
+        firebase.database().ref('users/' + user.uid).update({
+          accessToken,
+          spotifyId
+        });
+        Database.deleteAllUserPlaylists(user.uid, "spotifyId")
+      } else {
+        console.log('No user is signed in');
+      }
+    });
+  }
 
   render() {
     return (
@@ -277,7 +296,7 @@ export default class Profile extends Component {
                     </CardItem>
                   }
                   right={
-                    <Button danger onPress={() => console.log("disconnect apple")}>
+                    <Button danger onPress={this.disconnectApple}>
                       <Icon active name="md-close-circle" />
                     </Button>
                   }
@@ -285,7 +304,6 @@ export default class Profile extends Component {
                 :
 
                 <SwipeRow
-                  rightOpenValue={-75}
                   body={
                     <CardItem
                       button
@@ -305,11 +323,6 @@ export default class Profile extends Component {
                         {this.appleConnected()}
                       </Right>
                     </CardItem>
-                  }
-                  right={
-                    <Button danger onPress={() => console.log("disconnect apple")}>
-                      <Icon active name="md-close-circle" />
-                    </Button>
                   }
                 />
                 }
@@ -340,7 +353,7 @@ export default class Profile extends Component {
                   right={
                     <Button
                       danger
-                      onPress={() => this.setState({ id: '', token: '' })}
+                      onPress={this.disconnectSpotify}
                     >
                       <Icon active name="md-close-circle" />
                     </Button>
@@ -348,7 +361,6 @@ export default class Profile extends Component {
                 />
                 :
                 <SwipeRow
-                  rightOpenValue={-75}
                   body={
                     <CardItem
                       button
@@ -373,14 +385,6 @@ export default class Profile extends Component {
                           : <Icon name="ios-add" style={styles.header} />}
                       </Right>
                     </CardItem>
-                  }
-                  right={
-                    <Button
-                      danger
-                      onPress={() => this.setState({ id: '', token: '' })}
-                    >
-                      <Icon active name="md-close-circle" />
-                    </Button>
                   }
                 />}
                 <SwipeRow

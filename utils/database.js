@@ -19,7 +19,8 @@ export default class Database {
         title: playlist.name,
         creator: currentUser.uid,
         songs: newSong,
-        displayName: currentUser.displayName
+        displayName: currentUser.displayName,
+        type: providerId
       });
     });
   }
@@ -64,6 +65,7 @@ export default class Database {
 
   //get playlist from id
   static getPlaylistFromId(pid) {
+    console.log("PLAYLIST ID", pid)
     return Promise.resolve(firebase.database().ref(`/playlists/${pid}`).once('value'))
   }
 
@@ -162,7 +164,7 @@ export default class Database {
     });
   }
 
-  static deleteAllUserPlaylists(userId) {
+  static deleteAllUserPlaylists(userId, type) {
     firebase
       .database()
       .ref(`playlists`)
@@ -171,25 +173,11 @@ export default class Database {
       .once('value')
       .then(playlists => {
         playlists.forEach(playlist => {
-          firebase.database().ref(`playlists/${playlist.key}`).remove();
-
-          console.log(playlists);
-          playlists.forEach(playlist => {
-            let newSong = {};
-            playlist.songs.forEach((song, index) => {
-              this.findOrCreateSong(song, providerId);
-              newSong[index] = {};
-              newSong[index].artist = song.artist;
-              newSong[index].title = song.title;
-            });
-            const newPlaylistId = firebase.database().ref('playlists').push()
-              .key;
-            firebase.database().ref(`playlists/${newPlaylistId}`).set({
-              title: playlist.name,
-              creator: 'Olivia',
-              songs: newSong
-            });
-          });
+          let key = playlist.key
+          if(playlist.val().type == type) {
+            firebase.database().ref(`playlists/${key}`).remove();
+            firebase.database().ref(`users/${userId}/playlists/${key}`).remove();
+          }
         });
       });
   }

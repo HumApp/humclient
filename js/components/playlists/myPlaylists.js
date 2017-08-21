@@ -48,7 +48,6 @@ export default class MyPlaylists extends Component {
       let newPlaylistObj = Object.assign(result.val());
       newPlaylistObj.playlistId = playlist;
       playlistArr.push(newPlaylistObj);
-      console.log(playlistArr);
     }
     console.log('returning');
     return playlistArr;
@@ -56,11 +55,12 @@ export default class MyPlaylists extends Component {
 
   componentDidMount() {
     const currentUser = firebase.auth().currentUser.uid;
-    Promise.resolve(this.getUserPlaylists(currentUser)).then(playlistArr =>
+    Promise.resolve(this.getUserPlaylists(currentUser)).then(playlistArr => {
       this.setState(
         { playlists: this.state.playlists.concat(playlistArr) },
         () => this.setState({ isLoading: false })
       )
+    }
     );
     Promise.resolve(Database.getSharedPlaylists()).then(result =>
       Object.keys(result.val()).map(key => {
@@ -76,6 +76,7 @@ export default class MyPlaylists extends Component {
   }
 
   render() {
+    console.log(this.state.playlists)
     return (
       <Container>
         <Content>

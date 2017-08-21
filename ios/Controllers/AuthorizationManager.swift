@@ -143,12 +143,6 @@ class AuthorizationManager: NSObject {
     
   @objc func requestMediaLibraryAuthorization(_ callback: @escaping RCTResponseSenderBlock) {
         /*
-         An application should only ever call `MPMediaLibrary.requestAuthorization(_:)` when their
-         current authorization is `MPMediaLibraryAuthorizationStatusNotDetermined`
-         */
-        guard MPMediaLibrary.authorizationStatus() == .notDetermined else { return }
-        
-        /*
          `MPMediaLibrary.requestAuthorization(_:)` triggers a prompt for the user asking if they wish to allow the application
          that requested authorization access to the device's media library.
          
