@@ -8,7 +8,11 @@ import {
   Card,
   Body,
   View,
+  Header,
   Left,
+  Input,
+  Item,
+  Spinner,
   CardItem,
   Badge,
   Right,
@@ -25,9 +29,20 @@ export default class MyFriends extends Component {
   render() {
     return (
       <Content>
+        <Header searchBar rounded>
+          <Item>
+            <Icon name="ios-search" />
+            <Input
+              autoCorrect={false}
+              autoCapitalize="none"
+              placeholder="Search through your friends"
+              onChangeText={text => this.props.searchMyFriends(text)}
+            />
+          </Item>
+        </Header>
         <Card>
           {this.props.pending.length
-            ? <CardItem button onPress={this.friendRequests} header>
+            ? <CardItem button onPress={this.props.friendRequests} header>
                 <Badge style={{ backgroundColor: '#FC642D' }}>
                   <Text>
                     {this.props.pending.length}
@@ -79,7 +94,7 @@ export default class MyFriends extends Component {
                               <Button
                                 danger
                                 onPress={() =>
-                                  this.deleteFriend(friend.friendId)}
+                                  this.props.deleteFriend(friend.friendId)}
                               >
                                 <Icon active name="md-close-circle" />
                               </Button>

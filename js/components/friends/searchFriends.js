@@ -10,10 +10,10 @@ import {
   Body,
   Item,
   Spinner,
+  Header,
   Input,
   CardItem,
   Badge,
-  Header,
   Right,
   Left,
   SwipeRow
@@ -32,15 +32,9 @@ export default class SearchFriends extends Component {
     super(props);
     this.state = {
       results: null,
-      requests: [{ username: 'oliviaoddo' }, { username: 'brian' }]
+      requests: [{ username: 'oliviaoddo' }, { username: 'brian' }],
+      searchFriend: ''
     };
-  }
-
-  componentWillMount() {
-    // Promise.resolve(Database.getAllUsers()).then(result => this.setState({results: this.state.results.concat(result.val())}))
-    Promise.resolve(Database.getAllUsers()).then(result =>
-      this.setState({ results: result.val() })
-    );
   }
 
   addRequest = (name, requestedFriendId) => {
@@ -54,9 +48,31 @@ export default class SearchFriends extends Component {
     });
   };
 
+  searchNewFriends = searchFriend => {
+    Database.request;
+  };
+
   render() {
     return (
       <Content>
+        <Header searchBar rounded>
+          <Item>
+            <Icon name="ios-search" />
+            <Input
+              placeholder="Search for new friends"
+              autoCapitalize="none"
+              autoCorrect={false}
+              value={this.state.searchFriend}
+              onChangeText={text => this.setState({ searchFriend: text })}
+            />
+          </Item>
+          <Button
+            transparent
+            onPress={() => this.searchNewFriends(this.state.searchFriend)}
+          >
+            <Text>Search</Text>
+          </Button>
+        </Header>
         <Card>
           <CardItem header>
             <Text style={styles.header}> Search Results</Text>

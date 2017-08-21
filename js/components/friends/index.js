@@ -39,17 +39,34 @@ export default class Friends extends Component {
     super(props);
     this.state = {
       friends: [],
+      searchFriends: [],
       pending: [],
       isLoading: true
     };
   }
 
-  handleSearch = (friends) => {
-    // friends.filter(friend => {
-    //   return friend.match(this.state.)
-    // })
-    console.log('hi brian');
+  searchMyFriends = searchFriend => {
+    this.setState({
+      searchFriends: searchFriend
+        ? this.state.friends.filter(friend =>
+            friend.friendName.match(searchFriend)
+          )
+        : this.state.friends
+    });
+  };
 
+  searchNewFriends = searchFriend => {
+    this.setState({
+      searchFriends: searchFriend
+        ? this.state.friends.filter(friend =>
+            friend.friendName.match(searchFriend)
+          )
+        : this.state.friends
+    });
+  };
+
+  searchNewFriends = friends => {
+    console.log('hi brian');
   };
 
   friendRequests = () => {
@@ -82,8 +99,12 @@ export default class Friends extends Component {
         friendName: friends.val()[friendId]
       });
     }
-    this.setState({ friends: this.state.friends.concat(friendsArr) }, () =>
-      this.setState({ isLoading: false })
+    this.setState(
+      {
+        friends: this.state.friends.concat(friendsArr),
+        searchFriends: this.state.friends.concat(friendsArr)
+      },
+      () => this.setState({ isLoading: false })
     );
   }
 
@@ -106,33 +127,27 @@ export default class Friends extends Component {
 
     return (
       <Container>
-        <Header searchBar rounded>
-          <Item>
-            <Icon name="ios-search" />
-            <Input placeholder="Search for new friends" />
-          </Item>
-          <Button light onPress={this.searchPeople} transparent>
-            <Icon name="md-close-circle" />
-          </Button>
-        </Header>
         <Tabs
           tabBarUnderlineStyle={{ backgroundColor: '#ff5a5f' }}
           initialPage={0}
         >
           <Tab activeTextStyle={{ color: '#484848' }} heading="My Friends">
             <MyFriends
-              handleSearch={this.handleSearch}
-              friends={this.state.friends}
+              searchMyFriends={this.searchMyFriends}
+              friendRequests={this.friendRequests}
+              friends={this.state.searchFriends}
               pending={this.state.pending}
-              loading={this.state.loading}
+              isLoading={this.state.isLoading}
+              deleteFriend={this.deleteFriend}
             />
           </Tab>
           <Tab activeTextStyle={{ color: '#484848' }} heading="Search Friends">
             <SearchFriends
+              searchNewFriends={this.searchNewFriends}
               handleSearch={this.handleSearch}
               friends={this.state.friends}
               pending={this.state.pending}
-              loading={this.state.loading}
+              isLoading={this.state.isLoading}
             />
           </Tab>
         </Tabs>
