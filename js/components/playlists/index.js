@@ -18,7 +18,7 @@ import {
 import MyPlaylists from './myPlaylists';
 import SharedPlaylists from './sharedPlaylists';
 import * as firebase from 'firebase';
-import Database from '../../../utils/database';
+import * as Database from '../../../utils/database';
 import { AsyncStorage } from 'react-native';
 
 export default class Playlists extends Component {

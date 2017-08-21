@@ -21,7 +21,7 @@ import {
 } from 'native-base';
 import styles from './styles';
 import axios from 'axios';
-import Database from '../../../utils/database';
+import * as Database from '../../../utils/database';
 import { default as FAIcon } from 'react-native-vector-icons/FontAwesome';
 import { NativeModules } from 'react-native';
 import firebase from 'firebase';

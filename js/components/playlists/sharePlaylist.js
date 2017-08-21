@@ -24,7 +24,7 @@ import {
   Toast
 } from 'native-base';
 import styles from './styles';
-import Database from '../../../utils/database';
+import * as Database from '../../../utils/database';
 
 
 export default class SharePlaylist extends Component {

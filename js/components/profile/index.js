@@ -20,7 +20,7 @@ import styles from './styles';
 import { default as FAIcon } from 'react-native-vector-icons/FontAwesome';
 import { NativeModules } from 'react-native';
 import axios from 'axios';
-import Database from '../../../utils/database';
+import * as Database from '../../../utils/database';
 import Prompt from 'react-native-prompt';
 import * as firebase from 'firebase';
 const SpotifyModule = NativeModules.SpotifyModule;
@@ -165,21 +165,6 @@ export default class Profile extends Component {
     } catch (error) {
       console.log(error);
     }
-  };
-
-  createPlaylists = () => {
-    axios
-      .post(
-        `https://api.spotify.com/v1/users/${this.state.id}/playlists`,
-        `{\"name\":\"${this.state.playlist}\", \"public\":false}`,
-        {
-          headers: {
-            Authorization: `Bearer ${this.state.token}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      )
-      .catch(error => console.log(error));
   };
 
   requestAppleMusic = () => {
@@ -425,28 +410,6 @@ export default class Profile extends Component {
                 >
                   <Body>
                     <Text style={styles.bodytxt}>Update Password</Text>
-                  </Body>
-                  <Right>
-                    <Icon name="arrow-forward" style={styles.arrow} />
-                  </Right>
-                </CardItem>
-                <Prompt
-                  title="Enter a playlist name"
-                  placeholder="My New Playlist"
-                  visible={this.state.promptVisible}
-                  onCancel={() => this.setState({ promptVisible: false })}
-                  onSubmit={value =>
-                    this.setState(
-                      { promptVisible: false, playlist: `${value}` },
-                      this.createPlaylists
-                    )}
-                />
-                <CardItem
-                  button
-                  onPress={() => this.setState({ promptVisible: true })}
-                >
-                  <Body>
-                    <Text style={styles.bodytxt}>New Spotify Playlist</Text>
                   </Body>
                   <Right>
                     <Icon name="arrow-forward" style={styles.arrow} />

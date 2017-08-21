@@ -1,6 +1,5 @@
 const functions = require('firebase-functions');
 const axios = require('axios');
-// The Firebase Admin SDK to access the Firebase Realtime Database.
 const admin = require('firebase-admin');
 admin.initializeApp(functions.config().firebase);
 const _ = require('lodash');
@@ -15,7 +14,6 @@ exports.getSongId = functions.https.onRequest((req, response) => {
     .then(snapshot => {
       let id = snapshot.child(reqSong.service).val();
       if (id) {
-        console.log('found id', id);
         response.send(id.toString());
       } else if (reqSong.service === 'appleId') {
         axios.get(makeiTunesSongQuery(reqSong.title, reqSong.artist))
@@ -30,8 +28,6 @@ exports.getSongId = functions.https.onRequest((req, response) => {
         axios.get(makeSpotifySongQuery(reqSong.title, reqSong.artist), {
             headers: {
               Authorization: `Bearer ${userToken}`
-              //  "Content-Type": 'application/x-www-form-urlencoded',
-              //  Accept: 'application/json'
             }
           })
           .then(res => res.data)
@@ -46,48 +42,13 @@ exports.getSongId = functions.https.onRequest((req, response) => {
     .catch(console.error);
 });
 
-// exports.savePlayistToSpotify = functions.https.onRequest((req, res) => {
-//   //given a DB playlist ID and spotify user token, saves the playlist from the database to spotify
-//   const userToken = req.body.userToken;
-//   const playlistId = req.body.playlistId;
-//   admin.database().ref(`/playlists/${playlistId}/songs`).once('value')
-//     .then(snap => {
-//       let songIds = [];
-//       let spotifyIds = [];
-//       snap.forEach(child => {
-//         songIds.push(child.key);
-//       });
-//       //songIds now contains all of the ids of the songs
-//       let promArr = [];
-//       songIds.forEach(songId => {
-//         promArr.push(admin.database().ref(`/songs/${songId}`).once('value'));
-//       });
-//       Promise.all(promArr)
-//         .then(arr => {
-//           arr.forEach(song => {
-//               axios.post('https://us-central1-hum-app.cloudfunctions.net/getSongId', {
-//                   title: song.title,
-//                   artist: song.artist,
-//                   service: 'spotifyId'
-//                 })
-//                 .then(id => spotifyIds.push(id));
-//             })
-//             .then(() => {
-//               axios.post(`POST https://api.spotify.com/v1/users/${userToken}/playlists/{playlist_id}/${spotifyIds.join(',')}`);
-//             });
-//         });
-//     });
-// });
-
 exports.sentPendingWatch = functions.database.ref(`/users/{uid}/pending`).onWrite(function (event) {
   let uid = event.params.uid;
   let pending = Object.keys(event.data.val());
   admin.database().ref(`/users/${uid}/sent`).once('value', function (sentSnap) {
     let sent = Object.keys(sentSnap.val());
-    console.log('pending:', pending, 'Sent:', sent);
     let matches = _.intersection(sent, pending);
     if (matches.length > 0) {
-      console.log('matches found:', matches);
       matches.forEach(match => {
         admin.database().ref(`/users/${uid}/friends/${match}`).set(true);
         admin.database().ref(`/users/${uid}/pending/${match}`).remove();
@@ -97,23 +58,6 @@ exports.sentPendingWatch = functions.database.ref(`/users/{uid}/pending`).onWrit
   });
 });
 
-
-/*
-function (event) {
-  let uid = event.params.uid;
-  console.log('CHILD ADDED ===========');
-  let pending = event.data.val();
-  admin.database().ref(`/users/${uid}/sent`).once('value', function (sentSnap) {
-    let matches = _.intersection(sentSnap.val(), pending);
-    if (matches) {
-      matches.forEach(match => {
-        admin.database().ref(`/users/${uid}/friends/${match}`).set(true);
-        admin.database().ref(`/users/${uid}/pending/${match}`).remove();
-        admin.database().ref(`/users/${uid}/sent/${match}`).remove();
-      });
-    }
-  });
-*/
 function makeiTunesSongQuery(songTitle, songArtist) {
   return `https://itunes.apple.com/search?term=${songTitle} ${songArtist}&media=music`;
 }
@@ -123,7 +67,7 @@ function makeSpotifySongQuery(songTitle, songArtist) {
 }
 
 function getURL(str) {
-  return encodeURIComponent(str).replace(/\./g, function (cha) {
+  return encodeURIComponent(str).replace('.', function (cha) {
     return '%' + cha.charCodeAt(0).toString(16);
   });
 }
@@ -132,5 +76,4 @@ function sendResponseWithIdAndSave(response, id, urlTitle, urlArtist, service) {
   admin.database().ref(`/songs/${urlTitle}/${urlArtist}/${service}`).set(id);
   console.log(`set /songs/${urlTitle}/${urlArtist} to have child ${service} with value ${id}`);
   response.send(id);
-  console.log('Sending and saving', id);
 }
