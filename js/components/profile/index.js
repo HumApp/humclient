@@ -197,7 +197,7 @@ export default class Profile extends Component {
 
   appleConnected = () => {
     if (this.state.appleAuth)
-      return <Icon name="ios-checkmark-circle" style={styles.header} />;
+      return <Icon name="ios-checkmark-circle" style={styles.headerIcondisabled} />;
     else return <Icon name="ios-add" style={styles.header} />;
   };
 
@@ -256,6 +256,34 @@ export default class Profile extends Component {
                   />
                   <Text style={styles.header}>Integrations</Text>
                 </CardItem>
+
+
+                {this.state.appleAuth ?
+                <SwipeRow
+                  rightOpenValue={-75}
+                  body={
+                    <CardItem
+                      disabled
+                    >
+                      <Left>
+                        <FAIcon name="apple" size={25} color="#FF4B63" />
+                      </Left>
+                      <Body>
+                        <Text style={styles.bodytxtdisabled}>Apple Music</Text>
+                      </Body>
+                      <Right>
+                        {this.appleConnected()}
+                      </Right>
+                    </CardItem>
+                  }
+                  right={
+                    <Button danger onPress={() => console.log("disconnect apple")}>
+                      <Icon active name="md-close-circle" />
+                    </Button>
+                  }
+                />
+                :
+
                 <SwipeRow
                   rightOpenValue={-75}
                   body={
@@ -284,6 +312,41 @@ export default class Profile extends Component {
                     </Button>
                   }
                 />
+                }
+
+                {this.state.token ?
+                <SwipeRow
+                  rightOpenValue={-75}
+                  body={
+                    <CardItem
+                      disabled
+                    >
+                      <Left>
+                        <FAIcon name="spotify" size={25} color="#1db954" />
+                      </Left>
+                      <Body>
+                        <Text style={styles.bodytxtdisabled}>Spotify</Text>
+                      </Body>
+                      <Right>
+                        {this.state.token
+                          ? <Icon
+                              name="ios-checkmark-circle"
+                              style={styles.headerIcondisabled}
+                            />
+                          : <Icon name="ios-add" style={styles.header} />}
+                      </Right>
+                    </CardItem>
+                  }
+                  right={
+                    <Button
+                      danger
+                      onPress={() => this.setState({ id: '', token: '' })}
+                    >
+                      <Icon active name="md-close-circle" />
+                    </Button>
+                  }
+                />
+                :
                 <SwipeRow
                   rightOpenValue={-75}
                   body={
@@ -319,7 +382,7 @@ export default class Profile extends Component {
                       <Icon active name="md-close-circle" />
                     </Button>
                   }
-                />
+                />}
                 <SwipeRow
                   rightOpenValue={-75}
                   body={
