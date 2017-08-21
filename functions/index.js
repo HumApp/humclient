@@ -5,12 +5,14 @@ const admin = require('firebase-admin');
 admin.initializeApp(functions.config().firebase);
 const _ = require('lodash');
 
+// OB/TL: comment this file with exactly what you just told me
 exports.getSongId = functions.https.onRequest((req, response) => {
+  // OB/TL: consider splitting me up into smaller corporations
   let reqSong = req.body;
   const userToken = req.body.userToken;
   const urlTitle = getURL(req.body.title);
   const urlArtist = getURL(req.body.artist);
-  let foundId;
+  let foundId; // <= OB/TL: this let is no longer necessary
   admin.database().ref(`/songs/${urlTitle}/${urlArtist}`).once('value')
     .then(snapshot => {
       let id = snapshot.child(reqSong.service).val();
@@ -18,6 +20,7 @@ exports.getSongId = functions.https.onRequest((req, response) => {
         console.log('found id', id);
         response.send(id.toString());
       } else if (reqSong.service === 'appleId') {
+        // OB/TL: nested promise chains
         axios.get(makeiTunesSongQuery(reqSong.title, reqSong.artist))
           .then(res => res.data)
           .then(json => {
@@ -27,6 +30,11 @@ exports.getSongId = functions.https.onRequest((req, response) => {
           })
           .catch(console.error);
       } else {
+        /* OB/TL: can also do `axios.get(url, {
+          params: {
+            term: 'some string'
+          }
+        }) */
         axios.get(makeSpotifySongQuery(reqSong.title, reqSong.artist), {
             headers: {
               Authorization: `Bearer ${userToken}`
@@ -46,6 +54,7 @@ exports.getSongId = functions.https.onRequest((req, response) => {
     .catch(console.error);
 });
 
+// OB/TL: dead code shouldn't be in master!
 // exports.savePlayistToSpotify = functions.https.onRequest((req, res) => {
 //   //given a DB playlist ID and spotify user token, saves the playlist from the database to spotify
 //   const userToken = req.body.userToken;
@@ -79,6 +88,7 @@ exports.getSongId = functions.https.onRequest((req, response) => {
 //     });
 // });
 
+// OB/TL: comment describing what this does / how / why
 exports.sentPendingWatch = functions.database.ref(`/users/{uid}/pending`).onWrite(function (event) {
   let uid = event.params.uid;
   let pending = Object.keys(event.data.val());
@@ -123,6 +133,8 @@ function makeSpotifySongQuery(songTitle, songArtist) {
 }
 
 function getURL(str) {
+  // OB/TL: regexes are expensive to create, define this above if possible
+  // OB/Tl: ...but instead here, just use a string '.'
   return encodeURIComponent(str).replace(/\./g, function (cha) {
     return '%' + cha.charCodeAt(0).toString(16);
   });

@@ -2,12 +2,13 @@ import * as firebase from 'firebase';
 import axios from 'axios';
 
 export default class Database {
-  static savePlaylistToDatabase(playlists, providerId) {
+  static savePlaylistToDatabase(playlists, providerId) { // OB/TL: naming here
+    // OB/TL: be wary when you're not returning anything
     const currentUser = firebase.auth().currentUser;
     playlists.forEach(playlist => {
       let newSong = {};
       playlist.songs.forEach((song, index) => {
-        this.findOrCreateSong(song, providerId);
+        this.findOrCreateSong(song, providerId); // <= OB/TL non-blocking
         newSong[index] = {};
         newSong[index].artist = song.artist;
         newSong[index].title = song.title;
@@ -32,6 +33,8 @@ export default class Database {
   static getAllFriends() {
     let user = firebase.auth().currentUser;
     return firebase.database().ref(`/users/${user.uid}/friends`).once('value');
+    // OB/TL: consider using `.on` for realtime updates!
+    // OB/TL: consider chaining off this promise to resolve to the snapshot value
   }
 
   static getPendingFriends() {
@@ -40,6 +43,7 @@ export default class Database {
   }
 
   static requestFriend(recievingUser, sendBack) {
+    // OB/TL: watch out, no return value
     let user = firebase.auth().currentUser;
     firebase
       .database()
@@ -61,12 +65,12 @@ export default class Database {
     firebase
       .database()
       .ref(`/users/${user.uid}/playlists/${playlistId}`)
-      .set('original');
+      .set('original'); // <= OB/TL: might want to set to true/false for performance
   }
 
   //get playlist from id
   static getPlaylistFromId(pid) {
-    return Promise.resolve(
+    return Promise.resolve( // OB/TL: `Promise.resolve` unecessary her
       firebase.database().ref(`/playlists/${pid}`).once('value')
     );
   }
@@ -143,7 +147,7 @@ export default class Database {
     firebase.database().ref(`/users/${friend}/friends/${user.uid}`).remove();
   }
 
-  static ignoreMe() {
+  static ignoreMe() { // OB/TL: dead code!
     let user = firebase.auth().currentUser;
     firebase
       .database()
@@ -151,6 +155,7 @@ export default class Database {
       .on('child_added')
       .then(snapshot => {
         let pending = snapshot.val();
+        // OB/TL: nested promise chains
         firebase
           .database()
           .ref(`/users/${user.uid}/sent`)
@@ -175,6 +180,7 @@ export default class Database {
           });
       });
   }
+  // OB/TL: dead code
   static saveApplePlaylists(playlists, providerId) {
     playlists.forEach(playlist => {
       let newSong = {};
@@ -216,6 +222,7 @@ export default class Database {
   }
 
   static saveMultiPlaylists(playlists, providerId) {
+    // OB/TL: global? use let or const (or var)
     for (playlistName in playlists) {
       if (playlists.hasOwnProperty(playlistName)) {
         const playlist = playlists[playlistName];
@@ -271,6 +278,7 @@ export default class Database {
     } catch (err) {
       console.log(err);
       alert(err);
+      // OB/TL: maybe toast
     }
   }
 
@@ -293,6 +301,8 @@ export default class Database {
           .database()
           .ref(`playlists/${databasePlaylistId}`);
         let external = [];
+        // OB/TL: possible control flow / async issues in this function
+        // OB/TL: flatten promise chains, consider splitting into multiple functions
         firedata.on('value', function(snapshot) {
           const playlist = snapshot.val();
           console.log('Importing: ', playlist);

@@ -1,0 +1,6 @@
+- Linter?
+- Watch out for functions that don't return anything
+- Remove dead code
+- Remove dead code
+- More "catch"-ing
+- Tests?

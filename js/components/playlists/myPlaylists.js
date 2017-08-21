@@ -54,6 +54,7 @@ export default class MyPlaylists extends Component {
   };
 
   componentDidMount() {
+    // OB/TL: unnecessary `Promise.resovle`s
     const currentUser = firebase.auth().currentUser.uid;
     Promise.resolve(this.getUserPlaylists(currentUser)).then(playlistArr => {
       this.setState(
@@ -76,6 +77,7 @@ export default class MyPlaylists extends Component {
   }
 
   render() {
+    // OB/TL: dead code
     console.log(this.state.playlists)
     return (
       <Container>
