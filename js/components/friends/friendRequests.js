@@ -35,23 +35,22 @@ export default class FriendRequests extends Component {
     this.state = {
       requests: this.props.navigation.state.params
     }
-
   }
 
   deleteRequest = (userId) => {
     Database.rejectFriendFromPending(userId)
-    this.setState({requests: this.state.requests.filter(person => userId != person.userId)}, () => {
-        if(!this.state.requests.length) this.props.navigation.goBack()
+    this.setState({ requests: this.state.requests.filter(person => userId != person.userId) }, () => {
+      if (!this.state.requests.length) this.props.navigation.goBack()
     })
-    Toast.show({text: 'Request deleted!', position: 'bottom', duration: 1500, type: 'danger'})
+    Toast.show({ text: 'Request deleted!', position: 'bottom', duration: 1500, type: 'danger' })
   }
 
   acceptRequest = (userId) => {
     Database.addFriendFromPending(userId)
-    this.setState({requests: this.state.requests.filter(person => userId != person.userId)}, () => {
-         if(!this.state.requests.length) this.props.navigation.goBack()
+    this.setState({ requests: this.state.requests.filter(person => userId != person.userId) }, () => {
+      if (!this.state.requests.length) this.props.navigation.goBack()
     })
-    Toast.show({text: 'Friend added!', position: 'bottom', duration: 1500, type: 'success'})
+    Toast.show({ text: 'Friend added!', position: 'bottom', duration: 1500, type: 'success' })
 
   }
 
@@ -65,23 +64,20 @@ export default class FriendRequests extends Component {
               <Text style={styles.header}>Requests</Text>
             </CardItem>
             {this.state.requests.map(friend => {
-              return(
-                   <CardItem bordered key={friend.userId}>
-                      <Body>
-                        <Text>{friend.fullname}</Text>
-                        <Text note >@{friend.username}</Text>
-                      </Body>
-
-                        <Button small style={{backgroundColor: "#FC642D", margin: 5}} onPress={() => this.acceptRequest(friend.userId)}>
-                                <Icon name="ios-add" />
-                          </Button>
-                        <Button small danger style={{margin: 5}} onPress={() => this.deleteRequest(friend.userId)}>
-                                <Icon name="ios-close" />
-                        </Button>
-
-                    </CardItem>
-
-                )
+              return (
+                <CardItem bordered key={friend.userId}>
+                  <Body>
+                    <Text>{friend.fullname}</Text>
+                    <Text note >@{friend.username}</Text>
+                  </Body>
+                  <Button small style={{ backgroundColor: "#FC642D", margin: 5 }} onPress={() => this.acceptRequest(friend.userId)}>
+                    <Icon name="ios-add" />
+                  </Button>
+                  <Button small danger style={{ margin: 5 }} onPress={() => this.deleteRequest(friend.userId)}>
+                    <Icon name="ios-close" />
+                  </Button>
+                </CardItem>
+              )
             })}
           </Card>
         </Content>

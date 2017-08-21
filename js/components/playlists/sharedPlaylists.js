@@ -65,7 +65,7 @@ export default class SharedPlaylists extends Component {
       this.setState(
         { sharedPlaylists: this.state.sharedPlaylists.concat(playlistArr) }, () => this.setState({ sharedLoading: false })
       )
-    );
+    ).catch(error => console.log("Shared Playlists ", error));
     Promise.resolve(Database.getSharedPlaylists()).then(result =>
       Object.keys(result.val()).map(key => {
         Promise.resolve(Database.getPlaylistFromId(key)).then(result => {
@@ -74,9 +74,9 @@ export default class SharedPlaylists extends Component {
           this.setState({
             pendingPlaylists: this.state.sharedPlaylists.concat(playlistObj)
           });
-        });
+        }).catch(error => console.log("Shared Playlists ", error));
       })
-    );
+    ).catch(error => console.log("Shared Playlists ", error));
   }
 
   render() {
@@ -86,18 +86,18 @@ export default class SharedPlaylists extends Component {
         <Content>
           {this.props.pendingPlaylists.length
             ? <Card>
-                <CardItem button onPress={() => this.props.goToPending()} header>
-                  <Badge style={{ backgroundColor: '#FC642D' }}>
-                    <Text>
-                      {this.props.pendingPlaylists.length}
-                    </Text>
-                  </Badge>
-                  <Text style={styles.header}> Pending Playlists</Text>
-                  <Right>
-                    <Icon name="arrow-forward" style={styles.arrow} />
-                  </Right>
-                </CardItem>
-              </Card>
+              <CardItem button onPress={() => this.props.goToPending()} header>
+                <Badge style={{ backgroundColor: '#FC642D' }}>
+                  <Text>
+                    {this.props.pendingPlaylists.length}
+                  </Text>
+                </Badge>
+                <Text style={styles.header}> Pending Playlists</Text>
+                <Right>
+                  <Icon name="arrow-forward" style={styles.arrow} />
+                </Right>
+              </CardItem>
+            </Card>
             : null}
           <Card>
             <CardItem header>
@@ -111,39 +111,39 @@ export default class SharedPlaylists extends Component {
             {this.state.sharedLoading
               ? <Spinner color="#FC642D" />
               : <View>
-                  {!this.state.sharedPlaylists.length
-                    ? <CardItem>
-                        <Text style={styles.header}>
-                          No one has shared any playlists with you yet!
+                {!this.state.sharedPlaylists.length
+                  ? <CardItem>
+                    <Text style={styles.header}>
+                      No one has shared any playlists with you yet!
                         </Text>
-                      </CardItem>
-                    : <View>
-                        {this.state.sharedPlaylists.map((playlist, index) => {
-                          return (
-                            <CardItem
-                              button
-                              key={index}
-                              onPress={() => this.goToPlaylist(playlist)}
-                            >
-                              <Body>
-                                <Text style={styles.bodytxt}>
-                                  {playlist.title}
-                                </Text>
-                                 <Text note style={styles.bodytxt}>
-                                  Playlist by {playlist.displayName}
-                                </Text>
-                              </Body>
-                              <Right>
-                                <Icon
-                                  name="arrow-forward"
-                                  style={styles.arrow}
-                                />
-                              </Right>
-                            </CardItem>
-                          );
-                        })}
-                      </View>}
-                </View>}
+                  </CardItem>
+                  : <View>
+                    {this.state.sharedPlaylists.map((playlist, index) => {
+                      return (
+                        <CardItem
+                          button
+                          key={index}
+                          onPress={() => this.goToPlaylist(playlist)}
+                        >
+                          <Body>
+                            <Text style={styles.bodytxt}>
+                              {playlist.title}
+                            </Text>
+                            <Text note style={styles.bodytxt}>
+                              Playlist by {playlist.displayName}
+                            </Text>
+                          </Body>
+                          <Right>
+                            <Icon
+                              name="arrow-forward"
+                              style={styles.arrow}
+                            />
+                          </Right>
+                        </CardItem>
+                      );
+                    })}
+                  </View>}
+              </View>}
           </Card>
         </Content>
       </Container>

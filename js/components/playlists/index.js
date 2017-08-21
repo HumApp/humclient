@@ -49,9 +49,9 @@ export default class Playlists extends Component {
           this.setState({
             pendingPlaylists: this.state.pendingPlaylists.concat(playlistObj)
           });
-        });
+        }).catch(error => console.log("Playlists ", error));
       })
-    );
+    ).catch(error => console.log("Playlists ", error));
   }
 
   render() {

@@ -117,7 +117,7 @@ export default class PendingPlaylists extends Component {
               'Content-Type': 'application/json'
             }
           }
-        );
+        ).catch(error => console.log("Pending Playlists ", error));
         songArr.push(songNum.data.toString());
       }
       playlistObj.songs = songArr;
