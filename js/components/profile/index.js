@@ -328,6 +328,7 @@ export default class Profile extends Component {
                 }
 
                 {this.state.token ?
+                  // OB/TL: maybe this an be condensed via refactoring
                 <SwipeRow
                   rightOpenValue={-75}
                   body={
@@ -462,7 +463,7 @@ export default class Profile extends Component {
                 </CardItem>
               </Card>
             </Content>
-          : <Spinner color="#FC642D" />}
+          : <Spinner color="#FC642D" /> /* OB/TL: invert this ternary */}
       </Container>
     );
   }
