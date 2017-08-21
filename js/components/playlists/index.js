@@ -39,19 +39,38 @@ export default class Playlists extends Component {
     );
   };
 
+  pendingCallback = async snap => {
+    const pendingRequests = snap.val()
+    const temp = [];
+    for(const key in pendingRequests){
+       const playlistFromId = await Database.getPlaylistFromId(key)
+        let playlistObj = Object.assign({}, playlistFromId.val());
+          playlistObj.playlistId = key;
+          temp.push(playlistObj)
+      }
+      this.setState({pendingPlaylists: []}, () => {
+        console.log(temp)
+        this.setState({
+            pendingPlaylists: this.state.pendingPlaylists.concat(temp)
+          });
+      })
+    }
+
   componentDidMount() {
     const currentUser = firebase.auth().currentUser.uid;
-    Promise.resolve(Database.getSharedPlaylists()).then(result =>
-      Object.keys(result.val()).map(key => {
-        Promise.resolve(Database.getPlaylistFromId(key)).then(result => {
-          let playlistObj = Object.assign(result.val());
-          playlistObj.playlistId = key;
-          this.setState({
-            pendingPlaylists: this.state.pendingPlaylists.concat(playlistObj)
-          });
-        }).catch(error => console.log("Playlists ", error));
-      })
-    ).catch(error => console.log("Playlists ", error));
+    Database.getSharedPlaylists().on('value', this.pendingCallback);
+
+    // Promise.resolve(Database.getSharedPlaylists()).then(result =>
+    //   Object.keys(result.val()).map(key => {
+    //     Promise.resolve(Database.getPlaylistFromId(key)).then(result => {
+    //       let playlistObj = Object.assign(result.val());
+    //       playlistObj.playlistId = key;
+    //       this.setState({
+    //         pendingPlaylists: this.state.pendingPlaylists.concat(playlistObj)
+    //       });
+    //     }).catch(error => console.log("Playlists ", error));
+    //   })
+    // ).catch(error => console.log("Playlists ", error));
   }
 
   render() {

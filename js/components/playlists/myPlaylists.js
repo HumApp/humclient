@@ -63,19 +63,19 @@ export default class MyPlaylists extends Component {
     }
     )
       .catch(error => console.log("My playlists ", error));
-    Database.getSharedPlaylists()
-      .then(result =>
-        Object.keys(result.val()).map(key => {
-          Promise.resolve(Database.getPlaylistFromId(key)).then(result => {
-            let playlistObj = Object.assign(result.val());
-            playlistObj.playlistId = key;
-            this.setState({
-              pendingPlaylists: this.state.sharedPlaylists.concat(playlistObj)
-            });
-          })
-            .catch(error => console.log("My playlists ", error));
-        })
-      ).catch(error => console.log("My playlists ", error));
+    // Database.getSharedPlaylists()
+    //   .then(result =>
+    //     Object.keys(result.val()).map(key => {
+    //       Promise.resolve(Database.getPlaylistFromId(key)).then(result => {
+    //         let playlistObj = Object.assign(result.val());
+    //         playlistObj.playlistId = key;
+    //         this.setState({
+    //           pendingPlaylists: this.state.sharedPlaylists.concat(playlistObj)
+    //         });
+    //       })
+    //         .catch(error => console.log("My playlists ", error));
+    //     })
+    //   ).catch(error => console.log("My playlists ", error));
   }
 
   render() {
