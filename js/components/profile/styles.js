@@ -23,6 +23,12 @@ export default StyleSheet.create({
   bodytxt: {
     color: "#595959"
   },
+  bodytxtdisabled: {
+    color: "#bbbbbb"
+  },
+  headerIcondisabled: {
+    color: "#bbbbbb"
+  },
   arrow: {
     color: "#FC642D"
   },
