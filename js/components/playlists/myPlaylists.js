@@ -79,7 +79,6 @@ export default class MyPlaylists extends Component {
   }
 
   render() {
-    console.log(this.state.playlists)
     return (
       <Container>
         <Content>
