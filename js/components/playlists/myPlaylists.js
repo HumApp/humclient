@@ -23,7 +23,7 @@ import {
   Badge
 } from 'native-base';
 import styles from './styles';
-import Database from '../../../utils/database';
+import * as Database from '../../../utils/database';
 import { AsyncStorage } from 'react-native';
 
 export default class MyPlaylists extends Component {
@@ -62,7 +62,8 @@ export default class MyPlaylists extends Component {
       )
     }
     );
-    Promise.resolve(Database.getSharedPlaylists()).then(result =>
+    Database.getSharedPlaylists()
+    .then(result =>
       Object.keys(result.val()).map(key => {
         Promise.resolve(Database.getPlaylistFromId(key)).then(result => {
           let playlistObj = Object.assign(result.val());

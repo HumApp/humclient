@@ -27,7 +27,7 @@ import styles from './styles';
 import { default as FAIcon } from 'react-native-vector-icons/FontAwesome';
 import { NativeModules, AsyncStorage } from 'react-native';
 import axios from 'axios';
-import Database from '../../../utils/database';
+import * as Database from '../../../utils/database';
 import Prompt from 'react-native-prompt';
 import firebase from 'firebase';
 import MyFriends from './myFriends';
@@ -45,9 +45,10 @@ export default class Friends extends Component {
   }
 
   handleSearch = (friends) => {
-    friends.filter(friend => {
-      return friend.match(this.state.)
-    })
+    // friends.filter(friend => {
+    //   return friend.match(this.state.)
+    // })
+    console.log('hi brian');
 
   };
 

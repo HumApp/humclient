@@ -23,7 +23,7 @@ import {
   Badge
 } from 'native-base';
 import styles from './styles';
-import Database from '../../../utils/database';
+import * as Database from '../../../utils/database';
 import { AsyncStorage } from 'react-native';
 
 export default class SharedPlaylists extends Component {
