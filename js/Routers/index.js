@@ -16,14 +16,12 @@ import Playlists from '../components/playlists';
 import SinglePlaylist from '../components/playlists/singlePlaylist';
 import SharePlaylist from '../components/playlists/sharePlaylist';
 import PendingPlaylists from '../components/playlists/pendingPlaylists';
-import MyPlaylists from '../components/playlists/myPlaylists'
-import SharedPlaylists from '../components/playlists/sharedPlaylists'
-
+import MyPlaylists from '../components/playlists/myPlaylists';
+import SharedPlaylists from '../components/playlists/sharedPlaylists';
 
 import Collab from '../components/collab';
 import Friends from '../components/friends';
 import FriendRequests from '../components/friends/friendRequests';
-import SearchResults from '../components/friends/searchResults';
 
 import Profile from '../components/profile';
 import UpdatePassword from '../components/profile/updatePassword';
@@ -124,10 +122,6 @@ export const FriendsStack = StackNavigator({
   FriendRequests: {
     screen: FriendRequests,
     navigationOptions: {}
-  },
-  SearchResults: {
-    screen: SearchResults,
-    navigationOptions: {}
   }
 });
 
@@ -200,7 +194,7 @@ export const Tabs = TabNavigator(
       activeTintColor: '#ff5a5f',
       inactiveTintColor: '#cecece'
     },
-    initialRouteName: 'Profile',
+    initialRouteName: 'Friends',
     navigationOptions: ({ navigation }) => ({
       tabBarOnPress: (tab, jumpToIndex) => {
         if (tab.focused) {
