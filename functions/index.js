@@ -26,10 +26,10 @@ exports.getSongId = functions.https.onRequest((req, response) => {
           .catch(console.error);
       } else {
         axios.get(makeSpotifySongQuery(reqSong.title, reqSong.artist), {
-            headers: {
-              Authorization: `Bearer ${userToken}`
-            }
-          })
+          headers: {
+            Authorization: `Bearer ${userToken}`
+          }
+        })
           .then(res => res.data)
           .then(json => {
             const uri = json.tracks.items[0].uri.toString();
