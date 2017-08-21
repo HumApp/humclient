@@ -27,7 +27,7 @@ export default class MyFriends extends Component {
       <Content>
         <Card>
           {this.props.pending.length
-            ? <CardItem button onPress={this.friendRequests} header>
+            ? <CardItem button onPress={() => this.props.goToPending()} header>
                 <Badge style={{ backgroundColor: '#FC642D' }}>
                   <Text>
                     {this.props.pending.length}

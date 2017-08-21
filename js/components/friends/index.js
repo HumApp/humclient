@@ -44,12 +44,11 @@ export default class Friends extends Component {
     };
   }
 
-  handleSearch = (friends) => {
+  handleSearch = friends => {
     // friends.filter(friend => {
     //   return friend.match(this.state.)
     // })
     console.log('hi brian');
-
   };
 
   friendRequests = () => {
@@ -60,31 +59,45 @@ export default class Friends extends Component {
     this.props.navigation.navigate('SearchResults');
   };
 
-  async componentDidMount() {
-    const pendingFriends = await Database.getPendingFriends();
-    for (let friendId in pendingFriends.val()) {
-      console.log('friendId', friendId);
+  pendingCallback = async snap => {
+    const pendingFriends = snap.val();
+    const temp = [];
+    for (let friendId in pendingFriends) {
       const user = {};
       const pendingFriend = await Database.getUserFromId(friendId);
+      console.log('friendId', friendId);
+      console.log('frieENDNDN', pendingFriend.val());
       user.username = pendingFriend.val().username;
       user.fullname = pendingFriend.val().fullname;
       user.userId = friendId;
-      this.setState({ pending: this.state.pending.concat(user) }, () =>
-        console.log('pending...', this.state.pending)
-      );
+      temp.push(user);
     }
+    console.log("TEMO", temp)
+    this.setState({ pending: [] }, () => {
+      this.setState({ pending: this.state.pending.concat(temp) });
+    });
+  };
 
-    const friends = await Database.getAllFriends();
+  friendsCallback = async snap => {
+    console.log('beginning of friends callback');
     let friendsArr = [];
-    for (let friendId in friends.val()) {
+    for (let friendId in snap.val()) {
+      console.log('friend id', friendId);
       friendsArr.push({
         friendId: friendId,
-        friendName: friends.val()[friendId]
+        friendName: snap.val()[friendId]
       });
     }
-    this.setState({ friends: this.state.friends.concat(friendsArr) }, () =>
-      this.setState({ isLoading: false })
-    );
+    this.setState({ friends: [] }, () => {
+      this.setState({ friends: this.state.friends.concat(friendsArr) }, () =>
+        this.setState({ isLoading: false })
+      );
+    });
+  };
+
+  async componentDidMount() {
+    Database.getPendingFriends().on('value', this.pendingCallback);
+    Database.getAllFriends().on('value', this.friendsCallback);
   }
 
   deleteFriend = friendId => {
@@ -121,6 +134,7 @@ export default class Friends extends Component {
         >
           <Tab activeTextStyle={{ color: '#484848' }} heading="My Friends">
             <MyFriends
+              goToPending={this.friendRequests}
               handleSearch={this.handleSearch}
               friends={this.state.friends}
               pending={this.state.pending}
@@ -131,7 +145,6 @@ export default class Friends extends Component {
             <SearchFriends
               handleSearch={this.handleSearch}
               friends={this.state.friends}
-              pending={this.state.pending}
               loading={this.state.loading}
             />
           </Tab>
