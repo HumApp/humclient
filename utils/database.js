@@ -1,9 +1,9 @@
 import * as firebase from 'firebase';
-import axios from 'axios'
+import axios from 'axios';
 
 export default class Database {
   static savePlaylistToDatabase(playlists, providerId) {
-    const currentUser = firebase.auth().currentUser
+    const currentUser = firebase.auth().currentUser;
     playlists.forEach(playlist => {
       let newSong = {};
       playlist.songs.forEach((song, index) => {
@@ -53,52 +53,82 @@ export default class Database {
   }
 
   static getUserFromId(uid) {
-    return Promise.resolve(firebase.database().ref(`/users/${uid}`).once('value'))
+    return firebase.database().ref(`/users/${uid}`).once('value');
   }
-
 
   static addPlaylistToUser(playlistId) {
     let user = firebase.auth().currentUser;
-    firebase.database().ref(`/users/${user.uid}/playlists/${playlistId}`).set("original");
+    firebase
+      .database()
+      .ref(`/users/${user.uid}/playlists/${playlistId}`)
+      .set('original');
   }
-
 
   //get playlist from id
   static getPlaylistFromId(pid) {
-    return Promise.resolve(firebase.database().ref(`/playlists/${pid}`).once('value'))
+    return Promise.resolve(
+      firebase.database().ref(`/playlists/${pid}`).once('value')
+    );
   }
 
   //get pending playlists
   static getSharedPlaylists() {
     let user = firebase.auth().currentUser;
-    return firebase.database().ref(`/users/${user.uid}/sharedPlaylists`).once('value');
+    return firebase
+      .database()
+      .ref(`/users/${user.uid}/sharedPlaylists`)
+      .once('value');
   }
 
   //the pending folder
   static sharePlaylistWithFriend(playlistId, friendId) {
-    firebase.database().ref(`/playlists/${playlistId}/sharedWith/${friendId}`).set(true);
-    firebase.database().ref(`/users/${friendId}/sharedPlaylists/${playlistId}`).set(true);
+    firebase
+      .database()
+      .ref(`/playlists/${playlistId}/sharedWith/${friendId}`)
+      .set(true);
+    firebase
+      .database()
+      .ref(`/users/${friendId}/sharedPlaylists/${playlistId}`)
+      .set(true);
   }
 
   //add playlist from pending folder to playlists folder and remove it from the pending folder
   static addPlaylistFromPending(playlistId) {
     let user = firebase.auth().currentUser;
-    firebase.database().ref(`/users/${user.uid}/sharedPlaylists/${playlistId}`).remove();
-    firebase.database().ref(`/users/${user.uid}/playlists/${playlistId}`).set("shared");
+    firebase
+      .database()
+      .ref(`/users/${user.uid}/sharedPlaylists/${playlistId}`)
+      .remove();
+    firebase
+      .database()
+      .ref(`/users/${user.uid}/playlists/${playlistId}`)
+      .set('shared');
   }
 
   static unfollowPlaylist(playlistId) {
     let user = firebase.auth().currentUser;
-    firebase.database().ref(`/users/${user.uid}/sharedPlaylists/${playlistId}`).remove();
-    firebase.database().ref(`/playlists/${playlistId}/sharedWith/${user.uid}`).remove();
+    firebase
+      .database()
+      .ref(`/users/${user.uid}/sharedPlaylists/${playlistId}`)
+      .remove();
+    firebase
+      .database()
+      .ref(`/playlists/${playlistId}/sharedWith/${user.uid}`)
+      .remove();
   }
 
   static addFriendFromPending(friend) {
     let user = firebase.auth().currentUser;
     firebase.database().ref(`/users/${user.uid}/pending/${friend}`).remove();
-    firebase.database().ref(`/users/${friend}/username`).once('value', function (snap) {
-      firebase.database().ref(`/users/${user.uid}/friends/${friend}`).set(snap.val());
-    })
+    firebase
+      .database()
+      .ref(`/users/${friend}/username`)
+      .once('value', function(snap) {
+        firebase
+          .database()
+          .ref(`/users/${user.uid}/friends/${friend}`)
+          .set(snap.val());
+      });
     this.requestFriend(friend, true);
   }
 
@@ -124,7 +154,7 @@ export default class Database {
         firebase
           .database()
           .ref(`/users/${user.uid}/sent`)
-          .once('value', function (sentSnap) {
+          .once('value', function(sentSnap) {
             let matches = _.intersection(sentSnap.val(), pending);
             if (matches) {
               matches.forEach(match => {
@@ -185,18 +215,6 @@ export default class Database {
     return firebase.database().ref(`playlists/`).on();
   }
 
-  static getCurrentUser() {
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        // User is signed in
-        return user.uid;
-      } else {
-        // No user is signed in
-        return 'Unknown';
-      }
-    });
-  }
-
   static saveMultiPlaylists(playlists, providerId) {
     for (playlistName in playlists) {
       if (playlists.hasOwnProperty(playlistName)) {
@@ -234,9 +252,9 @@ export default class Database {
       const address = firebase
         .database()
         .ref(
-        `songs/${this.getUrlPath(fetchSong.title)}/${this.getUrlPath(
-          fetchSong.artist
-        )}`
+          `songs/${this.getUrlPath(fetchSong.title)}/${this.getUrlPath(
+            fetchSong.artist
+          )}`
         );
       const dataSnapshot = await address.once('value');
       if (!dataSnapshot.val()) {
@@ -257,7 +275,7 @@ export default class Database {
   }
 
   static getUrlPath(str) {
-    return encodeURIComponent(str).replace(/\./g, function (c) {
+    return encodeURIComponent(str).replace(/\./g, function(c) {
       return '%' + c.charCodeAt(0).toString(16);
     });
   }
@@ -271,11 +289,13 @@ export default class Database {
       if (user) {
         let id = user.id;
         let userToken = user.accessToken;
-        let firedata = firebase.database().ref(`playlists/${databasePlaylistId}`);
+        let firedata = firebase
+          .database()
+          .ref(`playlists/${databasePlaylistId}`);
         let external = [];
-        firedata.on('value', function (snapshot) {
+        firedata.on('value', function(snapshot) {
           const playlist = snapshot.val();
-          console.log("Importing: ", playlist);
+          console.log('Importing: ', playlist);
           playlist.songs.forEach(song => external.push(song));
           let promises = external.map(song =>
             axios.post(
@@ -295,37 +315,41 @@ export default class Database {
           );
           Promise.all(promises).then(values => {
             let final = values.map(value => value.data);
-            console.log("URIs: ", final);
+            console.log('URIs: ', final);
             axios
               .post(
-              `https://api.spotify.com/v1/users/${id}/playlists`,
-              `{\"name\":\"A New Hum Playlist\", \"public\":false, \"description\":\"A Hum playlist created by Apple Music\"}`,
-              {
-                headers: {
-                  Authorization: `Bearer ${userToken}`,
-                  'Content-Type': 'application/json'
+                `https://api.spotify.com/v1/users/${id}/playlists`,
+                `{\"name\":\"A New Hum Playlist\", \"public\":false, \"description\":\"A Hum playlist created by Apple Music\"}`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${userToken}`,
+                    'Content-Type': 'application/json'
+                  }
                 }
-              }
               )
               .then(response => {
                 let playlistID = response.data.id;
                 axios
                   .post(
-                  `https://api.spotify.com/v1/users/${id}/playlists/${playlistID}/tracks`,
-                  { uris: final },
-                  {
-                    headers: {
-                      Authorization: `Bearer ${userToken}`,
-                      'Content-Type': 'application/json'
+                    `https://api.spotify.com/v1/users/${id}/playlists/${playlistID}/tracks`,
+                    { uris: final },
+                    {
+                      headers: {
+                        Authorization: `Bearer ${userToken}`,
+                        'Content-Type': 'application/json'
+                      }
                     }
-                  }
                   )
-                  .then(response => console.log("Import successful"))
-                  .catch(error => console.log("Error while importing playlist: ", error));
+                  .then(response => console.log('Import successful'))
+                  .catch(error =>
+                    console.log('Error while importing playlist: ', error)
+                  );
               })
-              .catch(error => console.log("Error while creating new playlist: ", error));
+              .catch(error =>
+                console.log('Error while creating new playlist: ', error)
+              );
           });
-        })
+        });
       } else {
         console.log('No user is signed in');
       }

@@ -41,7 +41,7 @@ export default class MyPlaylists extends Component {
       .database()
       .ref(`users/${userId}/playlists/`)
       .orderByValue()
-      .equalTo("original")
+      .equalTo('original')
       .once('value');
     for (let playlist in playlists.val()) {
       const result = await Database.getPlaylistFromId(playlist);
@@ -82,7 +82,11 @@ export default class MyPlaylists extends Component {
         <Content>
           {this.props.pendingPlaylists.length
             ? <Card>
-                <CardItem button onPress={() => this.props.goToPending()} header>
+                <CardItem
+                  button
+                  onPress={() => this.props.goToPending()}
+                  header
+                >
                   <Badge style={{ backgroundColor: '#FC642D' }}>
                     <Text>
                       {this.props.pendingPlaylists.length}
