@@ -10,6 +10,8 @@ import {
   Right,
   List,
   ListItem,
+  Tabs,
+  Tab,
   Card,
   CardItem,
   SwipeRow,
@@ -28,6 +30,8 @@ import axios from 'axios';
 import Database from '../../../utils/database';
 import Prompt from 'react-native-prompt';
 import firebase from 'firebase';
+import MyFriends from './myFriends';
+import SearchFriends from './searchFriends';
 const SpotifyModule = NativeModules.SpotifyModule;
 
 export default class Friends extends Component {
@@ -40,6 +44,13 @@ export default class Friends extends Component {
     };
   }
 
+  handleSearch = (friends) => {
+    friends.filter(friend => {
+      return friend.match(this.state.)
+    })
+
+  };
+
   friendRequests = () => {
     this.props.navigation.navigate('FriendRequests', this.state.pending);
   };
@@ -48,27 +59,35 @@ export default class Friends extends Component {
     this.props.navigation.navigate('SearchResults');
   };
 
-  componentDidMount() {
-    Promise.resolve(Database.getPendingFriends()).then(result => {
-      Object.keys(result.val()).map(key => {
-        let user = {}
-        Promise.resolve(Database.getUserFromId(key)).then(result => {user.username = result.val().username; user.fullname = result.val().fullname; user.userId = key})
-         this.setState({ pending: this.state.pending.concat(user) }, () => console.log(this.state.pending));
-      })
-    });
-    Promise.resolve(Database.getAllFriends()).then(result => {
-      const friendsArr = Object.keys(result.val()).map(key => {
-        return {friendId: key, friendName: result.val()[key]}
-      })
-      this.setState(
-        { friends: this.state.friends.concat(friendsArr) },
-        () => this.setState({isLoading: false})
+  async componentDidMount() {
+    const pendingFriends = await Database.getPendingFriends();
+    for (let friendId in pendingFriends.val()) {
+      console.log('friendId', friendId);
+      const user = {};
+      const pendingFriend = await Database.getUserFromId(friendId);
+      user.username = pendingFriend.val().username;
+      user.fullname = pendingFriend.val().fullname;
+      user.userId = friendId;
+      this.setState({ pending: this.state.pending.concat(user) }, () =>
+        console.log('pending...', this.state.pending)
       );
-    });
+    }
+
+    const friends = await Database.getAllFriends();
+    let friendsArr = [];
+    for (let friendId in friends.val()) {
+      friendsArr.push({
+        friendId: friendId,
+        friendName: friends.val()[friendId]
+      });
+    }
+    this.setState({ friends: this.state.friends.concat(friendsArr) }, () =>
+      this.setState({ isLoading: false })
+    );
   }
 
   deleteFriend = friendId => {
-    Database.deleteFriend(friendId)
+    Database.deleteFriend(friendId);
     console.log('deleted');
     this.setState({
       friends: this.state.friends.filter(person => friendId != person.friendId)
@@ -82,8 +101,7 @@ export default class Friends extends Component {
   };
 
   render() {
-
-    console.log("friends", this.state.friends);
+    console.log('friends', this.state.friends);
 
     return (
       <Container>
@@ -96,70 +114,27 @@ export default class Friends extends Component {
             <Icon name="md-close-circle" />
           </Button>
         </Header>
-        <Content>
-          <Card>
-            {this.state.pending.length  ?
-            <CardItem button onPress={this.friendRequests} header>
-              <Badge style={{ backgroundColor: '#FC642D' }}>
-                <Text>
-                  {this.state.pending.length}
-                </Text>
-              </Badge>
-              <Text style={styles.header}> Friend Requests</Text>
-              <Right>
-                <Icon name="arrow-forward" style={styles.arrow} />
-              </Right>
-            </CardItem>
-            : null}
-          </Card>
-          <Card>
-            <CardItem header>
-              <Icon active name="md-people" style={styles.headerIcon} />
-              <Text style={styles.header}>Friends</Text>
-            </CardItem>
-            {this.state.isLoading ? <Spinner color="#FC642D" /> :
-            <View>
-            {!this.state.friends.length
-              ?  <CardItem>
-                    <Text>Search for friends to add them!</Text>
-                </CardItem>
-              : <View>
-                  {this.state.friends.map(friend => {
-                    return (
-                      <SwipeRow
-                        rightOpenValue={-75}
-                        key={friend.friendId}
-                        body={
-                          <CardItem>
-                            <Left>
-                              <FAIcon name="apple" size={25} color="#FF4B63" />
-                            </Left>
-                            <Body>
-                              <Text style={styles.bodytxt}>
-                                {friend.friendName}
-                              </Text>
-                            </Body>
-                            <Right />
-                          </CardItem>
-                        }
-                        right={
-                          <Button
-                            danger
-                            onPress={() => this.deleteFriend(friend.friendId)}
-                          >
-                            <Icon active name="md-close-circle" />
-                          </Button>
-                        }
-                      />
-                    );
-                  })}
-                </View>
-              }
-
-
-                </View>}
-          </Card>
-        </Content>
+        <Tabs
+          tabBarUnderlineStyle={{ backgroundColor: '#ff5a5f' }}
+          initialPage={0}
+        >
+          <Tab activeTextStyle={{ color: '#484848' }} heading="My Friends">
+            <MyFriends
+              handleSearch={this.handleSearch}
+              friends={this.state.friends}
+              pending={this.state.pending}
+              loading={this.state.loading}
+            />
+          </Tab>
+          <Tab activeTextStyle={{ color: '#484848' }} heading="Search Friends">
+            <SearchFriends
+              handleSearch={this.handleSearch}
+              friends={this.state.friends}
+              pending={this.state.pending}
+              loading={this.state.loading}
+            />
+          </Tab>
+        </Tabs>
       </Container>
     );
   }
