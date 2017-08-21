@@ -42,8 +42,7 @@ export function getSharedPlaylists() {
   let user = firebase.auth().currentUser;
   return firebase
     .database()
-    .ref(`/users/${user.uid}/sharedPlaylists`)
-    .once('value');
+    .ref(`/users/${user.uid}/sharedPlaylists`);
 }
 
 //the pending folder

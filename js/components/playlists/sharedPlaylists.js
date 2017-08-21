@@ -59,6 +59,33 @@ export default class SharedPlaylists extends Component {
     return playlistArr;
   };
 
+  // pendingCallback = (snap) => {
+  //   const temp = [];
+  //   for(const key in snap.val()){
+  //      Database.getPlaylistFromId(key).then(result => {
+  //         let playlistObj = Object.assign(snap.val());
+  //         playlistObj.playlistId = key;
+  //         temp.push(playlistObj)
+  //       }).catch(error => console.log("Shared Playlists ", error));
+  //     }
+  //     this.setState({pendingPlaylists: []}, () => {
+  //       this.setState({
+  //           pendingPlaylists: this.state.sharedPlaylists.concat(temp)
+  //         });
+  //     })
+  //   }
+
+    // Object.keys(snap.val()).map(key => {
+    //     Promise.resolve(Database.getPlaylistFromId(key)).then(result => {
+    //       let playlistObj = Object.assign(snap.val());
+    //       playlistObj.playlistId = key;
+    //       this.setState({
+    //         pendingPlaylists: this.state.sharedPlaylists.concat(playlistObj)
+    //       });
+    //     }).catch(error => console.log("Shared Playlists ", error));
+    //   })
+  // }
+
   componentDidMount() {
     const currentUser = firebase.auth().currentUser.uid;
     Promise.resolve(this.getSharedPlaylists(currentUser)).then(playlistArr =>
@@ -66,17 +93,21 @@ export default class SharedPlaylists extends Component {
         { sharedPlaylists: this.state.sharedPlaylists.concat(playlistArr) }, () => this.setState({ sharedLoading: false })
       )
     ).catch(error => console.log("Shared Playlists ", error));
-    Promise.resolve(Database.getSharedPlaylists()).then(result =>
-      Object.keys(result.val()).map(key => {
-        Promise.resolve(Database.getPlaylistFromId(key)).then(result => {
-          let playlistObj = Object.assign(result.val());
-          playlistObj.playlistId = key;
-          this.setState({
-            pendingPlaylists: this.state.sharedPlaylists.concat(playlistObj)
-          });
-        }).catch(error => console.log("Shared Playlists ", error));
-      })
-    ).catch(error => console.log("Shared Playlists ", error));
+
+    // Database.getSharedPlaylists().on('value', this.pendingCallback);
+
+
+    // .then(result =>
+    //   Object.keys(result.val()).map(key => {
+    //     Promise.resolve(Database.getPlaylistFromId(key)).then(result => {
+    //       let playlistObj = Object.assign(result.val());
+    //       playlistObj.playlistId = key;
+    //       this.setState({
+    //         pendingPlaylists: this.state.sharedPlaylists.concat(playlistObj)
+    //       });
+    //     }).catch(error => console.log("Shared Playlists ", error));
+    //   })
+    // ).catch(error => console.log("Shared Playlists ", error));
   }
 
   render() {
