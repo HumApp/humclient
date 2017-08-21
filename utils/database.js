@@ -65,7 +65,6 @@ export default class Database {
 
   //get playlist from id
   static getPlaylistFromId(pid) {
-    console.log("PLAYLIST ID", pid)
     return Promise.resolve(firebase.database().ref(`/playlists/${pid}`).once('value'))
   }
 
