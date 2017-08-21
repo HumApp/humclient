@@ -15,6 +15,7 @@ import {
 } from 'native-base';
 import styles from '../login/style';
 import { Field, reduxForm } from 'redux-form';
+// OB/TL: dead dependency
 
 export default class UpdatePassword extends Component {
   render() {

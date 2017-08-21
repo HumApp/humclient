@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+// OB/TL: this whole folder is dead code
+
 'use strict';
 
 // 'bin/setup' is a symlink pointing to this file, which makes a

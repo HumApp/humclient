@@ -1,3 +1,4 @@
+// OB/TL: split up into multiple files
 import React from 'react';
 import {
   TabNavigator,

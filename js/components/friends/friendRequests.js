@@ -71,7 +71,7 @@ export default class FriendRequests extends Component {
                         <Text>{friend.fullname}</Text>
                         <Text note >@{friend.username}</Text>
                       </Body>
-
+                        {/* OB/TL: consider moving styles to file (like in other places) */}
                         <Button small style={{backgroundColor: "#FC642D", margin: 5}} onPress={() => this.acceptRequest(friend.userId)}>
                                 <Icon name="ios-add" />
                           </Button>
