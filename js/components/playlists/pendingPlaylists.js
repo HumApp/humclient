@@ -41,7 +41,7 @@ export default class PendingPlaylists extends Component {
   }
 
   componentDidMount() {
-     firebase
+    firebase
       .database()
       .ref(`users/${firebase.auth().currentUser.uid}`)
       .once('value')
@@ -122,7 +122,7 @@ export default class PendingPlaylists extends Component {
       }
       playlistObj.songs = songArr;
       let applePlaylist = JSON.stringify(playlistObj)
-      NativeModules.MediaLibraryManager.createPlaylist(applePlaylist, (str) => {console.log(str)})
+      NativeModules.MediaLibraryManager.createPlaylist(applePlaylist, (str) => { console.log(str) })
     } catch (err) {
       console.log(err);
     }
@@ -139,53 +139,53 @@ export default class PendingPlaylists extends Component {
             </CardItem>
             {this.state.requests.map(playlist => {
               return (
-                  <SwipeRow
-                        rightOpenValue={-75}
-                        key={playlist.playlistId}
-                        body={
-                          <CardItem bordered>
-                            <Body>
-                              <Text>
-                                {playlist.title}
+                <SwipeRow
+                  rightOpenValue={-75}
+                  key={playlist.playlistId}
+                  body={
+                    <CardItem bordered>
+                      <Body>
+                        <Text>
+                          {playlist.title}
+                        </Text>
+                        <Text note>
+                          Playlist by {playlist.displayName}
+                        </Text>
+                        <Text note>
+                          {playlist.songs.length} songs
                               </Text>
-                              <Text note>
-                                Playlist by {playlist.displayName}
-                              </Text>
-                              <Text note>
-                                {playlist.songs.length} songs
-                              </Text>
-                            </Body>
-                            {this.state.spotifyAuth ?
-                              <Button
-                                small
-                                light
-                                style={{ margin: 5 }}
-                                onPress={() => this.spotify(playlist.playlistId)}
-                              >
-                              <FAIcon name="spotify" size={25} color="#1db954" />
-                              </Button>
-                              : null}
-                            {this.state.appleAuth ?
-                            <Button
-                              small
-                              light
-                              style={{ margin: 5 }}
-                              onPress={() => this.apple(playlist.playlistId)}
-                            >
-                              <FAIcon name="apple" size={25} color="#FF4B63" />
-                            </Button>
-                            : null}
-                          </CardItem>
-                        }
-                        right={
-                          <Button
-                            danger
-                            onPress={() => this.deleteRequest(playlist.playlistId)}
-                          >
-                            <Icon active name="md-close-circle" />
-                          </Button>
-                        }
-                      />
+                      </Body>
+                      {this.state.spotifyAuth ?
+                        <Button
+                          small
+                          light
+                          style={{ margin: 5 }}
+                          onPress={() => this.spotify(playlist.playlistId)}
+                        >
+                          <FAIcon name="spotify" size={25} color="#1db954" />
+                        </Button>
+                        : null}
+                      {this.state.appleAuth ?
+                        <Button
+                          small
+                          light
+                          style={{ margin: 5 }}
+                          onPress={() => this.apple(playlist.playlistId)}
+                        >
+                          <FAIcon name="apple" size={25} color="#FF4B63" />
+                        </Button>
+                        : null}
+                    </CardItem>
+                  }
+                  right={
+                    <Button
+                      danger
+                      onPress={() => this.deleteRequest(playlist.playlistId)}
+                    >
+                      <Icon active name="md-close-circle" />
+                    </Button>
+                  }
+                />
 
               );
             })}
