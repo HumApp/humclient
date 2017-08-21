@@ -200,7 +200,7 @@ export function databasePlaylistToSpotify(databasePlaylistId) {
 };
 
 function getUrlPath(str) {
-  return encodeURIComponent(str).replace('.', function (char) {
+  return encodeURIComponent(str).replace(/\./g, function (char) {
     return '%' + char.charCodeAt(0).toString(16);
   });
 }
