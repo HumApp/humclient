@@ -43,7 +43,8 @@ export default class SinglePlaylist extends Component {
           spotifyAuth: snapshot.val().accessToken,
           appleAuth: snapshot.val().appleAuth
         });
-      });
+      })
+      .catch(error => console.log("Single Playlist ", error));
   }
 
   goToShare = playlistId => {
@@ -74,12 +75,12 @@ export default class SinglePlaylist extends Component {
               'Content-Type': 'application/json'
             }
           }
-        );
+        ).catch(error => console.log("Single Playlist ", error));
         songArr.push(songNum.data.toString());
       }
       playlistObj.songs = songArr;
       let applePlaylist = JSON.stringify(playlistObj);
-      NativeModules.MediaLibraryManager.createPlaylist(applePlaylist, (str) => {console.log(str)})
+      NativeModules.MediaLibraryManager.createPlaylist(applePlaylist, (str) => { console.log(str) })
     } catch (error) {
       console.log(error);
     }
@@ -113,31 +114,31 @@ export default class SinglePlaylist extends Component {
                 </Text>
                 {playlist.type === 'appleId'
                   ? <Text note style={styles.subtitle}>
-                      Apple Music Playlist by {playlist.displayName}
-                    </Text>
+                    Apple Music Playlist by {playlist.displayName}
+                  </Text>
                   : <Text note style={styles.subtitle}>
-                      Spotify Playlist by {playlist.displayName}
-                    </Text>}
+                    Spotify Playlist by {playlist.displayName}
+                  </Text>}
               </Body>
               {this.state.spotifyAuth && playlist.type === 'appleId'
                 ? <Button
-                    small
-                    light
-                    style={{ margin: 5 }}
-                    onPress={() => this.spotify(playlist.playlistId)}
-                  >
-                    <FAIcon name="spotify" size={25} color="#1db954" />
-                  </Button>
+                  small
+                  light
+                  style={{ margin: 5 }}
+                  onPress={() => this.spotify(playlist.playlistId)}
+                >
+                  <FAIcon name="spotify" size={25} color="#1db954" />
+                </Button>
                 : null}
               {this.state.appleAuth && playlist.type === 'spotifyId'
                 ? <Button
-                    small
-                    light
-                    style={{ margin: 5 }}
-                    onPress={() => this.apple(playlist)}
-                  >
-                    <FAIcon name="apple" size={25} color="#FF4B63" />
-                  </Button>
+                  small
+                  light
+                  style={{ margin: 5 }}
+                  onPress={() => this.apple(playlist)}
+                >
+                  <FAIcon name="apple" size={25} color="#FF4B63" />
+                </Button>
                 : null}
               <Button
                 light
@@ -155,33 +156,33 @@ export default class SinglePlaylist extends Component {
             </CardItem>
             {!playlist.songs
               ? <ListItem>
-                  <Body>
-                    <Text>This playlist doesn't contain any songs.</Text>
-                  </Body>
-                </ListItem>
+                <Body>
+                  <Text>This playlist doesn't contain any songs.</Text>
+                </Body>
+              </ListItem>
               : <View>
-                  {playlist.songs.map((song, index) => {
-                    return (
-                      <ListItem key={index} avatar bordered key={index}>
-                        <Left>
-                          <Thumbnail
-                            square
-                            size={80}
-                            source={{ uri: `${song.image}` }}
-                          />
-                        </Left>
-                        <Body>
-                          <Text style={styles.bodytxt}>
-                            {song.title}
-                          </Text>
-                          <Text note style={styles.bodytxt}>
-                            {song.artist}
-                          </Text>
-                        </Body>
-                      </ListItem>
-                    );
-                  })}
-                </View>}
+                {playlist.songs.map((song, index) => {
+                  return (
+                    <ListItem key={index} avatar bordered key={index}>
+                      <Left>
+                        <Thumbnail
+                          square
+                          size={80}
+                          source={{ uri: `${song.image}` }}
+                        />
+                      </Left>
+                      <Body>
+                        <Text style={styles.bodytxt}>
+                          {song.title}
+                        </Text>
+                        <Text note style={styles.bodytxt}>
+                          {song.artist}
+                        </Text>
+                      </Body>
+                    </ListItem>
+                  );
+                })}
+              </View>}
 
             <CardItem />
           </Card>

@@ -61,44 +61,45 @@ export default class MyPlaylists extends Component {
         () => this.setState({ isLoading: false })
       )
     }
-    );
+    )
+      .catch(error => console.log("My playlists ", error));
     Database.getSharedPlaylists()
-    .then(result =>
-      Object.keys(result.val()).map(key => {
-        Promise.resolve(Database.getPlaylistFromId(key)).then(result => {
-          let playlistObj = Object.assign(result.val());
-          playlistObj.playlistId = key;
-          this.setState({
-            pendingPlaylists: this.state.sharedPlaylists.concat(playlistObj)
-          });
-        });
-      })
-    );
+      .then(result =>
+        Object.keys(result.val()).map(key => {
+          Promise.resolve(Database.getPlaylistFromId(key)).then(result => {
+            let playlistObj = Object.assign(result.val());
+            playlistObj.playlistId = key;
+            this.setState({
+              pendingPlaylists: this.state.sharedPlaylists.concat(playlistObj)
+            });
+          })
+            .catch(error => console.log("My playlists ", error));
+        })
+      ).catch(error => console.log("My playlists ", error));
   }
 
   render() {
-    console.log(this.state.playlists)
     return (
       <Container>
         <Content>
           {this.props.pendingPlaylists.length
             ? <Card>
-                <CardItem
-                  button
-                  onPress={() => this.props.goToPending()}
-                  header
-                >
-                  <Badge style={{ backgroundColor: '#FC642D' }}>
-                    <Text>
-                      {this.props.pendingPlaylists.length}
-                    </Text>
-                  </Badge>
-                  <Text style={styles.header}> Pending Playlists</Text>
-                  <Right>
-                    <Icon name="arrow-forward" style={styles.arrow} />
-                  </Right>
-                </CardItem>
-              </Card>
+              <CardItem
+                button
+                onPress={() => this.props.goToPending()}
+                header
+              >
+                <Badge style={{ backgroundColor: '#FC642D' }}>
+                  <Text>
+                    {this.props.pendingPlaylists.length}
+                  </Text>
+                </Badge>
+                <Text style={styles.header}> Pending Playlists</Text>
+                <Right>
+                  <Icon name="arrow-forward" style={styles.arrow} />
+                </Right>
+              </CardItem>
+            </Card>
             : null}
           <Card>
             <CardItem header>
@@ -109,36 +110,36 @@ export default class MyPlaylists extends Component {
             {this.state.isLoading
               ? <Spinner color="#FC642D" />
               : <View>
-                  {!this.state.playlists.length
-                    ? <CardItem>
-                        <Text style={styles.header}>
-                          Connect a music streaming service to view playlists!
+                {!this.state.playlists.length
+                  ? <CardItem>
+                    <Text style={styles.header}>
+                      Connect a music streaming service to view playlists!
                         </Text>
-                      </CardItem>
-                    : <View>
-                        {this.state.playlists.map((playlist, index) => {
-                          return (
-                            <CardItem
-                              button
-                              key={index}
-                              onPress={() => this.props.goToPlaylist(playlist)}
-                            >
-                              <Body>
-                                <Text style={styles.bodytxt}>
-                                  {playlist.title}
-                                </Text>
-                              </Body>
-                              <Right>
-                                <Icon
-                                  name="arrow-forward"
-                                  style={styles.arrow}
-                                />
-                              </Right>
-                            </CardItem>
-                          );
-                        })}
-                      </View>}
-                </View>}
+                  </CardItem>
+                  : <View>
+                    {this.state.playlists.map((playlist, index) => {
+                      return (
+                        <CardItem
+                          button
+                          key={index}
+                          onPress={() => this.props.goToPlaylist(playlist)}
+                        >
+                          <Body>
+                            <Text style={styles.bodytxt}>
+                              {playlist.title}
+                            </Text>
+                          </Body>
+                          <Right>
+                            <Icon
+                              name="arrow-forward"
+                              style={styles.arrow}
+                            />
+                          </Right>
+                        </CardItem>
+                      );
+                    })}
+                  </View>}
+              </View>}
           </Card>
         </Content>
       </Container>

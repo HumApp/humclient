@@ -39,16 +39,16 @@ export default class SharePlaylist extends Component {
   componentDidMount() {
     Promise.resolve(Database.getAllFriends()).then(result => {
       const friendsArr = Object.keys(result.val()).map(key => {
-        return {friendId: key, friendName: result.val()[key], switchValue: false}
+        return { friendId: key, friendName: result.val()[key], switchValue: false }
       })
-      this.setState({friends: this.state.friends.concat(friendsArr)}, console.log(this.state.friends))
-    })
+      this.setState({ friends: this.state.friends.concat(friendsArr) }, console.log(this.state.friends))
+    }).catch(error => console.log("Share Playlist ", error))
   }
 
   submitShare = () => {
     console.log(this.state.friends.filter(friend => friend.switchValue).map(friend => friend.username))
     this.state.friends.forEach(friend => Database.sharePlaylistWithFriend(this.props.navigation.state.params, friend.friendId));
-    Toast.show({text: 'Playlist shared!', position: 'bottom', duration: 1500, type: 'success'})
+    Toast.show({ text: 'Playlist shared!', position: 'bottom', duration: 1500, type: 'success' })
     this.props.navigation.goBack()
   }
 
@@ -61,7 +61,7 @@ export default class SharePlaylist extends Component {
             <Icon name="ios-search" />
             <Input placeholder="Search" />
           </Item>
-          <Button onPress={() => {console.log("clear")}}transparent>
+          <Button onPress={() => { console.log("clear") }} transparent>
             <Icon name="ios-close-circle" />
           </Button>
         </Header>
@@ -72,36 +72,38 @@ export default class SharePlaylist extends Component {
               <Text style={styles.header}>Friends</Text>
             </CardItem>
             {!this.state.friends.length ? <Spinner /> :
-            <View>
-            {this.state.friends.map(friend => {
-              return (
-                        <ListItem key={friend.friendId}>
-                          <Body>
-                          <Text style={styles.bodytxt}>{friend.friendName}</Text>
-                          </Body>
-                            <Right>
-                              <Switch onValueChange={(value) => this.setState({friends: this.state.friends.map(user => {
-                                    if (friend.username === user.username) user.switchValue = !user.switchValue
-                                    return user
-                              })})}
-                                value={friend.switchValue} />
-                            </Right>
-                        </ListItem>
-                      )
-            })}
-            </View>
-          }
-             <CardItem>
-                <Button
-                  rounded
-                  iconRight
-                  onPress={this.submitShare}
-                  style={styles.share}
-                >
-                  <Text style={{ fontSize: 18 }}>Share</Text>
-                  <Icon name="ios-arrow-forward" style={{ color: '#fff' }} />
-                </Button>
-              </CardItem>
+              <View>
+                {this.state.friends.map(friend => {
+                  return (
+                    <ListItem key={friend.friendId}>
+                      <Body>
+                        <Text style={styles.bodytxt}>{friend.friendName}</Text>
+                      </Body>
+                      <Right>
+                        <Switch onValueChange={(value) => this.setState({
+                          friends: this.state.friends.map(user => {
+                            if (friend.username === user.username) user.switchValue = !user.switchValue
+                            return user
+                          })
+                        })}
+                          value={friend.switchValue} />
+                      </Right>
+                    </ListItem>
+                  )
+                })}
+              </View>
+            }
+            <CardItem>
+              <Button
+                rounded
+                iconRight
+                onPress={this.submitShare}
+                style={styles.share}
+              >
+                <Text style={{ fontSize: 18 }}>Share</Text>
+                <Icon name="ios-arrow-forward" style={{ color: '#fff' }} />
+              </Button>
+            </CardItem>
           </Card>
         </Content>
       </Container>

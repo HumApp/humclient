@@ -2,12 +2,12 @@ import * as firebase from 'firebase';
 
 export function getAllFriends() {
   let user = firebase.auth().currentUser;
-  return firebase.database().ref(`/users/${user.uid}/friends`).once('value');
+  return firebase.database().ref(`/users/${user.uid}/friends`);
 }
 
 export function getPendingFriends() {
   let user = firebase.auth().currentUser;
-  return firebase.database().ref(`/users/${user.uid}/pending`).once('value');
+  return firebase.database().ref(`/users/${user.uid}/pending`);
 }
 
 export function requestFriend(recievingUser, sendBack) {

@@ -16,6 +16,7 @@ import {
   Badge,
   Right,
   Left,
+  Toast,
   SwipeRow
 } from 'native-base';
 import { default as FAIcon } from 'react-native-vector-icons/FontAwesome';

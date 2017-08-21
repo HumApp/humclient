@@ -93,7 +93,6 @@ export default class FriendRequests extends Component {
                       @{friend.username}
                     </Text>
                   </Body>
-
                   <Button
                     small
                     style={{ backgroundColor: '#FC642D', margin: 5 }}
