@@ -5,6 +5,13 @@ export default StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor:'#ff5a5f'
+  },
+  disabled: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center'
   },
   header: {

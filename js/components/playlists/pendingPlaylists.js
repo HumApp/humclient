@@ -34,8 +34,23 @@ export default class PendingPlaylists extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      requests: this.props.navigation.state.params
+      requests: this.props.navigation.state.params,
+      appleAuth: false,
+      spotifyAuth: null
     };
+  }
+
+  componentDidMount() {
+     firebase
+      .database()
+      .ref(`users/${firebase.auth().currentUser.uid}`)
+      .once('value')
+      .then(snapshot => {
+        this.setState({
+          spotifyAuth: snapshot.val().accessToken,
+          appleAuth: snapshot.val().appleAuth
+        });
+      });
   }
 
   deleteRequest = playlistId => {
@@ -140,15 +155,17 @@ export default class PendingPlaylists extends Component {
                                 {playlist.songs.length} songs
                               </Text>
                             </Body>
-
-                            <Button
-                              small
-                              light
-                              style={{ margin: 5 }}
-                              onPress={() => this.spotify(playlist.playlistId)}
-                            >
+                            {this.state.spotifyAuth ?
+                              <Button
+                                small
+                                light
+                                style={{ margin: 5 }}
+                                onPress={() => this.spotify(playlist.playlistId)}
+                              >
                               <FAIcon name="spotify" size={25} color="#1db954" />
-                            </Button>
+                              </Button>
+                              : null}
+                            {this.state.appleAuth ?
                             <Button
                               small
                               light
@@ -157,6 +174,7 @@ export default class PendingPlaylists extends Component {
                             >
                               <FAIcon name="apple" size={25} color="#FF4B63" />
                             </Button>
+                            : null}
                           </CardItem>
                         }
                         right={

@@ -41,7 +41,6 @@ export default class Profile extends Component {
   }
 
   componentDidMount() {
-    console.log('Mounting...');
     firebase
       .database()
       .ref(`users/${firebase.auth().currentUser.uid}`)
@@ -51,7 +50,8 @@ export default class Profile extends Component {
           username: firebase.auth().currentUser.displayName,
           name: snapshot.val().fullname,
           id: snapshot.val().spotifyId,
-          token: snapshot.val().accessToken
+          token: snapshot.val().accessToken,
+          appleAuth: snapshot.val().appleAuth
         });
       });
   }
@@ -92,6 +92,20 @@ export default class Profile extends Component {
       })
       .catch(error => console.log(error));
   };
+
+  persistAppleMusic = () => {
+    let appleAuth = true
+     firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        console.log(user);
+        firebase.database().ref('users/' + user.uid).update({
+          appleAuth
+        });
+      } else {
+        console.log('No user is signed in');
+      }
+    });
+  }
 
   saveUserInfoToDatabase = () => {
     let accessToken = this.state.token;
@@ -177,6 +191,7 @@ export default class Profile extends Component {
   getPlaylists = () => {
     NativeModules.MediaLibraryManager.getPlaylists(playlists => {
       Database.savePlaylistToDatabase(JSON.parse(playlists), 'appleId');
+      this.persistAppleMusic()
     });
   };
 
@@ -185,6 +200,21 @@ export default class Profile extends Component {
       return <Icon name="ios-checkmark-circle" style={styles.header} />;
     else return <Icon name="ios-add" style={styles.header} />;
   };
+
+  // disconnectApple = () => {
+  //   let appleAuth = false
+  //   firebase.auth().onAuthStateChanged(function(user) {
+  //   if (user) {
+  //     console.log(user);
+  //     firebase.database().ref('users/' + user.uid).update({
+  //       appleAuth
+  //     });
+  //     Database.deleteAllUserPlaylists(user.uid)
+  //   } else {
+  //     console.log('No user is signed in');
+  //   }
+  //   });
+  // }
 
   render() {
     return (
@@ -249,8 +279,8 @@ export default class Profile extends Component {
                     </CardItem>
                   }
                   right={
-                    <Button danger onPress={() => alert('Trash')}>
-                      <Icon active name="ios-close-circle-outline" />
+                    <Button danger onPress={() => console.log("disconnect apple")}>
+                      <Icon active name="md-close-circle" />
                     </Button>
                   }
                 />
@@ -286,7 +316,7 @@ export default class Profile extends Component {
                       danger
                       onPress={() => this.setState({ id: '', token: '' })}
                     >
-                      <Icon active name="ios-close-circle-outline" />
+                      <Icon active name="md-close-circle" />
                     </Button>
                   }
                 />
