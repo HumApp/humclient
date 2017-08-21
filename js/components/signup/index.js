@@ -154,6 +154,21 @@ export default class SignUp extends Component {
                     this.setState({ confirmPassword: text })}
                 />
               </Item>
+              {!this.validateForm() ?
+              <CardItem>
+                <Button
+                  iconRight
+                  danger
+                  style={styles.disabled}
+                  rounded
+                  onPress={this.handleSignup}
+                  disabled
+                >
+                  <Text style={{ fontSize: 18 }}>Sign Up</Text>
+                  <Icon name="ios-arrow-forward" style={{ color: '#fff' }} />
+                </Button>
+              </CardItem>
+              :
               <CardItem>
                 <Button
                   iconRight
@@ -161,12 +176,13 @@ export default class SignUp extends Component {
                   style={styles.signup}
                   rounded
                   onPress={this.handleSignup}
-                  disabled={!this.validateForm()}
                 >
                   <Text style={{ fontSize: 18 }}>Sign Up</Text>
                   <Icon name="ios-arrow-forward" style={{ color: '#fff' }} />
                 </Button>
               </CardItem>
+            }
+
             </Form>
           </Card>
         </Content>;

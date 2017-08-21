@@ -85,29 +85,46 @@ export default class SignUp extends Component {
                   onChangeText={text => this.setState({ password: text })}
                 />
               </Item>
+              {!this.validateForm()
+                ? <CardItem>
+                    <Button
+                      rounded
+                      iconRight
+                      style={styles.disabled}
+                      onPress={this.login}
+                      disabled
+                    >
+                      <Text style={{ fontSize: 18 }}>Log in</Text>
+                      <Icon
+                        name="ios-arrow-forward"
+                        style={{ color: '#fff' }}
+                      />
+                    </Button>
+                  </CardItem>
+                : <CardItem>
+                    <Button
+                      rounded
+                      iconRight
+                      style={styles.login}
+                      onPress={this.login}
+                    >
+                      <Text style={{ fontSize: 18 }}>Log in</Text>
+                      <Icon
+                        name="ios-arrow-forward"
+                        style={{ color: '#fff' }}
+                      />
+                    </Button>
+                  </CardItem>}
               <CardItem>
                 <Button
                   rounded
                   iconRight
-                  danger
-                  style={styles.login}
-                  onPress={this.login}
-                  disabled={!this.validateForm()}
-                >
-                  <Text style={{ fontSize: 18 }}>Log in</Text>
-                  <Icon name="ios-arrow-forward" style={{ color: '#fff' }} />
-                </Button>
-              </CardItem>
-              <CardItem>
-                <Button
-                  rounded
-                  iconRight
-                  danger
-                  style={styles.login}
+                  transparent
                   onPress={() => this.props.navigation.navigate('Signup')}
                 >
-                  <Text style={{ fontSize: 18 }}>go to sign up</Text>
-                  <Icon name="ios-arrow-forward" style={{ color: '#fff' }} />
+                  <Text style={styles.bodytxt}>
+                    Don't have an account? Sign up
+                  </Text>
                 </Button>
               </CardItem>
             </Form>
