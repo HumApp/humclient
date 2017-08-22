@@ -3,6 +3,16 @@ import axios from 'axios';
 
 export async function savePlaylistToDatabase(playlists, providerId) {
   try {
+    if (providerId === 'appleId') {
+      const appleToken = await axios.get(
+        'https://us-central1-hum-app.cloudfunctions.net/getJWT',
+        {
+          headers: {
+            pass: "lol this isn't secure"
+          }
+        }
+      );
+    }
     const currentUser = firebase.auth().currentUser;
     for (const playlist of playlists) {
       let newSong = {};
@@ -12,21 +22,29 @@ export async function savePlaylistToDatabase(playlists, providerId) {
             'https://static.tumblr.com/qmraazf/ps5mjrmim/unknown-album.png';
           await axios
             .get(
-              'https://api.music.apple.com/v1/catalog/us/songs/' + playlist.songs[index].id,
+              'https://api.music.apple.com/v1/catalog/us/songs/' +
+                playlist.songs[index].id,
               {
                 headers: {
-                  Authorization: "Bearer eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ikw4RE05UjJDWVYifQ.eyJpc3MiOiJMTlEyMllGOFVCIiwiZXhwIjoxNTAzNDM4MjcyLCJpYXQiOjE1MDM0MzQ2NzIuNjJ9.lmWCpbzskR4CYiGccPsbPoG45iZ6lGS7REBLa3guekNJTJOCZBaEuebZYSgT0E2YzDJPYyhtW1YN7StN5lUSdA"
+                  Authorization: `Bearer ${appleToken.data}`
                 }
               }
             )
             .then(response => {
-              playlist.songs[index].image = response.data.data[0].attributes.artwork.url.replace("{w}", "100").replace("{h}", "100")
+              playlist.songs[
+                index
+              ].image = response.data.data[0].attributes.artwork.url
+                .replace('{w}', '100')
+                .replace('{h}', '100');
               findOrCreateSong(playlist.songs[index], providerId);
               newSong[index] = {};
               newSong[index].artist = playlist.songs[index].artist;
               newSong[index].title = playlist.songs[index].title;
               newSong[index].image = playlist.songs[index].image;
-            }).catch(error => {console.log(error)});
+            })
+            .catch(error => {
+              console.log(error);
+            });
         } else {
           findOrCreateSong(playlist.songs[index], providerId);
           newSong[index] = {};
@@ -60,9 +78,7 @@ export function addPlaylistToUser(playlistId) {
 //get user's playlists
 export function getUserPlaylists() {
   let user = firebase.auth().currentUser;
-  return firebase
-    .database()
-    .ref(`/users/${user.uid}/playlists/`)
+  return firebase.database().ref(`/users/${user.uid}/playlists/`);
 }
 
 //get playlist from id
@@ -156,7 +172,7 @@ export function deleteAllUserPlaylists(userId, type) {
     });
 }
 
-export function databasePlaylistToSpotify(databasePlaylistId) {
+export function databasePlaylistToSpotify(databasePlaylistId, callback) {
   firebase
     .database()
     .ref(`users/${firebase.auth().currentUser.uid}`)
@@ -215,7 +231,7 @@ export function databasePlaylistToSpotify(databasePlaylistId) {
                     }
                   }
                 )
-                .then(response => console.log('Import successful!'))
+                .then(response => callback(databasePlaylistId))
                 .catch(error =>
                   console.log('Error while importing playlist: ', error)
                 );
