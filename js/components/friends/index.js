@@ -134,8 +134,6 @@ export default class Friends extends Component {
   };
 
   render() {
-    console.log('friends', this.state.friends);
-
     return (
       <Container>
         <Tabs

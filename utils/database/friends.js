@@ -16,12 +16,13 @@ export function requestFriend(recievingUser, sendBack) {
     .database()
     .ref(`/users/${recievingUser}/pending/${user.uid}`)
     .set(true);
-  if (!sendBack) {firebase
+  if (!sendBack) {
+    firebase
       .database()
       .ref(`/users/${user.uid}/sent/${recievingUser}`)
-      .set(true);}
+      .set(true);
+  }
 }
-
 
 export function addFriendFromPending(friend) {
   let user = firebase.auth().currentUser;
