@@ -9,20 +9,24 @@ export async function savePlaylistToDatabase(playlists, providerId) {
       for (const index in playlist.songs) {
         if (providerId === 'appleId') {
           playlist.songs[index].image =
-            'http://static.tumblr.com/qmraazf/ps5mjrmim/unknown-album.png';
+            'https://static.tumblr.com/qmraazf/ps5mjrmim/unknown-album.png';
           await axios
             .get(
-              'https://itunes.apple.com/lookup?id=' + playlist.songs[index].id
+              'https://api.music.apple.com/v1/catalog/us/songs/' + playlist.songs[index].id,
+              {
+                headers: {
+                  Authorization: "Bearer eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ikw4RE05UjJDWVYifQ.eyJpc3MiOiJMTlEyMllGOFVCIiwiZXhwIjoxNTAzNDM4MjcyLCJpYXQiOjE1MDM0MzQ2NzIuNjJ9.lmWCpbzskR4CYiGccPsbPoG45iZ6lGS7REBLa3guekNJTJOCZBaEuebZYSgT0E2YzDJPYyhtW1YN7StN5lUSdA"
+                }
+              }
             )
             .then(response => {
-              playlist.songs[index].image =
-                response.data.results[0].artworkUrl100;
+              playlist.songs[index].image = response.data.data[0].attributes.artwork.url.replace("{w}", "100").replace("{h}", "100")
               findOrCreateSong(playlist.songs[index], providerId);
               newSong[index] = {};
               newSong[index].artist = playlist.songs[index].artist;
               newSong[index].title = playlist.songs[index].title;
               newSong[index].image = playlist.songs[index].image;
-            });
+            }).catch(error => {console.log(error)});
         } else {
           findOrCreateSong(playlist.songs[index], providerId);
           newSong[index] = {};
