@@ -55,16 +55,6 @@ export default class Friends extends Component {
     });
   };
 
-  searchNewFriends = searchFriend => {
-    this.setState({
-      searchFriends: searchFriend
-        ? this.state.friends.filter(friend =>
-            friend.friendName.match(searchFriend)
-          )
-        : this.state.friends
-    });
-  };
-
   friendRequests = () => {
     this.props.navigation.navigate('FriendRequests', this.state.pending);
   };
@@ -147,7 +137,6 @@ export default class Friends extends Component {
           </Tab>
           <Tab activeTextStyle={{ color: '#484848' }} heading="Search Friends">
             <SearchFriends
-              searchNewFriends={this.searchNewFriends}
               handleSearch={this.handleSearch}
               friends={this.state.friends}
               pending={this.state.pending}
