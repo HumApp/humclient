@@ -83,7 +83,11 @@ export default class PendingPlaylists extends Component {
   spotify = playlistId => {
     Database.addPlaylistFromPending(playlistId);
     this.setState({ spotifyDownloading: true }, () => {
-      Database.databasePlaylistToSpotify(playlistId, this.spotifyComplete);
+      Database.databasePlaylistToSpotify(
+        playlistId,
+        this.spotifyComplete,
+        this.spotifyFailed
+      );
     });
   };
 
@@ -108,8 +112,19 @@ export default class PendingPlaylists extends Component {
     });
   };
 
+  spotifyFailed = () => {
+    this.setState({ spotifyDownloading: false }, () => {
+      Toast.show({
+        text: 'Unable to download spotify playlist.',
+        position: 'bottom',
+        duration: 1500,
+        type: 'danger'
+      });
+    });
+  };
+
   apple = async playlistId => {
-    this.setState({appleDownloading: true})
+    this.setState({ appleDownloading: true });
     try {
       let playlistObj = null;
       let songArr = [];
@@ -143,7 +158,7 @@ export default class PendingPlaylists extends Component {
         this.appleComplete(playlistId);
       });
     } catch (err) {
-      console.log(err);
+      this.appleFailed()
     }
   };
 
@@ -165,6 +180,17 @@ export default class PendingPlaylists extends Component {
           if (!this.state.requests.length) this.props.navigation.goBack();
         }
       );
+    });
+  };
+
+  appleFailed = () => {
+    this.setState({ appleDownloading: false }, () => {
+      Toast.show({
+        text: 'Unable to download playlist to apple music.',
+        position: 'bottom',
+        duration: 1500,
+        type: 'danger'
+      });
     });
   };
 
@@ -220,14 +246,15 @@ export default class PendingPlaylists extends Component {
                             </Button>
                         : null}
                       {this.state.appleAuth
-                        ? !this.state.appleDownloading ?<Button
-                            small
-                            light
-                            style={{ margin: 5 }}
-                            onPress={() => this.apple(playlist.playlistId)}
-                          >
-                            <FAIcon name="apple" size={25} color="#FF4B63" />
-                          </Button>
+                        ? !this.state.appleDownloading
+                          ? <Button
+                              small
+                              light
+                              style={{ margin: 5 }}
+                              onPress={() => this.apple(playlist.playlistId)}
+                            >
+                              <FAIcon name="apple" size={25} color="#FF4B63" />
+                            </Button>
                           : <Button small light style={{ margin: 5 }}>
                               <Spinner color="#FF4B63" />
                             </Button>

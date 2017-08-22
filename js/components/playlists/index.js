@@ -38,6 +38,10 @@ export default class Playlists extends Component {
     this.props.navigation.navigate('SinglePlaylist', playlist);
   };
 
+   goToSharedPlaylist = playlist => {
+    this.props.navigation.navigate('SingleSharedPlaylist', playlist);
+  };
+
   goToPendingPlaylists = () => {
     this.props.navigation.navigate(
       'PendingPlaylists',
@@ -81,7 +85,7 @@ export default class Playlists extends Component {
           >
             <SharedPlaylists
               goToPending={this.goToPendingPlaylists}
-              goToPlaylist={this.goToPlaylist}
+              goToPlaylist={this.goToSharedPlaylist}
               pendingPlaylists={this.state.pendingPlaylists}
             />
           </Tab>

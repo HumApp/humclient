@@ -50,64 +50,16 @@ export default class SinglePlaylist extends Component {
       .catch(error => console.log('Single Playlist ', error));
   }
 
-  deleteRequest = playlistId => {
-    Database.unfollowPlaylist(playlistId);
-    Toast.show({
-      text: 'Playlist request deleted!',
-      position: 'bottom',
-      duration: 1500,
-      type: 'danger'
-    });
-    //this adds to the stack, need it to go back to the initial tab
-    this.props.navigation.navigate('Playlists');
+  goToShare = playlistId => {
+    this.props.navigation.navigate('SharePlaylist', playlistId);
   };
 
-  spotify = playlistId => {
-    Database.addPlaylistFromPending(playlistId);
-    this.setState({ spotifyDownloading: true }, () => {
-      Database.databasePlaylistToSpotify(
-        playlistId,
-        this.spotifyComplete,
-        this.spotifyFailed
-      );
-    });
-  };
-
-  spotifyComplete = () => {
-    this.setState({ spotifyDownloading: false }, () => {
-      Toast.show({
-        text: 'Playlist downloaded to spotify!',
-        position: 'bottom',
-        duration: 1500,
-        type: 'success'
-      });
-      //need to navigate back to playlists home
-    });
-  };
-
-  spotifyFailed = () => {
-    this.setState({ spotifyDownloading: false }, () => {
-      Toast.show({
-        text: 'Unable to download spotify playlist.',
-        position: 'bottom',
-        duration: 1500,
-        type: 'danger'
-      });
-    });
-  };
-
-  apple = async playlistId => {
+  apple = async playlist => {
     this.setState({ appleDownloading: true });
     try {
-      let playlistObj = null;
-      let songArr = [];
-      Database.addPlaylistFromPending(playlistId);
-      let result = await Database.getPlaylistFromId(playlistId);
-      playlistObj = {
-        name: result.val().title,
-        author: result.val().displayName
-      };
-      for (let song of result.val().songs) {
+      playlistObj = { name: playlist.title, author: playlist.displayName };
+      const songArr = [];
+      for (let song of playlist.songs) {
         let songNum = await axios
           .post(
             'https://us-central1-hum-app.cloudfunctions.net/getSongId/',
@@ -122,7 +74,7 @@ export default class SinglePlaylist extends Component {
               }
             }
           )
-          .catch(error => console.log('Pending Playlists ', error));
+          .catch(error => console.log('Single Playlist ', error));
         songArr.push(songNum.data.toString());
       }
       playlistObj.songs = songArr;
@@ -130,8 +82,8 @@ export default class SinglePlaylist extends Component {
       NativeModules.MediaLibraryManager.createPlaylist(applePlaylist, str => {
         this.appleComplete();
       });
-    } catch (err) {
-      this.appleFailed();
+    } catch (error) {
+      this.appleFailed()
     }
   };
 
@@ -143,7 +95,6 @@ export default class SinglePlaylist extends Component {
         duration: 1500,
         type: 'success'
       });
-      //need to navigate back to home playlists
     });
   };
 
@@ -158,6 +109,35 @@ export default class SinglePlaylist extends Component {
     });
   };
 
+  spotifyComplete = () => {
+    this.setState({ spotifyDownloading: false }, () => {
+      Toast.show({
+        text: 'Playlist downloaded to spotify!',
+        position: 'bottom',
+        duration: 1500,
+        type: 'success'
+      });
+    });
+  };
+
+  spotifyFailed = () => {
+    this.setState({ spotifyDownloading: false }, () => {
+      Toast.show({
+        text: 'Unable to download spotify playlist.',
+        position: 'bottom',
+        duration: 1500,
+        type: 'danger'
+      });
+    });
+  };
+
+
+  spotify = playlistId => {
+    this.setState({ spotifyDownloading: true }, () => {
+      Database.databasePlaylistToSpotify(playlistId, this.spotifyComplete, this.spotifyFailed);
+    });
+  };
+
   render() {
     const playlist = this.props.navigation.state.params;
     return (
@@ -169,11 +149,16 @@ export default class SinglePlaylist extends Component {
                 <Text style={styles.pheader}>
                   {playlist.title}
                 </Text>
-                <Text note style={styles.subtitle}>
-                  Playlist by {playlist.displayName}
-                </Text>
+                {playlist.type === 'appleId'
+                  ? <Text note style={styles.subtitle}>
+                      Apple Music Playlist by {playlist.displayName}
+                    </Text>
+                  : <Text note style={styles.subtitle}>
+                      Spotify Playlist by {playlist.displayName}
+                    </Text>}
               </Body>
-              {this.state.spotifyAuth && playlist.type === 'appleId'
+
+              {this.state.spotifyAuth
                 ? !this.state.spotifyDownloading
                   ? <Button
                       small
@@ -187,7 +172,8 @@ export default class SinglePlaylist extends Component {
                       <Spinner color="#1db954" />
                     </Button>
                 : null}
-              {this.state.appleAuth && playlist.type === 'spotifyId'
+
+              {this.state.appleAuth
                 ? !this.state.appleDownloading
                   ? <Button
                       small
@@ -202,12 +188,12 @@ export default class SinglePlaylist extends Component {
                     </Button>
                 : null}
               <Button
-                danger
+                light
                 style={{ margin: 5 }}
                 small
-                onPress={() => this.deleteRequest(playlist.playlistId)}
+                onPress={() => this.goToShare(playlist.playlistId)}
               >
-                <Icon name="md-close-circle" />
+                <Icon name="ios-share-outline" style={styles.headerIcon} />
               </Button>
             </CardItem>
             <CardItem header>
