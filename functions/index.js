@@ -3,7 +3,9 @@ const axios = require('axios');
 const admin = require('firebase-admin');
 admin.initializeApp(functions.config().firebase);
 const _ = require('lodash');
-
+//on request, searches the database for a given song by title and artist. If the
+//function can't find it, then it queries apple or spotify, returns the result,
+//and saves it the the DB for next time
 exports.getSongId = functions.https.onRequest((req, response) => {
   let reqSong = req.body;
   const userToken = req.body.userToken;
@@ -41,7 +43,8 @@ exports.getSongId = functions.https.onRequest((req, response) => {
     })
     .catch(console.error);
 });
-
+// watches the pending folder of every user to faciliate the friend process
+// matches pending and sent ID's to automatically respond to friend requests
 exports.sentPendingWatch = functions.database.ref(`/users/{uid}/pending`).onWrite(function (event) {
   let uid = event.params.uid;
   let pending = Object.keys(event.data.val());
@@ -57,6 +60,18 @@ exports.sentPendingWatch = functions.database.ref(`/users/{uid}/pending`).onWrit
     }
   });
 });
+
+exports.cascadePlaylistDelete = functions.database.ref(`/playlists/{PID}`).onDelete(function (event) {
+  let PID = event.params.PID;
+  let affectedUsers = event.data.previous.val().sharedWith;
+  console.log('affectedUsers', affectedUsers);
+  if (affectedUsers) {
+    for (let uid in affectedUsers) {
+    admin.database().ref(`/users/${uid}/playlists/${PID}`).remove();
+  }
+}
+});
+
 
 function makeiTunesSongQuery(songTitle, songArtist) {
   return `https://itunes.apple.com/search?term=${songTitle} ${songArtist}&media=music`;
