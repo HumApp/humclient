@@ -1,6 +1,9 @@
 package-lock.json
 yarn.lock
 js/components/utils/firebase.js
+utils/appleToken.py
+utils/get-pip.py
+
 
 # OSX
 #

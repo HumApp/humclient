@@ -65,7 +65,6 @@ export default class MyPlaylists extends Component {
       temp.push(playlist);
     }
     this.setState({playlists: []}, () => {
-      console.log("userPlaylists:", temp);
       this.setState({playlists: this.state.playlists.concat(temp), isLoading: false}, () => {console.log('executed');});
     })
   }
@@ -76,14 +75,12 @@ export default class MyPlaylists extends Component {
       const playlist = await Database.getPlaylistFromId(playlistId);
       temp.push(playlist.val());
     }
-    console.log("pendingPlaylists:", temp);
     this.setState({pendingPlaylists: []}, () => {
       this.setState({pendingPlaylists: this.state.pendingPlaylists.concat(temp), isLoading: false});
     })
   }
 
   async componentDidMount() {
-    console.log("MOUNTED");
     Database.getUserPlaylists().on('value', this.userPlaylistCallback)
     Database.getSharedPlaylists().on('value', this.pendingPlaylistCallback)
     //Database.getSharedPlaylists().on('value', this.playlistCallback);
@@ -151,7 +148,6 @@ export default class MyPlaylists extends Component {
                   </CardItem>
                   : <View>
                     {this.state.playlists.map((playlist, index) => {
-                      {console.log("Playlist.map", playlist, index);}
                       return (
                         <CardItem
                           button

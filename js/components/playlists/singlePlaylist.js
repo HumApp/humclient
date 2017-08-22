@@ -168,7 +168,7 @@ export default class SinglePlaylist extends Component {
                       <Left>
                         <Thumbnail
                           square
-                          size={10}
+                          size={80}
                           source={{ uri: `${song.image}` }}
                         />
                       </Left>
