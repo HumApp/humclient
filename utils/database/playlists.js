@@ -172,7 +172,7 @@ export function deleteAllUserPlaylists(userId, type) {
     });
 }
 
-export function databasePlaylistToSpotify(databasePlaylistId, callback) {
+export function databasePlaylistToSpotify(databasePlaylistId, success, fail) {
   firebase
     .database()
     .ref(`users/${firebase.auth().currentUser.uid}`)
@@ -201,7 +201,7 @@ export function databasePlaylistToSpotify(databasePlaylistId, callback) {
                 }
               }
             )
-            .catch(error => 'Not found')
+            .catch(error => fail())
         );
         Promise.all(promises).then(values => {
           let final = values
@@ -231,13 +231,13 @@ export function databasePlaylistToSpotify(databasePlaylistId, callback) {
                     }
                   }
                 )
-                .then(response => callback(databasePlaylistId))
+                .then(response => success(databasePlaylistId))
                 .catch(error =>
-                  console.log('Error while importing playlist: ', error)
+                  fail()
                 );
             })
             .catch(error =>
-              console.log('Error while creating new playlist: ', error)
+              fail()
             );
         });
       });

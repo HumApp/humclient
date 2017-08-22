@@ -37,9 +37,6 @@ export default class SharedPlaylists extends Component {
     };
   }
 
-  goToPlaylist = playlist => {
-    this.props.navigation.navigate('SinglePlaylist', playlist);
-  };
 
   getSharedPlaylists = async userId => {
     let playlistArr = [];

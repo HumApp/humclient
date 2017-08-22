@@ -83,7 +83,7 @@ export default class SinglePlaylist extends Component {
         this.appleComplete();
       });
     } catch (error) {
-      console.log(error);
+      this.appleFailed()
     }
   };
 
@@ -94,6 +94,17 @@ export default class SinglePlaylist extends Component {
         position: 'bottom',
         duration: 1500,
         type: 'success'
+      });
+    });
+  };
+
+  appleFailed = () => {
+    this.setState({ appleDownloading: false }, () => {
+      Toast.show({
+        text: 'Unable to download playlist to apple music.',
+        position: 'bottom',
+        duration: 1500,
+        type: 'danger'
       });
     });
   };
@@ -109,9 +120,20 @@ export default class SinglePlaylist extends Component {
     });
   };
 
+  spotifyFailed = () => {
+    this.setState({ spotifyDownloading: false }, () => {
+      Toast.show({
+        text: 'Unable to download spotify playlist.',
+        position: 'bottom',
+        duration: 1500,
+        type: 'danger'
+      });
+    });
+  };
+
   spotify = playlistId => {
     this.setState({ spotifyDownloading: true }, () => {
-      Database.databasePlaylistToSpotify(playlistId, this.spotifyComplete);
+      Database.databasePlaylistToSpotify(playlistId, this.spotifyComplete, this.spotifyFailed);
     });
   };
 
