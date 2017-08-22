@@ -61,7 +61,8 @@ export default class SignUp extends Component {
         .set(
           {
             fullname: this.state.firstName + ' ' + this.state.lastName,
-            username: this.state.userName
+            username: this.state.userName,
+            username: this.state.email
           },
           function(error) {
             if (error && error.code === 'PERMISSION_DENIED') {
@@ -154,35 +155,38 @@ export default class SignUp extends Component {
                     this.setState({ confirmPassword: text })}
                 />
               </Item>
-              {!this.validateForm() ?
-              <CardItem>
-                <Button
-                  iconRight
-                  danger
-                  style={styles.disabled}
-                  rounded
-                  onPress={this.handleSignup}
-                  disabled
-                >
-                  <Text style={{ fontSize: 18 }}>Sign Up</Text>
-                  <Icon name="ios-arrow-forward" style={{ color: '#fff' }} />
-                </Button>
-              </CardItem>
-              :
-              <CardItem>
-                <Button
-                  iconRight
-                  danger
-                  style={styles.signup}
-                  rounded
-                  onPress={this.handleSignup}
-                >
-                  <Text style={{ fontSize: 18 }}>Sign Up</Text>
-                  <Icon name="ios-arrow-forward" style={{ color: '#fff' }} />
-                </Button>
-              </CardItem>
-            }
-
+              {!this.validateForm()
+                ? <CardItem>
+                    <Button
+                      iconRight
+                      danger
+                      style={styles.disabled}
+                      rounded
+                      onPress={this.handleSignup}
+                      disabled
+                    >
+                      <Text style={{ fontSize: 18 }}>Sign Up</Text>
+                      <Icon
+                        name="ios-arrow-forward"
+                        style={{ color: '#fff' }}
+                      />
+                    </Button>
+                  </CardItem>
+                : <CardItem>
+                    <Button
+                      iconRight
+                      danger
+                      style={styles.signup}
+                      rounded
+                      onPress={this.handleSignup}
+                    >
+                      <Text style={{ fontSize: 18 }}>Sign Up</Text>
+                      <Icon
+                        name="ios-arrow-forward"
+                        style={{ color: '#fff' }}
+                      />
+                    </Button>
+                  </CardItem>}
             </Form>
           </Card>
         </Content>;
