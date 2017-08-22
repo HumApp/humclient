@@ -13,20 +13,20 @@ export default class App extends Component {
     this.state = {
       currentUser: null
     };
-    console.log('constructor');
+    // console.log('constructor');
   }
 
   getInitialView = () => {
-    console.log('component Did mount');
+    // console.log('component Did mount');
 
     firebase.auth().onAuthStateChanged(currentUser => {
       if (currentUser) {
-        console.log('currentUSer in auth');
+        // console.log('currentUSer in auth');
         this.setState({
           currentUser: currentUser
         });
       } else {
-        console.log('no currentUSer in auth');
+        // console.log('no currentUSer in auth');
         this.setState({
           currentUser: false
         });
@@ -36,13 +36,13 @@ export default class App extends Component {
 
   render() {
     let landingPage;
-    console.log('render start');
+    // console.log('render start');
     if (this.state.currentUser === null) {
-      console.log('render spinner');
+      // console.log('render spinner');
       landingPage = <Spinner color="#FC642D" />;
     } else {
-      console.log('render app navigator');
-      console.log('are we getting here more than once???');
+      // console.log('render app navigator');
+      // console.log('are we getting here more than once???');
       let AppNavigator = createRootNavigator(
         this.state.currentUser && firebase.auth().currentUser.emailVerified
       );
