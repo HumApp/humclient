@@ -31,6 +31,13 @@ export function addPlaylistToUser(playlistId) {
     .ref(`/users/${user.uid}/playlists/${playlistId}`)
     .set('original');
 }
+//get user's playlists
+export function getUserPlaylists() {
+  let user = firebase.auth().currentUser;
+  return firebase
+    .database()
+    .ref(`/users/${user.uid}/playlists/`)
+}
 
 //get playlist from id
 export function getPlaylistFromId(pid) {
@@ -42,8 +49,7 @@ export function getSharedPlaylists() {
   let user = firebase.auth().currentUser;
   return firebase
     .database()
-    .ref(`/users/${user.uid}/sharedPlaylists`)
-    .once('value');
+    .ref(`/users/${user.uid}/sharedPlaylists`);
 }
 
 //the pending folder
@@ -201,7 +207,7 @@ export function databasePlaylistToSpotify(databasePlaylistId) {
 };
 
 function getUrlPath(str) {
-  return encodeURIComponent(str).replace('.', function (char) {
+  return encodeURIComponent(str).replace(/\./g, function (char) {
     return '%' + char.charCodeAt(0).toString(16);
   });
 }
