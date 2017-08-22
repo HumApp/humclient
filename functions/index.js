@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const functions = require('firebase-functions');
 const axios = require('axios');
 const admin = require('firebase-admin');
@@ -28,10 +29,10 @@ exports.getSongId = functions.https.onRequest((req, response) => {
           .catch(console.error);
       } else {
         axios.get(makeSpotifySongQuery(reqSong.title, reqSong.artist), {
-          headers: {
-            Authorization: `Bearer ${userToken}`
-          }
-        })
+            headers: {
+              Authorization: `Bearer ${userToken}`
+            }
+          })
           .then(res => res.data)
           .then(json => {
             const uri = json.tracks.items[0].uri.toString();
@@ -48,6 +49,9 @@ exports.getSongId = functions.https.onRequest((req, response) => {
 exports.sentPendingWatch = functions.database.ref(`/users/{uid}/pending`).onWrite(function (event) {
   let uid = event.params.uid;
   let pending = Object.keys(event.data.val());
+  pending.forEach(key => {
+    if (event.data.val()[key] === false) admin.database().ref(`/users/${uid}/friends/${key}`).remove();
+  });
   admin.database().ref(`/users/${uid}/sent`).once('value', function (sentSnap) {
     let sent = Object.keys(sentSnap.val());
     let matches = _.intersection(sent, pending);
@@ -69,9 +73,9 @@ exports.cascadePlaylistDelete = functions.database.ref(`/playlists/{PID}`).onDel
   admin.database().ref(`/users/${creator}/playlists/${PID}`).remove();
   if (affectedUsers) {
     for (let uid in affectedUsers) {
-    admin.database().ref(`/users/${uid}/playlists/${PID}`).remove();
+      admin.database().ref(`/users/${uid}/playlists/${PID}`).remove();
+    }
   }
-}
 });
 
 
@@ -94,3 +98,28 @@ function sendResponseWithIdAndSave(response, id, urlTitle, urlArtist, service) {
   console.log(`set /songs/${urlTitle}/${urlArtist} to have child ${service} with value ${id}`);
   response.send(id);
 }
+
+
+exports.getJWT = functions.https.onRequest((req, res) => {
+  if (req.get('pass') === "lol this isn't secure") {
+    const secret = `-----BEGIN PRIVATE KEY-----
+${functions.config().apple.developertoken}
+-----END PRIVATE KEY-----`;
+    const keyId = functions.config().apple.keyid;
+    const teamId = functions.config().apple.teamid;
+    let date = new Date();
+    let payload = {
+      iss: teamId,
+      exp: Math.floor(Date.now() / 1000) + (60 * 5),
+      iat: Math.floor(+date / 1000)
+    };
+    let options = {
+      algorithm: 'ES256',
+      keyid: keyId
+    };
+    let token = jwt.sign(payload, secret, options);
+    res.send(token.toString());
+  } else {
+    res.send(401);
+  }
+});
