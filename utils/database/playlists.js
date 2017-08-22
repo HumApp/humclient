@@ -55,6 +55,13 @@ export function addPlaylistToUser(playlistId) {
     .ref(`/users/${user.uid}/playlists/${playlistId}`)
     .set('original');
 }
+//get user's playlists
+export function getUserPlaylists() {
+  let user = firebase.auth().currentUser;
+  return firebase
+    .database()
+    .ref(`/users/${user.uid}/playlists/`)
+}
 
 //get playlist from id
 export function getPlaylistFromId(pid) {

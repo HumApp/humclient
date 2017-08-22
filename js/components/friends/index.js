@@ -39,16 +39,30 @@ export default class Friends extends Component {
     super(props);
     this.state = {
       friends: [],
+      searchFriends: [],
       pending: [],
       isLoading: true
     };
   }
 
-  handleSearch = friends => {
-    // friends.filter(friend => {
-    //   return friend.match(this.state.)
-    // })
-    console.log('hi brian');
+  searchMyFriends = searchFriend => {
+    this.setState({
+      searchFriends: searchFriend
+        ? this.state.friends.filter(friend =>
+            friend.friendName.toLowerCase().match(searchFriend)
+          )
+        : this.state.friends
+    });
+  };
+
+  searchNewFriends = searchFriend => {
+    this.setState({
+      searchFriends: searchFriend
+        ? this.state.friends.filter(friend =>
+            friend.friendName.match(searchFriend)
+          )
+        : this.state.friends
+    });
   };
 
   friendRequests = () => {
@@ -72,7 +86,7 @@ export default class Friends extends Component {
       user.userId = friendId;
       temp.push(user);
     }
-    console.log("TEMO", temp)
+    console.log('TEMO', temp);
     this.setState({ pending: [] }, () => {
       this.setState({ pending: this.state.pending.concat(temp) });
     });
@@ -88,9 +102,14 @@ export default class Friends extends Component {
         friendName: snap.val()[friendId]
       });
     }
-    this.setState({ friends: [] }, () => {
-      this.setState({ friends: this.state.friends.concat(friendsArr) }, () =>
-        this.setState({ isLoading: false })
+
+    this.setState({ friends: [], searchFriends: [] }, () => {
+      this.setState(
+        {
+          friends: this.state.friends.concat(friendsArr),
+          searchFriends: this.state.friends.concat(friendsArr)
+        },
+        () => this.setState({ isLoading: false })
       );
     });
   };
@@ -119,15 +138,6 @@ export default class Friends extends Component {
 
     return (
       <Container>
-        <Header searchBar rounded>
-          <Item>
-            <Icon name="ios-search" />
-            <Input placeholder="Search for new friends" />
-          </Item>
-          <Button light onPress={this.searchPeople} transparent>
-            <Icon name="md-close-circle" />
-          </Button>
-        </Header>
         <Tabs
           tabBarUnderlineStyle={{ backgroundColor: '#ff5a5f' }}
           initialPage={0}
@@ -135,18 +145,21 @@ export default class Friends extends Component {
         >
           <Tab activeTextStyle={{ color: '#484848' }} heading="My Friends">
             <MyFriends
+              searchMyFriends={this.searchMyFriends}
               goToPending={this.friendRequests}
-              handleSearch={this.handleSearch}
-              friends={this.state.friends}
+              friends={this.state.searchFriends}
               pending={this.state.pending}
-              loading={this.state.loading}
+              isLoading={this.state.isLoading}
+              deleteFriend={this.deleteFriend}
             />
           </Tab>
           <Tab activeTextStyle={{ color: '#484848' }} heading="Search Friends">
             <SearchFriends
+              searchNewFriends={this.searchNewFriends}
               handleSearch={this.handleSearch}
               friends={this.state.friends}
-              loading={this.state.loading}
+              pending={this.state.pending}
+              isLoading={this.state.isLoading}
             />
           </Tab>
         </Tabs>

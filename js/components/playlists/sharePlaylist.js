@@ -85,7 +85,7 @@ export default class SharePlaylist extends Component {
               <Icon active name="md-people" style={styles.headerIcon} />
               <Text style={styles.header}>Friends</Text>
             </CardItem>
-            {!this.state.friends.length ? <Spinner /> :
+            {!this.state.friends.length ? <Text>NO FRANS FOR YOU</Text> :
               <View>
                 {this.state.friends.map(friend => {
                   return (
