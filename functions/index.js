@@ -60,7 +60,8 @@ exports.sentPendingWatch = functions.database.ref(`/users/{uid}/pending`).onWrit
     }
   });
 });
-
+// after a user deletes their playlist, makes sure that no reference to that playlist remains in
+// any other user's playlist list
 exports.cascadePlaylistDelete = functions.database.ref(`/playlists/{PID}`).onDelete(function (event) {
   let PID = event.params.PID;
   let affectedUsers = event.data.previous.val().sharedWith;
