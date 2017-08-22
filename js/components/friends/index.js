@@ -49,7 +49,7 @@ export default class Friends extends Component {
     this.setState({
       searchFriends: searchFriend
         ? this.state.friends.filter(friend =>
-            friend.friendName.match(searchFriend)
+            friend.friendName.toLowerCase().match(searchFriend)
           )
         : this.state.friends
     });

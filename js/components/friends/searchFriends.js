@@ -34,7 +34,9 @@ export default class SearchFriends extends Component {
     this.state = {
       results: null,
       requests: [{ username: 'oliviaoddo' }, { username: 'brian' }],
-      searchFriend: ''
+      searchedUsers: null,
+      searchName: '',
+      isLoading: false
     };
   }
 
@@ -49,8 +51,23 @@ export default class SearchFriends extends Component {
     });
   };
 
-  searchNewFriends = searchFriend => {
-    Database.request;
+  fetchSearchUsers = async () => {
+    try {
+      this.setState({ isLoading: true });
+      const searchedUsers = await Database.getUsersByAnyName(
+        this.state.searchName
+      );
+      this.setState({ searchedUsers }, () =>
+        this.setState({ isLoading: false })
+      );
+    } catch (err) {
+      Toast.show({
+        text: `${err}!`,
+        position: 'bottom',
+        duration: 1500,
+        type: 'success'
+      });
+    }
   };
 
   render() {
@@ -63,14 +80,12 @@ export default class SearchFriends extends Component {
               placeholder="Search for new friends"
               autoCapitalize="none"
               autoCorrect={false}
-              value={this.state.searchFriend}
-              onChangeText={text => this.setState({ searchFriend: text })}
+              value={this.state.searchName}
+              onChangeText={text => this.setState({ searchName: text })}
             />
+            <Icon name="ios-people" />
           </Item>
-          <Button
-            transparent
-            onPress={() => this.searchNewFriends(this.state.searchFriend)}
-          >
+          <Button transparent onPress={this.fetchSearchUsers}>
             <Text>Search</Text>
           </Button>
         </Header>
@@ -78,36 +93,44 @@ export default class SearchFriends extends Component {
           <CardItem header>
             <Text style={styles.header}> Search Results</Text>
           </CardItem>
-          {!this.state.results
+          {this.state.isLoading
             ? <Spinner color="#FC642D" />
             : <View>
-                {Object.keys(this.state.results).map((friendKey, index) => {
-                  return (
-                    <CardItem key={index} bordered={true}>
-                      <Body>
-                        <Text style={styles.bodytxt}>
-                          {this.state.results[friendKey].fullname}
-                        </Text>
-                        <Text style={styles.bodytxt}>
-                          {this.state.results[friendKey].username}
-                        </Text>
-                      </Body>
-                      <Right>
-                        <Button
-                          small
-                          style={{ backgroundColor: '#ff5a5f' }}
-                          onPress={() =>
-                            this.addRequest(
-                              this.state.results[friendKey].fullname,
-                              friendKey
-                            )}
-                        >
-                          <Icon name="md-add" />
-                        </Button>
-                      </Right>
+                {!this.state.searchedUsers
+                  ? <CardItem>
+                      <Text>Search for friends to add them!</Text>
                     </CardItem>
-                  );
-                })}
+                  : <View>
+                      {Object.keys(
+                        this.state.searchedUsers
+                      ).map((userId, index) => {
+                        return (
+                          <CardItem key={index} bordered={true}>
+                            <Body>
+                              <Text style={styles.bodytxt}>
+                                {this.state.searchedUsers[userId].fullname}
+                              </Text>
+                              <Text style={styles.bodytxt}>
+                                {this.state.searchedUsers[userId].username}
+                              </Text>
+                            </Body>
+                            <Right>
+                              <Button
+                                small
+                                style={{ backgroundColor: '#ff5a5f' }}
+                                onPress={() =>
+                                  this.addRequest(
+                                    this.state.searchedUsers[userId].fullname,
+                                    userId
+                                  )}
+                              >
+                                <Icon name="md-add" />
+                              </Button>
+                            </Right>
+                          </CardItem>
+                        );
+                      })}
+                    </View>}
               </View>}
         </Card>
       </Content>
