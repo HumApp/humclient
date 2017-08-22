@@ -19,7 +19,8 @@ import {
   Item,
   Input,
   Toast,
-  Thumbnail
+  Thumbnail,
+  Spinner
 } from 'native-base';
 import styles from './styles';
 import { default as FAIcon } from 'react-native-vector-icons/FontAwesome';
@@ -36,7 +37,9 @@ export default class PendingPlaylists extends Component {
     this.state = {
       requests: this.props.navigation.state.params,
       appleAuth: false,
-      spotifyAuth: null
+      spotifyAuth: null,
+      spotifyDownloading: false,
+      appleDownloading: false
     };
   }
 
@@ -58,7 +61,7 @@ export default class PendingPlaylists extends Component {
   }
 
   deleteRequest = playlistId => {
-    Database.unfollowPlaylist(playlistId)
+    Database.unfollowPlaylist(playlistId);
     this.setState(
       {
         requests: this.state.requests.filter(
@@ -79,26 +82,34 @@ export default class PendingPlaylists extends Component {
 
   spotify = playlistId => {
     Database.addPlaylistFromPending(playlistId);
-    Database.databasePlaylistToSpotify(playlistId);
-    this.setState(
-      {
-        requests: this.state.requests.filter(
-          playlist => playlistId != playlist.playlistId
-        )
-      },
-      () => {
-        if (!this.state.requests.length) this.props.navigation.goBack();
-      }
-    );
-    Toast.show({
-      text: 'Playlist added!',
-      position: 'bottom',
-      duration: 1500,
-      type: 'success'
+    this.setState({ spotifyDownloading: true }, () => {
+      Database.databasePlaylistToSpotify(playlistId, this.spotifyComplete);
+    });
+  };
+
+  spotifyComplete = playlistId => {
+    this.setState({ spotifyDownloading: false }, () => {
+      Toast.show({
+        text: 'Playlist downloaded to spotify!',
+        position: 'bottom',
+        duration: 1500,
+        type: 'success'
+      });
+      this.setState(
+        {
+          requests: this.state.requests.filter(
+            playlist => playlistId != playlist.playlistId
+          )
+        },
+        () => {
+          if (!this.state.requests.length) this.props.navigation.goBack();
+        }
+      );
     });
   };
 
   apple = async playlistId => {
+    this.setState({appleDownloading: true})
     try {
       let playlistObj = null;
       let songArr = [];
@@ -109,27 +120,52 @@ export default class PendingPlaylists extends Component {
         author: result.val().displayName
       };
       for (let song of result.val().songs) {
-        let songNum = await axios.post(
-          'https://us-central1-hum-app.cloudfunctions.net/getSongId/',
-          {
-            title: `${song.title}`,
-            artist: `${song.artist}`,
-            service: 'appleId'
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json'
+        let songNum = await axios
+          .post(
+            'https://us-central1-hum-app.cloudfunctions.net/getSongId/',
+            {
+              title: `${song.title}`,
+              artist: `${song.artist}`,
+              service: 'appleId'
+            },
+            {
+              headers: {
+                'Content-Type': 'application/json'
+              }
             }
-          }
-        ).catch(error => console.log("Pending Playlists ", error));
+          )
+          .catch(error => console.log('Pending Playlists ', error));
         songArr.push(songNum.data.toString());
       }
       playlistObj.songs = songArr;
-      let applePlaylist = JSON.stringify(playlistObj)
-      NativeModules.MediaLibraryManager.createPlaylist(applePlaylist, (str) => { console.log(str) })
+      let applePlaylist = JSON.stringify(playlistObj);
+      NativeModules.MediaLibraryManager.createPlaylist(applePlaylist, str => {
+        this.appleComplete(playlistId);
+      });
     } catch (err) {
       console.log(err);
     }
+  };
+
+  appleComplete = playlistId => {
+    this.setState({ appleDownloading: false }, () => {
+      Toast.show({
+        text: 'Playlist downloaded to apple music!',
+        position: 'bottom',
+        duration: 1500,
+        type: 'success'
+      });
+      this.setState(
+        {
+          requests: this.state.requests.filter(
+            playlist => playlistId != playlist.playlistId
+          )
+        },
+        () => {
+          if (!this.state.requests.length) this.props.navigation.goBack();
+        }
+      );
+    });
   };
 
   render() {
@@ -147,7 +183,13 @@ export default class PendingPlaylists extends Component {
                   rightOpenValue={-75}
                   key={playlist.playlistId}
                   body={
-                    <CardItem button onPress={() => {this.goToPlaylist(playlist)}}bordered>
+                    <CardItem
+                      button
+                      onPress={() => {
+                        this.goToPlaylist(playlist);
+                      }}
+                      bordered
+                    >
                       <Body>
                         <Text>
                           {playlist.title}
@@ -157,27 +199,38 @@ export default class PendingPlaylists extends Component {
                         </Text>
                         <Text note>
                           {playlist.songs.length} songs
-                              </Text>
+                        </Text>
                       </Body>
-                      {this.state.spotifyAuth ?
-                        <Button
-                          small
-                          light
-                          style={{ margin: 5 }}
-                          onPress={() => this.spotify(playlist.playlistId)}
-                        >
-                          <FAIcon name="spotify" size={25} color="#1db954" />
-                        </Button>
+                      {this.state.spotifyAuth
+                        ? !this.state.spotifyDownloading
+                          ? <Button
+                              small
+                              light
+                              style={{ margin: 5 }}
+                              onPress={() => this.spotify(playlist.playlistId)}
+                            >
+                              <FAIcon
+                                name="spotify"
+                                size={25}
+                                color="#1db954"
+                              />
+                            </Button>
+                          : <Button small light style={{ margin: 5 }}>
+                              <Spinner color="#1db954" />
+                            </Button>
                         : null}
-                      {this.state.appleAuth ?
-                        <Button
-                          small
-                          light
-                          style={{ margin: 5 }}
-                          onPress={() => this.apple(playlist.playlistId)}
-                        >
-                          <FAIcon name="apple" size={25} color="#FF4B63" />
-                        </Button>
+                      {this.state.appleAuth
+                        ? !this.state.appleDownloading ?<Button
+                            small
+                            light
+                            style={{ margin: 5 }}
+                            onPress={() => this.apple(playlist.playlistId)}
+                          >
+                            <FAIcon name="apple" size={25} color="#FF4B63" />
+                          </Button>
+                          : <Button small light style={{ margin: 5 }}>
+                              <Spinner color="#FF4B63" />
+                            </Button>
                         : null}
                     </CardItem>
                   }
@@ -190,7 +243,6 @@ export default class PendingPlaylists extends Component {
                     </Button>
                   }
                 />
-
               );
             })}
           </Card>

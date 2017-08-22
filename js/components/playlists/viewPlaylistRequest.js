@@ -17,6 +17,7 @@ import {
   CardItem,
   Thumbnail,
   View,
+  Spinner,
   Toast
 } from 'native-base';
 import styles from './styles';
@@ -30,7 +31,9 @@ export default class SinglePlaylist extends Component {
     super(props);
     this.state = {
       appleAuth: false,
-      spotifyAuth: ''
+      spotifyAuth: '',
+      spotifyDownloading: false,
+      appleDownloading: false
     };
   }
   componentDidMount() {
@@ -44,11 +47,11 @@ export default class SinglePlaylist extends Component {
           appleAuth: snapshot.val().appleAuth
         });
       })
-      .catch(error => console.log("Single Playlist ", error));
+      .catch(error => console.log('Single Playlist ', error));
   }
 
   deleteRequest = playlistId => {
-    Database.unfollowPlaylist(playlistId)
+    Database.unfollowPlaylist(playlistId);
     Toast.show({
       text: 'Playlist request deleted!',
       position: 'bottom',
@@ -56,33 +59,30 @@ export default class SinglePlaylist extends Component {
       type: 'danger'
     });
     //this adds to the stack, need it to go back to the initial tab
-    this.props.navigation.navigate('Playlists')
-
+    this.props.navigation.navigate('Playlists');
   };
-
 
   spotify = playlistId => {
     Database.addPlaylistFromPending(playlistId);
-    Database.databasePlaylistToSpotify(playlistId);
-    this.setState(
-      {
-        requests: this.state.requests.filter(
-          playlist => playlistId != playlist.playlistId
-        )
-      },
-      () => {
-        if (!this.state.requests.length) this.props.navigation.goBack();
-      }
-    );
-    Toast.show({
-      text: 'Playlist added!',
-      position: 'bottom',
-      duration: 1500,
-      type: 'success'
+    this.setState({ spotifyDownloading: true }, () => {
+      Database.databasePlaylistToSpotify(playlistId, this.spotifyComplete);
+    });
+  };
+
+  spotifyComplete = () => {
+    this.setState({ spotifyDownloading: false }, () => {
+      Toast.show({
+        text: 'Playlist downloaded to spotify!',
+        position: 'bottom',
+        duration: 1500,
+        type: 'success'
+      });
+      //need to navigate back to playlists home
     });
   };
 
   apple = async playlistId => {
+    this.setState({ appleDownloading: true });
     try {
       let playlistObj = null;
       let songArr = [];
@@ -93,27 +93,43 @@ export default class SinglePlaylist extends Component {
         author: result.val().displayName
       };
       for (let song of result.val().songs) {
-        let songNum = await axios.post(
-          'https://us-central1-hum-app.cloudfunctions.net/getSongId/',
-          {
-            title: `${song.title}`,
-            artist: `${song.artist}`,
-            service: 'appleId'
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json'
+        let songNum = await axios
+          .post(
+            'https://us-central1-hum-app.cloudfunctions.net/getSongId/',
+            {
+              title: `${song.title}`,
+              artist: `${song.artist}`,
+              service: 'appleId'
+            },
+            {
+              headers: {
+                'Content-Type': 'application/json'
+              }
             }
-          }
-        ).catch(error => console.log("Pending Playlists ", error));
+          )
+          .catch(error => console.log('Pending Playlists ', error));
         songArr.push(songNum.data.toString());
       }
       playlistObj.songs = songArr;
-      let applePlaylist = JSON.stringify(playlistObj)
-      NativeModules.MediaLibraryManager.createPlaylist(applePlaylist, (str) => { console.log(str) })
+      let applePlaylist = JSON.stringify(playlistObj);
+      NativeModules.MediaLibraryManager.createPlaylist(applePlaylist, str => {
+        this.appleComplete()
+      });
     } catch (err) {
       console.log(err);
     }
+  };
+
+  appleComplete = () => {
+    this.setState({ appleDownloading: false }, () => {
+      Toast.show({
+        text: 'Playlist downloaded to apple music!',
+        position: 'bottom',
+        duration: 1500,
+        type: 'success'
+      });
+      //need to navigate back to home playlists
+    });
   };
 
   render() {
@@ -123,36 +139,42 @@ export default class SinglePlaylist extends Component {
         <Content>
           <Card>
             <CardItem
-              button
               header
-              onPress={() => this.goToShare(playlist.playlistId)}
               bordered
             >
               <Body>
                 <Text style={styles.pheader}>
                   {playlist.title}
                 </Text>
-              <Text note style={styles.subtitle}>Playlist by {playlist.displayName}</Text>
+                <Text note style={styles.subtitle}>
+                  Playlist by {playlist.displayName}
+                </Text>
               </Body>
               {this.state.spotifyAuth && playlist.type === 'appleId'
-                ? <Button
-                  small
-                  light
-                  style={{ margin: 5 }}
-                  onPress={() => this.spotify(playlist.playlistId)}
-                >
-                  <FAIcon name="spotify" size={25} color="#1db954" />
-                </Button>
+                ? !this.state.spotifyDownloading
+                  ? <Button
+                      small
+                      light
+                      style={{ margin: 5 }}
+                      onPress={() => this.spotify(playlist.playlistId)}
+                    >
+                      <FAIcon name="spotify" size={25} color="#1db954" />
+                    </Button>
+                  : <Button small light style={{ margin: 5 }}><Spinner color="#1db954" /></Button>
                 : null}
               {this.state.appleAuth && playlist.type === 'spotifyId'
-                ? <Button
-                  small
-                  light
-                  style={{ margin: 5 }}
-                  onPress={() => this.apple(playlist)}
-                >
-                  <FAIcon name="apple" size={25} color="#FF4B63" />
-                </Button>
+                ? !this.state.appleDownloading
+                  ? <Button
+                      small
+                      light
+                      style={{ margin: 5 }}
+                      onPress={() => this.apple(playlist)}
+                    >
+                      <FAIcon name="apple" size={25} color="#FF4B63" />
+                    </Button>
+                  : <Button small light style={{ margin: 5 }}>
+                      <Spinner color="#FF4B63" />
+                    </Button>
                 : null}
               <Button
                 danger
@@ -170,33 +192,33 @@ export default class SinglePlaylist extends Component {
             </CardItem>
             {!playlist.songs
               ? <ListItem>
-                <Body>
-                  <Text>This playlist doesn't contain any songs.</Text>
-                </Body>
-              </ListItem>
+                  <Body>
+                    <Text>This playlist doesn't contain any songs.</Text>
+                  </Body>
+                </ListItem>
               : <View>
-                {playlist.songs.map((song, index) => {
-                  return (
-                    <ListItem key={index} avatar bordered key={index}>
-                      <Left>
-                        <Thumbnail
-                          square
-                          size={80}
-                          source={{ uri: `${song.image}` }}
-                        />
-                      </Left>
-                      <Body>
-                        <Text style={styles.bodytxt}>
-                          {song.title}
-                        </Text>
-                        <Text note style={styles.bodytxt}>
-                          {song.artist}
-                        </Text>
-                      </Body>
-                    </ListItem>
-                  );
-                })}
-              </View>}
+                  {playlist.songs.map((song, index) => {
+                    return (
+                      <ListItem key={index} avatar bordered key={index}>
+                        <Left>
+                          <Thumbnail
+                            square
+                            size={80}
+                            source={{ uri: `${song.image}` }}
+                          />
+                        </Left>
+                        <Body>
+                          <Text style={styles.bodytxt}>
+                            {song.title}
+                          </Text>
+                          <Text note style={styles.bodytxt}>
+                            {song.artist}
+                          </Text>
+                        </Body>
+                      </ListItem>
+                    );
+                  })}
+                </View>}
 
             <CardItem />
           </Card>
