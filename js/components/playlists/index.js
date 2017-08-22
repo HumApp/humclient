@@ -28,6 +28,12 @@ export default class Playlists extends Component {
       pendingPlaylists: []
     };
   }
+
+  componentDidMount() {
+    const currentUser = firebase.auth().currentUser.uid;
+    Database.getSharedPlaylists().on('value', this.pendingCallback);
+  }
+
   goToPlaylist = playlist => {
     this.props.navigation.navigate('SinglePlaylist', playlist);
   };
@@ -40,39 +46,25 @@ export default class Playlists extends Component {
   };
 
   pendingCallback = async snap => {
-    const pendingRequests = snap.val()
+    const pendingRequests = snap.val();
     const temp = [];
-    for(const key in pendingRequests){
-       const playlistFromId = await Database.getPlaylistFromId(key)
-        let playlistObj = Object.assign({}, playlistFromId.val());
-          playlistObj.playlistId = key;
-          temp.push(playlistObj)
-      }
-      this.setState({pendingPlaylists: []}, () => {
-        console.log(temp)
-        this.setState({
-            pendingPlaylists: this.state.pendingPlaylists.concat(temp)
-          });
-      })
+    for (const key in pendingRequests) {
+      const playlistFromId = await Database.getPlaylistFromId(key);
+      let playlistObj = Object.assign({}, playlistFromId.val());
+      playlistObj.playlistId = key;
+      temp.push(playlistObj);
     }
-
-  componentDidMount() {
-    const currentUser = firebase.auth().currentUser.uid;
-    Database.getSharedPlaylists().on('value', this.pendingCallback);
-  }
+    this.setState({ pendingPlaylists: [] }, () => {
+      console.log(temp);
+      this.setState({
+        pendingPlaylists: this.state.pendingPlaylists.concat(temp)
+      });
+    });
+  };
 
   render() {
     return (
       <Container>
-        <Header searchBar rounded>
-          <Item>
-            <Icon name="ios-search" />
-            <Input placeholder="Search" />
-          </Item>
-          <Button transparent>
-            <Text>Search</Text>
-          </Button>
-        </Header>
         <Tabs
           tabBarUnderlineStyle={{ backgroundColor: '#ff5a5f' }}
           initialPage={0}

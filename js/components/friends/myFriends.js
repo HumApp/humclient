@@ -40,6 +40,7 @@ export default function MyFriends({
             placeholder="Search through your friends"
             onChangeText={text => searchMyFriends(text)}
           />
+          <Icon name="ios-people" />
         </Item>
       </Header>
       <Card>
