@@ -62,7 +62,7 @@ export default class SignUp extends Component {
           {
             fullname: this.state.firstName + ' ' + this.state.lastName,
             username: this.state.userName,
-            username: this.state.email
+            email: this.state.email
           },
           function(error) {
             if (error && error.code === 'PERMISSION_DENIED') {
