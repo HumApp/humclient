@@ -17,9 +17,9 @@ import SinglePlaylist from '../components/playlists/singlePlaylist';
 import SharePlaylist from '../components/playlists/sharePlaylist';
 import PendingPlaylists from '../components/playlists/pendingPlaylists';
 
-import MyPlaylists from '../components/playlists/myPlaylists'
-import SharedPlaylists from '../components/playlists/sharedPlaylists'
-import ViewPlaylistRequest from '../components/playlists/viewPlaylistRequest'
+import MyPlaylists from '../components/playlists/myPlaylists';
+import SharedPlaylists from '../components/playlists/sharedPlaylists';
+import ViewPlaylistRequest from '../components/playlists/viewPlaylistRequest';
 
 import Collab from '../components/collab';
 import Friends from '../components/friends';
@@ -206,7 +206,10 @@ export const Tabs = TabNavigator(
     tabBarPosition: 'bottom',
     tabBarOptions: {
       activeTintColor: '#ff5a5f',
-      inactiveTintColor: '#cecece'
+      inactiveTintColor: '#cecece',
+      style: {
+        paddingTop: 10
+      }
     },
     initialRouteName: 'Friends',
     navigationOptions: ({ navigation }) => ({

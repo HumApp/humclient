@@ -98,12 +98,10 @@ export default class Profile extends Component {
     let appleAuth = true
     firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
-        console.log(user);
         firebase.database().ref('users/' + user.uid).update({
           appleAuth
         });
       } else {
-        console.log('No user is signed in');
       }
     });
   }
@@ -113,13 +111,11 @@ export default class Profile extends Component {
     let spotifyId = this.state.id;
     firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
-        console.log(user);
         firebase.database().ref('users/' + user.uid).update({
           accessToken,
           spotifyId
         });
       } else {
-        console.log('No user is signed in');
       }
     });
     this.fetchPlaylists();
@@ -156,7 +152,6 @@ export default class Profile extends Component {
               !song.track.album.images[0]
               ? 'https://orig01.deviantart.net/26aa/f/2011/185/f/9/no_cover_itunes_by_stainless2-d3kxnbe.png'
               : song.track.album.images[0].url;
-          console.log(songObj.image);
           songObj.artist = song.track.album.artists[0].name;
           songObj.id = song.track.uri;
           songsArr.push(songObj);
@@ -193,7 +188,6 @@ export default class Profile extends Component {
     this.setState({ appleAuth: false })
     firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
-        console.log(user);
         firebase.database().ref('users/' + user.uid).update({
           appleAuth
         });
@@ -210,7 +204,6 @@ export default class Profile extends Component {
     this.setState({ token: accessToken, id: spotifyId })
     firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
-        console.log(user);
         firebase.database().ref('users/' + user.uid).update({
           accessToken,
           spotifyId

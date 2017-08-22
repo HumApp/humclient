@@ -168,7 +168,6 @@ export function databasePlaylistToSpotify(databasePlaylistId) {
       let external = [];
       firedata.once('value').then(snapshot => {
         const playlist = snapshot.val();
-        console.log('Importing: ', playlist);
         playlist.songs.forEach(song => external.push(song));
         let promises = external.map(song =>
           axios

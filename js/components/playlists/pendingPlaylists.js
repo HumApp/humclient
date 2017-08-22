@@ -133,7 +133,6 @@ export default class PendingPlaylists extends Component {
   };
 
   render() {
-    console.log("the playlists", this.state.requests)
     return (
       <Container>
         <Content>

@@ -52,7 +52,6 @@ export default class SinglePlaylist extends Component {
   };
 
   apple = async playlist => {
-    console.log(playlist);
     try {
       playlistObj = { name: playlist.title, author: playlist.displayName };
       const songArr = [];
