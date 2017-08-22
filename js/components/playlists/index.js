@@ -49,7 +49,6 @@ export default class Playlists extends Component {
           temp.push(playlistObj)
       }
       this.setState({pendingPlaylists: []}, () => {
-        console.log(temp)
         this.setState({
             pendingPlaylists: this.state.pendingPlaylists.concat(temp)
           });

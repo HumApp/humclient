@@ -79,24 +79,19 @@ export default class Friends extends Component {
     for (let friendId in pendingFriends) {
       const user = {};
       const pendingFriend = await Database.getUserFromId(friendId);
-      console.log('friendId', friendId);
-      console.log('frieENDNDN', pendingFriend.val());
       user.username = pendingFriend.val().username;
       user.fullname = pendingFriend.val().fullname;
       user.userId = friendId;
       temp.push(user);
     }
-    console.log('TEMO', temp);
     this.setState({ pending: [] }, () => {
       this.setState({ pending: this.state.pending.concat(temp) });
     });
   };
 
   friendsCallback = async snap => {
-    console.log('beginning of friends callback');
     let friendsArr = [];
     for (let friendId in snap.val()) {
-      console.log('friend id', friendId);
       friendsArr.push({
         friendId: friendId,
         friendName: snap.val()[friendId]
@@ -121,7 +116,6 @@ export default class Friends extends Component {
 
   deleteFriend = friendId => {
     Database.deleteFriend(friendId);
-    console.log('deleted');
     this.setState({
       friends: this.state.friends.filter(person => friendId != person.friendId)
     });
