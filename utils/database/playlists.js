@@ -15,7 +15,6 @@ export async function savePlaylistToDatabase(playlists, providerId) {
               'https://itunes.apple.com/lookup?id=' + playlist.songs[index].id
             )
             .then(response => {
-              console.log('FIRST');
               playlist.songs[index].image =
                 response.data.results[0].artworkUrl100;
               findOrCreateSong(playlist.songs[index], providerId);
@@ -32,7 +31,6 @@ export async function savePlaylistToDatabase(playlists, providerId) {
           newSong[index].image = playlist.songs[index].image;
         }
       }
-      console.log('SECOND');
       const newPlaylistId = firebase.database().ref('playlists').push().key;
       this.addPlaylistToUser(newPlaylistId);
       firebase.database().ref(`playlists/${newPlaylistId}`).set({
@@ -166,7 +164,6 @@ export function databasePlaylistToSpotify(databasePlaylistId) {
       let external = [];
       firedata.once('value').then(snapshot => {
         const playlist = snapshot.val();
-        console.log('Importing: ', playlist);
         playlist.songs.forEach(song => external.push(song));
         let promises = external.map(song =>
           axios
