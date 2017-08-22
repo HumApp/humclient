@@ -190,8 +190,21 @@ class MediaLibraryManager: NSObject {
           let title = String(describing: song.value(forProperty: MPMediaItemPropertyTitle)!)
           let artist = String(describing: song.value(forProperty: MPMediaItemPropertyArtist)!)
           let songId = String(describing: song.value(forProperty: MPMediaItemPropertyPlaybackStoreID)!)
-
+//          var image = "http://static.tumblr.com/qmraazf/ps5mjrmim/unknown-album.png"
+//
+//          let url = URL(string: "https://itunes.apple.com/lookup?id=" + songId)
+//          let task = URLSession.shared.dataTask(with: url!) {(data, response, error) in
+//            let json = try? JSONSerialization.jsonObject(with: data!, options: [])
+//            if let dictionary = json as? [String: Any]{
+//              if let dataArray = dictionary["results"] as? [[String:Any]], !dataArray.isEmpty, let albumArt = dataArray[0]["artworkUrl100"] as? String {
+//                image = albumArt
+//              }
+//
+//              }
+//          }
+          
           songsInPlaylist.append(Song(title: title, artist: artist, id: songId))
+//          task.resume()
         }
         let playlistName = String(describing: playlist.value(forProperty: MPMediaPlaylistPropertyName)!)
         allPlaylists.append(Playlist(name: playlistName, songs: songsInPlaylist))

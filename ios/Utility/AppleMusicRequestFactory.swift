@@ -65,6 +65,7 @@ struct AppleMusicRequestFactory {
         
         return urlRequest
     }
+  
     
     static func createRecentlyPlayedRequest(developerToken: String, userToken: String) -> URLRequest {
         var urlComponents = URLComponents()

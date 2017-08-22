@@ -53,38 +53,10 @@ export default class SharedPlaylists extends Component {
       let newPlaylistObj = Object.assign(result.val());
       newPlaylistObj.playlistId = playlist;
       playlistArr.push(newPlaylistObj);
-      console.log(playlistArr);
     }
     console.log('returning');
     return playlistArr;
   };
-
-  // pendingCallback = (snap) => {
-  //   const temp = [];
-  //   for(const key in snap.val()){
-  //      Database.getPlaylistFromId(key).then(result => {
-  //         let playlistObj = Object.assign(snap.val());
-  //         playlistObj.playlistId = key;
-  //         temp.push(playlistObj)
-  //       }).catch(error => console.log("Shared Playlists ", error));
-  //     }
-  //     this.setState({pendingPlaylists: []}, () => {
-  //       this.setState({
-  //           pendingPlaylists: this.state.sharedPlaylists.concat(temp)
-  //         });
-  //     })
-  //   }
-
-    // Object.keys(snap.val()).map(key => {
-    //     Promise.resolve(Database.getPlaylistFromId(key)).then(result => {
-    //       let playlistObj = Object.assign(snap.val());
-    //       playlistObj.playlistId = key;
-    //       this.setState({
-    //         pendingPlaylists: this.state.sharedPlaylists.concat(playlistObj)
-    //       });
-    //     }).catch(error => console.log("Shared Playlists ", error));
-    //   })
-  // }
 
   componentDidMount() {
     const currentUser = firebase.auth().currentUser.uid;
@@ -93,21 +65,6 @@ export default class SharedPlaylists extends Component {
         { sharedPlaylists: this.state.sharedPlaylists.concat(playlistArr) }, () => this.setState({ sharedLoading: false })
       )
     ).catch(error => console.log("Shared Playlists ", error));
-
-    // Database.getSharedPlaylists().on('value', this.pendingCallback);
-
-
-    // .then(result =>
-    //   Object.keys(result.val()).map(key => {
-    //     Promise.resolve(Database.getPlaylistFromId(key)).then(result => {
-    //       let playlistObj = Object.assign(result.val());
-    //       playlistObj.playlistId = key;
-    //       this.setState({
-    //         pendingPlaylists: this.state.sharedPlaylists.concat(playlistObj)
-    //       });
-    //     }).catch(error => console.log("Shared Playlists ", error));
-    //   })
-    // ).catch(error => console.log("Shared Playlists ", error));
   }
 
   render() {
@@ -154,7 +111,7 @@ export default class SharedPlaylists extends Component {
                         <CardItem
                           button
                           key={index}
-                          onPress={() => this.goToPlaylist(playlist)}
+                          onPress={() => this.props.goToPlaylist(playlist)}
                         >
                           <Body>
                             <Text style={styles.bodytxt}>

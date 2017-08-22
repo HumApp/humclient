@@ -131,6 +131,7 @@ export default class Friends extends Component {
         <Tabs
           tabBarUnderlineStyle={{ backgroundColor: '#ff5a5f' }}
           initialPage={0}
+          locked
         >
           <Tab activeTextStyle={{ color: '#484848' }} heading="My Friends">
             <MyFriends
