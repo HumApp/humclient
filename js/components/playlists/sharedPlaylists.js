@@ -55,7 +55,6 @@ export default class SharedPlaylists extends Component {
       newPlaylistObj.playlistId = playlist;
       playlistArr.push(newPlaylistObj);
     }
-    console.log('returning');
     return playlistArr;
   };
 
@@ -72,7 +71,6 @@ export default class SharedPlaylists extends Component {
   }
 
   render() {
-    console.log('pending playlists', this.props.pendingPlaylists);
     return (
       <Container>
         <Header searchBar rounded>

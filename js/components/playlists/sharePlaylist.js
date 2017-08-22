@@ -37,10 +37,8 @@ export default class SharePlaylist extends Component {
   }
 
   friendsCallback = async snap => {
-    console.log('beginning of friends callback');
     let friendsArr = [];
     for (let friendId in snap.val()) {
-      console.log('friend id', snap.val());
       friendsArr.push({
         friendId: friendId,
         friendName: snap.val()[friendId],
@@ -67,7 +65,6 @@ export default class SharePlaylist extends Component {
   }
 
   render() {
-    console.log(this.state.friends)
     return (
       <Container>
         <Header searchBar rounded>

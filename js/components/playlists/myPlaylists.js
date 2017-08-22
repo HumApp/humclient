@@ -36,23 +36,6 @@ export default class MyPlaylists extends Component {
       searchPlaylist: ''
     };
   }
-  // getUserPlaylists = async userId => {
-  //   let playlistArr = [];
-  //   const playlists = await firebase
-  //     .database()
-  //     .ref(`users/${userId}/playlists/`)
-  //     .orderByValue()
-  //     .equalTo('original')
-  //     .once('value');
-  //   for (let playlist in playlists.val()) {
-  //     const result = await Database.getPlaylistFromId(playlist);
-  //     let newPlaylistObj = Object.assign(result.val());
-  //     newPlaylistObj.playlistId = playlist;
-  //     playlistArr.push(newPlaylistObj);
-  //   }
-  //   console.log('returning');
-  //   return playlistArr;
-  // };
 
   userPlaylistCallback = async snapshot => {
     let playlists = snapshot.val();
@@ -63,13 +46,10 @@ export default class MyPlaylists extends Component {
       temp.push(playlist);
     }
     this.setState({ playlists: [] }, () => {
-      console.log('userPlaylists:', temp);
-      this.setState(
-        { playlists: this.state.playlists.concat(temp), isLoading: false },
-        () => {
-          console.log('executed');
-        }
-      );
+      this.setState({
+        playlists: this.state.playlists.concat(temp),
+        isLoading: false
+      });
     });
   };
 
@@ -80,7 +60,6 @@ export default class MyPlaylists extends Component {
       const playlist = await Database.getPlaylistFromId(playlistId);
       temp.push(playlist.val());
     }
-    console.log('pendingPlaylists:', temp);
     this.setState({ pendingPlaylists: [] }, () => {
       this.setState({
         pendingPlaylists: this.state.pendingPlaylists.concat(temp),
@@ -90,32 +69,8 @@ export default class MyPlaylists extends Component {
   };
 
   async componentDidMount() {
-    console.log('MOUNTED');
     Database.getUserPlaylists().on('value', this.userPlaylistCallback);
     Database.getSharedPlaylists().on('value', this.pendingPlaylistCallback);
-    //Database.getSharedPlaylists().on('value', this.playlistCallback);
-    // const currentUser = firebase.auth().currentUser.uid;
-    // Promise.resolve(this.getUserPlaylists(currentUser)).then(playlistArr => {
-    //   this.setState(
-    //     { playlists: this.state.playlists.concat(playlistArr) },
-    //     () => this.setState({ isLoading: false })
-    //   )
-    // }
-    // )
-    //   .catch(error => console.log("My playlists ", error));
-    // Database.getSharedPlaylists()
-    //   .then(result =>
-    //     Object.keys(result.val()).map(key => {
-    //       Promise.resolve(Database.getPlaylistFromId(key)).then(result => {
-    //         let playlistObj = Object.assign(result.val());
-    //         playlistObj.playlistId = key;
-    //         this.setState({
-    //           pendingPlaylists: this.state.sharedPlaylists.concat(playlistObj)
-    //         });
-    //       })
-    //         .catch(error => console.log("My playlists ", error));
-    //     })
-    //   ).catch(error => console.log("My playlists ", error));
   }
 
   render() {
@@ -176,31 +131,25 @@ export default class MyPlaylists extends Component {
                               .toLowerCase()
                               .match(this.state.searchPlaylist)
                           )
-                          .map((playlist, index) => {
-                            {
-                              console.log('Playlist.map', playlist, index);
-                            }
-                            return (
-                              <CardItem
-                                button
-                                key={index}
-                                onPress={() =>
-                                  this.props.goToPlaylist(playlist)}
-                              >
-                                <Body>
-                                  <Text style={styles.bodytxt}>
-                                    {playlist.title}
-                                  </Text>
-                                </Body>
-                                <Right>
-                                  <Icon
-                                    name="arrow-forward"
-                                    style={styles.arrow}
-                                  />
-                                </Right>
-                              </CardItem>
-                            );
-                          })}
+                          .map((playlist, index) =>
+                            <CardItem
+                              button
+                              key={index}
+                              onPress={() => this.props.goToPlaylist(playlist)}
+                            >
+                              <Body>
+                                <Text style={styles.bodytxt}>
+                                  {playlist.title}
+                                </Text>
+                              </Body>
+                              <Right>
+                                <Icon
+                                  name="arrow-forward"
+                                  style={styles.arrow}
+                                />
+                              </Right>
+                            </CardItem>
+                          )}
                       </View>}
                 </View>}
           </Card>

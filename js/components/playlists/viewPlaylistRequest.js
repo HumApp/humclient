@@ -57,7 +57,6 @@ export default class SinglePlaylist extends Component {
     });
     //this adds to the stack, need it to go back to the initial tab
     this.props.navigation.navigate('Playlists')
-    // console.log(this.props.navigation)
 
   };
 
