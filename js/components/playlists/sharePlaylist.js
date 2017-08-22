@@ -36,13 +36,27 @@ export default class SharePlaylist extends Component {
     }
   }
 
+  friendsCallback = async snap => {
+    console.log('beginning of friends callback');
+    let friendsArr = [];
+    for (let friendId in snap.val()) {
+      console.log('friend id', snap.val());
+      friendsArr.push({
+        friendId: friendId,
+        friendName: snap.val()[friendId],
+        switchValue: false
+      });
+    }
+    this.setState({ friends: [] }, () => {
+      this.setState({ friends: this.state.friends.concat(friendsArr) }, () =>
+        this.setState({ isLoading: false })
+      );
+    });
+  };
+
+
   componentDidMount() {
-    Database.getAllFriends().once('value').then(result => {
-      const friendsArr = Object.keys(result.val()).map(key => {
-        return { friendId: key, friendName: result.val()[key], switchValue: false }
-      })
-      this.setState({ friends: this.state.friends.concat(friendsArr) }, console.log(this.state.friends))
-    }).catch(error => console.log("Share Playlist ", error))
+    Database.getAllFriends().on('value', this.friendsCallback);
   }
 
   submitShare = () => {
@@ -82,7 +96,7 @@ export default class SharePlaylist extends Component {
                       <Right>
                         <Switch onValueChange={(value) => this.setState({
                           friends: this.state.friends.map(user => {
-                            if (friend.username === user.username) user.switchValue = !user.switchValue
+                            if (friend.friendId === user.friendId) user.switchValue = !user.switchValue
                             return user
                           })
                         })}
@@ -110,6 +124,3 @@ export default class SharePlaylist extends Component {
     );
   }
 }
-
-
-// () => Database.saveAppleMusicPlaylist("-KrklLkFi0xUD2owjZxi", "alt-j", "Olivia")

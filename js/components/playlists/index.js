@@ -59,18 +59,6 @@ export default class Playlists extends Component {
   componentDidMount() {
     const currentUser = firebase.auth().currentUser.uid;
     Database.getSharedPlaylists().on('value', this.pendingCallback);
-
-    // Promise.resolve(Database.getSharedPlaylists()).then(result =>
-    //   Object.keys(result.val()).map(key => {
-    //     Promise.resolve(Database.getPlaylistFromId(key)).then(result => {
-    //       let playlistObj = Object.assign(result.val());
-    //       playlistObj.playlistId = key;
-    //       this.setState({
-    //         pendingPlaylists: this.state.pendingPlaylists.concat(playlistObj)
-    //       });
-    //     }).catch(error => console.log("Playlists ", error));
-    //   })
-    // ).catch(error => console.log("Playlists ", error));
   }
 
   render() {

@@ -40,6 +40,10 @@ export default class PendingPlaylists extends Component {
     };
   }
 
+  goToPlaylist = playlist => {
+    this.props.navigation.navigate('ViewPlaylistRequest', playlist);
+  };
+
   componentDidMount() {
     firebase
       .database()
@@ -144,7 +148,7 @@ export default class PendingPlaylists extends Component {
                   rightOpenValue={-75}
                   key={playlist.playlistId}
                   body={
-                    <CardItem bordered>
+                    <CardItem button onPress={() => {this.goToPlaylist(playlist)}}bordered>
                       <Body>
                         <Text>
                           {playlist.title}

@@ -16,8 +16,10 @@ import Playlists from '../components/playlists';
 import SinglePlaylist from '../components/playlists/singlePlaylist';
 import SharePlaylist from '../components/playlists/sharePlaylist';
 import PendingPlaylists from '../components/playlists/pendingPlaylists';
-import MyPlaylists from '../components/playlists/myPlaylists';
-import SharedPlaylists from '../components/playlists/sharedPlaylists';
+
+import MyPlaylists from '../components/playlists/myPlaylists'
+import SharedPlaylists from '../components/playlists/sharedPlaylists'
+import ViewPlaylistRequest from '../components/playlists/viewPlaylistRequest'
 
 import Collab from '../components/collab';
 import Friends from '../components/friends';
@@ -53,6 +55,18 @@ export const PlaylistsStack = StackNavigator({
   },
   SinglePlaylist: {
     screen: SinglePlaylist,
+    navigationOptions: {
+      headerTintColor: 'white',
+      headerStyle: {
+        backgroundColor: '#ff5a5f'
+      },
+      headerTitleStyle: {
+        color: 'white'
+      }
+    }
+  },
+  ViewPlaylistRequest: {
+    screen: ViewPlaylistRequest,
     navigationOptions: {
       headerTintColor: 'white',
       headerStyle: {

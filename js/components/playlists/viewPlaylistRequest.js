@@ -47,22 +47,53 @@ export default class SinglePlaylist extends Component {
       .catch(error => console.log("Single Playlist ", error));
   }
 
-  goToShare = playlistId => {
-    this.props.navigation.navigate('SharePlaylist', playlistId);
+  deleteRequest = playlistId => {
+    Database.unfollowPlaylist(playlistId)
+    Toast.show({
+      text: 'Playlist request deleted!',
+      position: 'bottom',
+      duration: 1500,
+      type: 'danger'
+    });
+    //this adds to the stack, need it to go back to the initial tab
+    this.props.navigation.navigate('Playlists')
+    // console.log(this.props.navigation)
+
   };
 
-  apple = async playlist => {
-    console.log(playlist);
+
+  spotify = playlistId => {
+    Database.addPlaylistFromPending(playlistId);
+    Database.databasePlaylistToSpotify(playlistId);
+    this.setState(
+      {
+        requests: this.state.requests.filter(
+          playlist => playlistId != playlist.playlistId
+        )
+      },
+      () => {
+        if (!this.state.requests.length) this.props.navigation.goBack();
+      }
+    );
+    Toast.show({
+      text: 'Playlist added!',
+      position: 'bottom',
+      duration: 1500,
+      type: 'success'
+    });
+  };
+
+  apple = async playlistId => {
     try {
-      playlistObj = { name: playlist.title, author: playlist.displayName };
-      const songArr = [];
-      Toast.show({
-        text: 'Playlist downloaded to apple music!',
-        position: 'bottom',
-        duration: 1500,
-        type: 'success'
-      });
-      for (let song of playlist.songs) {
+      let playlistObj = null;
+      let songArr = [];
+      Database.addPlaylistFromPending(playlistId);
+      let result = await Database.getPlaylistFromId(playlistId);
+      playlistObj = {
+        name: result.val().title,
+        author: result.val().displayName
+      };
+      for (let song of result.val().songs) {
         let songNum = await axios.post(
           'https://us-central1-hum-app.cloudfunctions.net/getSongId/',
           {
@@ -75,30 +106,19 @@ export default class SinglePlaylist extends Component {
               'Content-Type': 'application/json'
             }
           }
-        ).catch(error => console.log("Single Playlist ", error));
+        ).catch(error => console.log("Pending Playlists ", error));
         songArr.push(songNum.data.toString());
       }
       playlistObj.songs = songArr;
-      let applePlaylist = JSON.stringify(playlistObj);
+      let applePlaylist = JSON.stringify(playlistObj)
       NativeModules.MediaLibraryManager.createPlaylist(applePlaylist, (str) => { console.log(str) })
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.log(err);
     }
-  };
-
-  spotify = playlistId => {
-    Database.databasePlaylistToSpotify(playlistId);
-    Toast.show({
-      text: 'Playlist downloaded to spotify!',
-      position: 'bottom',
-      duration: 1500,
-      type: 'success'
-    });
   };
 
   render() {
     const playlist = this.props.navigation.state.params;
-    console.log("IMAGE", playlist.songs[0].image)
     return (
       <Container>
         <Content>
@@ -113,13 +133,7 @@ export default class SinglePlaylist extends Component {
                 <Text style={styles.pheader}>
                   {playlist.title}
                 </Text>
-                {playlist.type === 'appleId'
-                  ? <Text note style={styles.subtitle}>
-                    Apple Music Playlist by {playlist.displayName}
-                  </Text>
-                  : <Text note style={styles.subtitle}>
-                    Spotify Playlist by {playlist.displayName}
-                  </Text>}
+              <Text note style={styles.subtitle}>Playlist by {playlist.displayName}</Text>
               </Body>
               {this.state.spotifyAuth && playlist.type === 'appleId'
                 ? <Button
@@ -142,12 +156,12 @@ export default class SinglePlaylist extends Component {
                 </Button>
                 : null}
               <Button
-                light
+                danger
                 style={{ margin: 5 }}
                 small
-                onPress={() => this.goToShare(playlist.playlistId)}
+                onPress={() => this.deleteRequest(playlist.playlistId)}
               >
-                <Icon name="ios-share-outline" style={styles.headerIcon} />
+                <Icon name="md-close-circle" />
               </Button>
             </CardItem>
             <CardItem header>
@@ -168,7 +182,7 @@ export default class SinglePlaylist extends Component {
                       <Left>
                         <Thumbnail
                           square
-                          size={10}
+                          size={80}
                           source={{ uri: `${song.image}` }}
                         />
                       </Left>

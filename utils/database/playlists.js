@@ -1,27 +1,51 @@
 import * as firebase from 'firebase';
 import axios from 'axios';
 
-export function savePlaylistToDatabase(playlists, providerId) {
-  const currentUser = firebase.auth().currentUser;
-  playlists.forEach(playlist => {
-    let newSong = {};
-    playlist.songs.forEach((song, index) => {
-      findOrCreateSong(song, providerId);
-      newSong[index] = {};
-      newSong[index].artist = song.artist;
-      newSong[index].title = song.title;
-      // newSong[index].image = song.image;
-    });
-    const newPlaylistId = firebase.database().ref('playlists').push().key;
-    this.addPlaylistToUser(newPlaylistId);
-    firebase.database().ref(`playlists/${newPlaylistId}`).set({
-      title: playlist.name,
-      creator: currentUser.uid,
-      songs: newSong,
-      displayName: currentUser.displayName,
-      type: providerId
-    });
-  });
+export async function savePlaylistToDatabase(playlists, providerId) {
+  try {
+    const currentUser = firebase.auth().currentUser;
+    for (const playlist of playlists) {
+      let newSong = {};
+      for (const index in playlist.songs) {
+        if (providerId === 'appleId') {
+          playlist.songs[index].image =
+            'http://static.tumblr.com/qmraazf/ps5mjrmim/unknown-album.png';
+          await axios
+            .get(
+              'https://itunes.apple.com/lookup?id=' + playlist.songs[index].id
+            )
+            .then(response => {
+              console.log('FIRST');
+              playlist.songs[index].image =
+                response.data.results[0].artworkUrl100;
+              findOrCreateSong(playlist.songs[index], providerId);
+              newSong[index] = {};
+              newSong[index].artist = playlist.songs[index].artist;
+              newSong[index].title = playlist.songs[index].title;
+              newSong[index].image = playlist.songs[index].image;
+            });
+        } else {
+          findOrCreateSong(playlist.songs[index], providerId);
+          newSong[index] = {};
+          newSong[index].artist = playlist.songs[index].artist;
+          newSong[index].title = playlist.songs[index].title;
+          newSong[index].image = playlist.songs[index].image;
+        }
+      }
+      console.log('SECOND');
+      const newPlaylistId = firebase.database().ref('playlists').push().key;
+      this.addPlaylistToUser(newPlaylistId);
+      firebase.database().ref(`playlists/${newPlaylistId}`).set({
+        title: playlist.name,
+        creator: currentUser.uid,
+        songs: newSong,
+        displayName: currentUser.displayName,
+        type: providerId
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export function addPlaylistToUser(playlistId) {
@@ -47,9 +71,7 @@ export function getPlaylistFromId(pid) {
 //get pending playlists
 export function getSharedPlaylists() {
   let user = firebase.auth().currentUser;
-  return firebase
-    .database()
-    .ref(`/users/${user.uid}/sharedPlaylists`);
+  return firebase.database().ref(`/users/${user.uid}/sharedPlaylists`);
 }
 
 //the pending folder
@@ -89,15 +111,12 @@ export function unfollowPlaylist(playlistId) {
     .remove();
 }
 
-
 export async function findOrCreateSong(fetchSong, providerId) {
   try {
     const address = firebase
       .database()
       .ref(
-      `songs/${getUrlPath(fetchSong.title)}/${getUrlPath(
-        fetchSong.artist
-      )}`
+        `songs/${getUrlPath(fetchSong.title)}/${getUrlPath(fetchSong.artist)}`
       );
     const dataSnapshot = await address.once('value');
     if (!dataSnapshot.val()) {
@@ -145,13 +164,13 @@ export function databasePlaylistToSpotify(databasePlaylistId) {
       let userToken = snapshot.val().accessToken;
       let firedata = firebase.database().ref(`playlists/${databasePlaylistId}`);
       let external = [];
-      firedata.once('value')
-        .then(snapshot => {
-          const playlist = snapshot.val();
-          console.log('Importing: ', playlist);
-          playlist.songs.forEach(song => external.push(song));
-          let promises = external.map(song =>
-            axios.post(
+      firedata.once('value').then(snapshot => {
+        const playlist = snapshot.val();
+        console.log('Importing: ', playlist);
+        playlist.songs.forEach(song => external.push(song));
+        let promises = external.map(song =>
+          axios
+            .post(
               'https://us-central1-hum-app.cloudfunctions.net/getSongId/',
               {
                 title: `${song.title}`,
@@ -165,12 +184,14 @@ export function databasePlaylistToSpotify(databasePlaylistId) {
                 }
               }
             )
-              .catch(error => "Not found")
-          );
-          Promise.all(promises).then(values => {
-            let final = values.filter(value => value !== "Not found").map(value => value.data);
-            axios
-              .post(
+            .catch(error => 'Not found')
+        );
+        Promise.all(promises).then(values => {
+          let final = values
+            .filter(value => value !== 'Not found')
+            .map(value => value.data);
+          axios
+            .post(
               `https://api.spotify.com/v1/users/${id}/playlists`,
               `{\"name\":\"${playlist.title}\", \"public\":false, \"description\":\"A Hum playlist created by ${playlist.displayName}\"}`,
               {
@@ -179,11 +200,11 @@ export function databasePlaylistToSpotify(databasePlaylistId) {
                   'Content-Type': 'application/json'
                 }
               }
-              )
-              .then(response => {
-                let playlistID = response.data.id;
-                axios
-                  .post(
+            )
+            .then(response => {
+              let playlistID = response.data.id;
+              axios
+                .post(
                   `https://api.spotify.com/v1/users/${id}/playlists/${playlistID}/tracks`,
                   { uris: final },
                   {
@@ -192,22 +213,22 @@ export function databasePlaylistToSpotify(databasePlaylistId) {
                       'Content-Type': 'application/json'
                     }
                   }
-                  )
-                  .then(response => console.log('Import successful!'))
-                  .catch(error =>
-                    console.log('Error while importing playlist: ', error)
-                  );
-              })
-              .catch(error =>
-                console.log('Error while creating new playlist: ', error)
-              );
-          });
+                )
+                .then(response => console.log('Import successful!'))
+                .catch(error =>
+                  console.log('Error while importing playlist: ', error)
+                );
+            })
+            .catch(error =>
+              console.log('Error while creating new playlist: ', error)
+            );
         });
+      });
     });
-};
+}
 
 function getUrlPath(str) {
-  return encodeURIComponent(str).replace(/\./g, function (char) {
+  return encodeURIComponent(str).replace(/\./g, function(char) {
     return '%' + char.charCodeAt(0).toString(16);
   });
 }
