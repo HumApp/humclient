@@ -65,6 +65,8 @@ exports.sentPendingWatch = functions.database.ref(`/users/{uid}/pending`).onWrit
 exports.cascadePlaylistDelete = functions.database.ref(`/playlists/{PID}`).onDelete(function (event) {
   let PID = event.params.PID;
   let affectedUsers = event.data.previous.val().sharedWith;
+  let creator = event.data.previous.val().creator;
+  admin.database().ref(`/users/${creator}/playlists/${PID}`).remove();
   if (affectedUsers) {
     for (let uid in affectedUsers) {
     admin.database().ref(`/users/${uid}/playlists/${PID}`).remove();
