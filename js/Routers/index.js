@@ -1,7 +1,7 @@
 import React from 'react';
 import { StackNavigator } from 'react-navigation';
 import SignedIn from './signedin';
-import SignedOut from './signedin';
+import SignedOut from './signedout';
 
 export const createRootNavigator = signedIn => {
   return StackNavigator(
