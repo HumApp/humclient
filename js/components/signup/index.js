@@ -52,35 +52,33 @@ export default class SignUp extends Component {
       newUser = await firebase
         .auth()
         .createUserWithEmailAndPassword(this.state.email, this.state.password);
-      await newUser.updateProfile({
+      newUser.updateProfile({
         displayName: this.state.userName
       });
-      const warning = await firebase
+      const newUserId = newUser.uid;
+      await firebase
         .database()
-        .ref(`users/${newUser.uid}`)
-        .set(
-          {
-            fullname: this.state.firstName + ' ' + this.state.lastName,
-            username: this.state.userName,
-            email: this.state.email
-          },
-          function(error) {
-            if (error && error.code === 'PERMISSION_DENIED') {
-              console.log('ERROR is => ', error.code);
-              error.message = 'Sorry, your username already exists';
-            }
-          }
-        );
-      await newUser.sendEmailVerification();
-      this.props.navigation.navigate('SignedOut');
-      Toast.show({
-        text: `Verification email sent to ${this.state.email}`,
-        position: 'top',
-        buttonText: 'Okay',
-        duration: 3500
+        .ref(`usernames/${this.state.userName}`)
+        .set(`${newUserId}`);
+      await firebase.database().ref(`users/${newUserId}`).set({
+        fullname: this.state.firstName + ' ' + this.state.lastName,
+        username: this.state.userName,
+        email: this.state.email
       });
+      // await newUser.sendEmailVerification();
+      this.props.navigation.navigate('Home');
+      // Toast.show({
+      //   text: `Verification email sent to ${this.state.email}`,
+      //   position: 'top',
+      //   buttonText: 'Okay',
+      //   duration: 3500
+      // });
     } catch (err) {
-      newUser.delete();
+      if (err.code === 'PERMISSION_DENIED') {
+        newUser.delete();
+        err =
+          'Sorry, your username already exists. Please use another username.';
+      }
       Toast.show({
         text: `${err}`,
         position: 'top',
@@ -105,6 +103,7 @@ export default class SignUp extends Component {
               <Item floatingLabel>
                 <Label>First Name</Label>
                 <Input
+                  autoCorrect={false}
                   autoCapitalize="none"
                   value={this.state.firstName}
                   onChangeText={text => this.setState({ firstName: text })}
@@ -113,6 +112,7 @@ export default class SignUp extends Component {
               <Item floatingLabel>
                 <Label>Last Name</Label>
                 <Input
+                  autoCorrect={false}
                   autoCapitalize="none"
                   value={this.state.lastName}
                   onChangeText={text => this.setState({ lastName: text })}
@@ -124,12 +124,14 @@ export default class SignUp extends Component {
                   autoCapitalize="none"
                   value={this.state.userName}
                   autoCorrect={false}
-                  onChangeText={text => this.setState({ userName: text })}
+                  onChangeText={text =>
+                    this.setState({ userName: text.toLowerCase() })}
                 />
               </Item>
               <Item floatingLabel>
                 <Label>Email</Label>
                 <Input
+                  autoCorrect={false}
                   autoCapitalize="none"
                   keyboardType="email-address"
                   value={this.state.email}
@@ -139,6 +141,7 @@ export default class SignUp extends Component {
               <Item floatingLabel>
                 <Label>Password</Label>
                 <Input
+                  autoCorrect={false}
                   autoCapitalize="none"
                   value={this.state.password}
                   secureTextEntry={true}
@@ -148,6 +151,7 @@ export default class SignUp extends Component {
               <Item floatingLabel last>
                 <Label>Confirm Password</Label>
                 <Input
+                  autoCorrect={false}
                   autoCapitalize="none"
                   value={this.state.confirmPassword}
                   secureTextEntry={true}
@@ -155,15 +159,13 @@ export default class SignUp extends Component {
                     this.setState({ confirmPassword: text })}
                 />
               </Item>
-              {!this.validateForm()
+              {this.validateForm()
                 ? <CardItem>
                     <Button
                       iconRight
-                      danger
-                      style={styles.disabled}
+                      style={styles.signup}
                       rounded
                       onPress={this.handleSignup}
-                      disabled
                     >
                       <Text style={{ fontSize: 18 }}>Sign Up</Text>
                       <Icon
@@ -175,10 +177,10 @@ export default class SignUp extends Component {
                 : <CardItem>
                     <Button
                       iconRight
-                      danger
-                      style={styles.signup}
+                      style={styles.disabled}
                       rounded
                       onPress={this.handleSignup}
+                      disabled
                     >
                       <Text style={{ fontSize: 18 }}>Sign Up</Text>
                       <Icon

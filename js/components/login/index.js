@@ -45,9 +45,9 @@ export default class SignUp extends Component {
         buttonText: 'Okay',
         duration: 2000
       });
-      if (firebase.auth().currentUser.emailVerified)
-        this.props.navigation.navigate('SignedIn');
-      else throw 'Your email has to be verified! Check your email!';
+      // if (firebase.auth().currentUser.emailVerified)
+      this.props.navigation.navigate('SignedIn');
+      // else throw 'Your email has to be verified! Check your email!';
     } catch (err) {
       Toast.show({
         text: `${err}`,
@@ -67,7 +67,7 @@ export default class SignUp extends Component {
             <Text style={styles.loginTxt}>Log in</Text>
             <Form style={styles.form}>
               <Item floatingLabel>
-                <Label>Email or Username</Label>
+                <Label>Email</Label>
                 <Input
                   autoCapitalize="none"
                   autoCorrect={false}

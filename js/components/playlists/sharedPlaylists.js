@@ -37,7 +37,6 @@ export default class SharedPlaylists extends Component {
     };
   }
 
-
   getSharedPlaylists = async userId => {
     let playlistArr = [];
     const playlists = await firebase
@@ -47,10 +46,12 @@ export default class SharedPlaylists extends Component {
       .equalTo('shared')
       .once('value');
     for (let playlist in playlists.val()) {
-      const result = await Database.getPlaylistFromId(playlist);
-      let newPlaylistObj = Object.assign(result.val());
-      newPlaylistObj.playlistId = playlist;
-      playlistArr.push(newPlaylistObj);
+      if (playlists.val()[playlist] === 'shared') {
+        const result = await Database.getPlaylistFromId(playlist);
+        let newPlaylistObj = Object.assign(result.val());
+        newPlaylistObj.playlistId = playlist;
+        playlistArr.push(newPlaylistObj);
+      }
     }
     return playlistArr;
   };
@@ -86,22 +87,22 @@ export default class SharedPlaylists extends Component {
         <Content>
           {this.props.pendingPlaylists.length
             ? <Card>
-                <CardItem
-                  button
-                  onPress={() => this.props.goToPending()}
-                  header
-                >
-                  <Badge style={{ backgroundColor: '#FC642D' }}>
-                    <Text>
-                      {this.props.pendingPlaylists.length}
-                    </Text>
-                  </Badge>
-                  <Text style={styles.header}> Pending Playlists</Text>
-                  <Right>
-                    <Icon name="arrow-forward" style={styles.arrow} />
-                  </Right>
-                </CardItem>
-              </Card>
+              <CardItem
+                button
+                onPress={() => this.props.goToPending()}
+                header
+              >
+                <Badge style={{ backgroundColor: '#FC642D' }}>
+                  <Text>
+                    {this.props.pendingPlaylists.length}
+                  </Text>
+                </Badge>
+                <Text style={styles.header}> Pending Playlists</Text>
+                <Right>
+                  <Icon name="arrow-forward" style={styles.arrow} />
+                </Right>
+              </CardItem>
+            </Card>
             : null}
           <Card>
             <CardItem header>
@@ -115,44 +116,45 @@ export default class SharedPlaylists extends Component {
             {this.state.sharedLoading
               ? <Spinner color="#FC642D" />
               : <View>
-                  {!this.state.sharedPlaylists.length
-                    ? <CardItem>
-                        <Text style={styles.header}>
-                          No one has shared any playlists with you yet!
+                {!this.state.sharedPlaylists.length
+                  ? <CardItem>
+                    <Text style={styles.header}>
+                      No one has shared any playlists with you yet!
                         </Text>
                       </CardItem>
                     : <View>
-                        {this.state.sharedPlaylists
-                          .filter((playlist, index) =>
-                            playlist.title
-                              .toLowerCase()
-                              .match(this.state.searchPlaylist)
-                          )
-                          .map((playlist, index) => {
-                            return (
-                              <CardItem
-                                button
-                                key={index}
-                                onPress={() =>
-                                  this.props.goToPlaylist(playlist)}
-                              >
-                                <Body>
-                                  <Text style={styles.bodytxt}>
-                                    {playlist.title}
-                                  </Text>
-                                  <Text note style={styles.bodytxt}>
-                                    Playlist by {playlist.displayName}
-                                  </Text>
-                                </Body>
-                                <Right>
-                                  <Icon
-                                    name="arrow-forward"
-                                    style={styles.arrow}
-                                  />
-                                </Right>
-                              </CardItem>
-                            );
-                          })}
+                        {this.state.sharedPlaylists.length !== 0 &&
+                          this.state.sharedPlaylists
+                            .filter((playlist, index) =>
+                              playlist.title
+                                .toLowerCase()
+                                .match(this.state.searchPlaylist)
+                            )
+                            .map((playlist, index) => {
+                              return (
+                                <CardItem
+                                  button
+                                  key={index}
+                                  onPress={() =>
+                                    this.props.goToPlaylist(playlist)}
+                                >
+                                  <Body>
+                                    <Text style={styles.bodytxt}>
+                                      {playlist.title}
+                                    </Text>
+                                    <Text note style={styles.bodytxt}>
+                                      Playlist by {playlist.displayName}
+                                    </Text>
+                                  </Body>
+                                  <Right>
+                                    <Icon
+                                      name="arrow-forward"
+                                      style={styles.arrow}
+                                    />
+                                  </Right>
+                                </CardItem>
+                              );
+                            })}
                       </View>}
                 </View>}
           </Card>

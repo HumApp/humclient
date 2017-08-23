@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Root } from 'native-base';
 import { createRootNavigator } from './Routers';
-import { Spinner } from 'native-base';
+import { Spinner, Toast } from 'native-base';
 import Firebase from '../utils/firebase';
 import firebase from 'firebase';
 
@@ -9,14 +9,12 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     Firebase.initialize();
-    this.getInitialView();
     this.state = {
       currentUser: null
     };
   }
 
-  getInitialView = () => {
-
+  componentWillMount() {
     firebase.auth().onAuthStateChanged(currentUser => {
       if (currentUser) {
         this.setState({
@@ -28,7 +26,7 @@ export default class App extends Component {
         });
       }
     });
-  };
+  }
 
   render() {
     let landingPage;
