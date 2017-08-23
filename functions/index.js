@@ -88,7 +88,7 @@ function makeSpotifySongQuery(songTitle, songArtist) {
 }
 
 function getURL(str) {
-  return encodeURIComponent(str).replace('.', function (cha) {
+  return encodeURIComponent(str).replace(/\./g, function (cha) {
     return '%' + cha.charCodeAt(0).toString(16);
   });
 }
