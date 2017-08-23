@@ -66,12 +66,12 @@ export default class SignUp extends Component {
       });
       // await newUser.sendEmailVerification();
       this.props.navigation.navigate('SignedOut');
-      Toast.show({
-        text: `Verification email sent to ${this.state.email}`,
-        position: 'top',
-        buttonText: 'Okay',
-        duration: 3500
-      });
+// Toast.show({
+//   text: `Verification email sent to ${this.state.email}`,
+//   position: 'top',
+//   buttonText: 'Okay',
+//   duration: 3500
+// });
     } catch (err) {
       if (err.code === 'PERMISSION_DENIED') {
         newUser.delete();
