@@ -1,3 +1,7 @@
+const url = require('url');
+const crypto = require('crypto');
+const randomstring = require('randomstring');
+const request = require('request');
 const jwt = require('jsonwebtoken');
 const functions = require('firebase-functions');
 const axios = require('axios');
@@ -23,8 +27,13 @@ exports.getSongId = functions.https.onRequest((req, response) => {
           .then(res => res.data)
           .then(json => {
             let track = json.results[0];
-            foundId = track.trackId.toString();
-            sendResponseWithIdAndSave(response, foundId, urlTitle, urlArtist, reqSong.service);
+            if (!track) {
+              console.warn('error', urlTitle, urlArtist);
+              response.send('ERROR');
+            } else {
+              foundId = track.trackId.toString();
+              sendResponseWithIdAndSave(response, foundId, urlTitle, urlArtist, reqSong.service);
+            }
           })
           .catch(console.error);
       } else {
@@ -35,15 +44,41 @@ exports.getSongId = functions.https.onRequest((req, response) => {
           })
           .then(res => res.data)
           .then(json => {
-            const uri = json.tracks.items[0].uri.toString();
-            foundId = uri;
-            sendResponseWithIdAndSave(response, foundId, urlTitle, urlArtist, reqSong.service);
+            if (!json.track.items[0].uri) {
+              console.warn('error', urlTitle, urlArtist);
+              response.send('ERROR');
+            } else {
+              const uri = json.tracks.items[0].uri.toString();
+              foundId = uri;
+              sendResponseWithIdAndSave(response, foundId, urlTitle, urlArtist, reqSong.service);
+            }
           })
           .catch(console.error);
       }
     })
     .catch(console.error);
 });
+
+function makeiTunesSongQuery(songTitle, songArtist) {
+  return `https://itunes.apple.com/search?term=${songTitle} ${songArtist}&media=music`;
+}
+
+function makeSpotifySongQuery(songTitle, songArtist) {
+  return `https://api.spotify.com/v1/search?q=track:${songTitle.replace(' ', '+')}+artist:${songArtist.replace(' ', '+')}&type=track&market=us`;
+}
+
+function getURL(str) {
+  return encodeURIComponent(str).replace(/\./g, function (cha) {
+    return '%' + cha.charCodeAt(0).toString(16);
+  });
+}
+
+function sendResponseWithIdAndSave(response, id, urlTitle, urlArtist, service) {
+  admin.database().ref(`/songs/${urlTitle}/${urlArtist}/${service}`).set(id);
+  console.log(`set /songs/${urlTitle}/${urlArtist} to have child ${service} with value ${id}`);
+  response.send(id);
+}
+
 // watches the pending folder of every user to faciliate the friend process
 // matches pending and sent ID's to automatically respond to friend requests
 exports.sentPendingWatch = functions.database.ref(`/users/{uid}/pending`).onWrite(function (event) {
@@ -66,6 +101,7 @@ exports.sentPendingWatch = functions.database.ref(`/users/{uid}/pending`).onWrit
     }
   });
 });
+
 // after a user deletes their playlist, makes sure that no reference to that playlist remains in
 // any other user's playlist list
 exports.cascadePlaylistDelete = functions.database.ref(`/playlists/{PID}`).onDelete(function (event) {
@@ -81,28 +117,6 @@ exports.cascadePlaylistDelete = functions.database.ref(`/playlists/{PID}`).onDel
     }
   }
 });
-
-
-function makeiTunesSongQuery(songTitle, songArtist) {
-  return `https://itunes.apple.com/search?term=${songTitle} ${songArtist}&media=music`;
-}
-
-function makeSpotifySongQuery(songTitle, songArtist) {
-  return `https://api.spotify.com/v1/search?q=track:${songTitle.replace(' ', '+')}+artist:${songArtist.replace(' ', '+')}&type=track&market=us`;
-}
-
-function getURL(str) {
-  return encodeURIComponent(str).replace('.', function (cha) {
-    return '%' + cha.charCodeAt(0).toString(16);
-  });
-}
-
-function sendResponseWithIdAndSave(response, id, urlTitle, urlArtist, service) {
-  admin.database().ref(`/songs/${urlTitle}/${urlArtist}/${service}`).set(id);
-  console.log(`set /songs/${urlTitle}/${urlArtist} to have child ${service} with value ${id}`);
-  response.send(id);
-}
-
 
 exports.getJWT = functions.https.onRequest((req, res) => {
   if (req.get('pass') === "lol this isn't secure") {
@@ -127,3 +141,86 @@ ${functions.config().apple.developertoken}
     res.send(401);
   }
 });
+
+var clientId = functions.config().spotify.clientid;
+var clientSecret = functions.config().spotify.clientsecret;
+var clientCallback = functions.config().spotify.redirecturi;
+var authString = new Buffer(clientId + ':' + clientSecret).toString('base64');
+var authorizationHeader = 'Basic ' + authString;
+var spotifyEndpoint = 'https://accounts.spotify.com/api/token';
+
+exports.swap = functions.https.onRequest((req, res, next) => {
+  var formData = {
+      grant_type: 'authorization_code',
+      redirect_uri: clientCallback,
+      code: req.body.code
+    },
+    options = {
+      uri: url.parse(spotifyEndpoint),
+      headers: {
+        Authorization: authorizationHeader
+      },
+      form: formData,
+      method: 'POST',
+      json: true
+    };
+
+  request(options, function (error, response, body) {
+    if (error) console.error(error);
+    if (response.statusCode === 200) {
+      body.refresh_token = encrpytion.encrypt(body.refresh_token);
+    }
+
+    res.status(response.statusCode);
+    res.json(body);
+  });
+});
+
+exports.refresh = functions.https.onRequest((req, res, next) => {
+  if (!req.body.refresh_token) {
+    res.status(400).json({
+      error: 'Refresh token is missing from body'
+    });
+    return;
+  }
+
+  var refreshToken = encrpytion.decrypt(req.body.refresh_token),
+    formData = {
+      grant_type: 'refresh_token',
+      refresh_token: refreshToken
+    },
+    options = {
+      uri: url.parse(spotifyEndpoint),
+      headers: {
+        Authorization: authorizationHeader
+      },
+      form: formData,
+      method: 'POST',
+      json: true
+    };
+
+  request(options, function (error, response, body) {
+    if (error) console.error(error);
+    if (response.statusCode === 200 && !!body.refresh_token) {
+      body.refresh_token = encrpytion.encrypt(body.refresh_token);
+    }
+
+    res.status(response.statusCode);
+    res.json(body);
+  });
+});
+var encSecret = functions.config().spotify.encrpytionsecret || randomstring.generate(30);
+class encrpytion {
+  encrypt(text) {
+    var cipher = crypto.createCipher('aes-256-ctr', encSecret),
+      crypted = cipher.update(text, 'utf8', 'hex');
+    crypted += cipher.final('hex');
+    return crypted;
+  }
+  decrypt(text) {
+    var decipher = crypto.createDecipher('aes-256-ctr', encSecret),
+      dec = decipher.update(text, 'hex', 'utf8');
+    dec += decipher.final('utf8');
+    return dec;
+  }
+}

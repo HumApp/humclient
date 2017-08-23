@@ -75,7 +75,7 @@ export default class SinglePlaylist extends Component {
             }
           )
           .catch(error => console.log('Single Playlist ', error));
-        songArr.push(songNum.data.toString());
+        if (songNum.data.toString() !== 'ERROR') songArr.push(songNum.data.toString());
       }
       playlistObj.songs = songArr;
       let applePlaylist = JSON.stringify(playlistObj);
@@ -139,10 +139,12 @@ export default class SinglePlaylist extends Component {
 
   render() {
     const playlist = this.props.navigation.state.params;
-    console.log('IMAGE', playlist.songs[0].image);
     return (
       <Container>
         <Content>
+        {this.state.spotifyDownloading || this.state.appleDownloading
+                ? <Spinner color="#FC642D" />
+                : null}
           <Card>
             <CardItem
               header
@@ -162,8 +164,16 @@ export default class SinglePlaylist extends Component {
               </Body>
 
               {this.state.spotifyAuth && playlist.type === 'appleId'
-                ? !this.state.spotifyDownloading
+                ? this.state.spotifyDownloading || this.state.appleDownloading
                   ? <Button
+                      small
+                      light
+                      style={{ margin: 5 }}
+                      disabled
+                    >
+                      <FAIcon name="spotify" size={25} color="#1db954" />
+                    </Button>
+                  : <Button
                       small
                       light
                       style={{ margin: 5 }}
@@ -171,12 +181,19 @@ export default class SinglePlaylist extends Component {
                     >
                       <FAIcon name="spotify" size={25} color="#1db954" />
                     </Button>
-                  : <Button small light style={{ margin: 5 }}><Spinner color="#1db954" /></Button>
                 : null}
 
               {this.state.appleAuth && playlist.type === 'spotifyId'
-                ? !this.state.appleDownloading
+                ? this.state.appleDownloading || this.state.spotifyDownloading
                   ? <Button
+                      small
+                      light
+                      style={{ margin: 5 }}
+                      disabled
+                    >
+                      <FAIcon name="apple" size={25} color="#FF4B63" />
+                    </Button>
+                  : <Button
                       small
                       light
                       style={{ margin: 5 }}
@@ -184,12 +201,12 @@ export default class SinglePlaylist extends Component {
                     >
                       <FAIcon name="apple" size={25} color="#FF4B63" />
                     </Button>
-                  : <Button small light style={{ margin: 5 }}><Spinner color="#FF4B63" /></Button>
                 : null}
               <Button
                 light
                 style={{ margin: 5 }}
                 small
+                disabled={this.state.appleDownloading || this.state.spotifyDownloading}
                 onPress={() => this.goToShare(playlist.playlistId)}
               >
                 <Icon name="ios-share-outline" style={styles.headerIcon} />
