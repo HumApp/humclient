@@ -2,7 +2,7 @@ import { StackNavigator } from 'react-navigation';
 import Collab from '../components/collab';
 import React from 'react';
 
-export const CollabStack = StackNavigator({
+export default StackNavigator({
   Collab: {
     screen: Collab,
     navigationOptions: {

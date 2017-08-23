@@ -3,7 +3,7 @@ import { StackNavigator } from 'react-navigation';
 import Profile from '../components/profile';
 import UpdatePassword from '../components/profile/updatePassword';
 
-export const ProfileStack = StackNavigator({
+export default StackNavigator({
   Profile: {
     screen: Profile,
     navigationOptions: {

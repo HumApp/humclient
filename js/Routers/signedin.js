@@ -1,3 +1,7 @@
+import PlaylistsStack from './playlists';
+import CollabStack from './collab';
+import FriendsStack from './friends';
+import ProfileStack from './profile';
 import React from 'react';
 import {
   TabNavigator,
@@ -7,10 +11,6 @@ import {
 } from 'react-navigation';
 import { Platform, StatusBar } from 'react-native';
 import { Icon } from 'native-base';
-import PlaylistsStack from './playlists';
-import CollabStack from './collab';
-import FriendsStack from './friends';
-import ProfileStack from './profile';
 
 const Tabs = TabNavigator(
   {
@@ -86,7 +86,7 @@ const Tabs = TabNavigator(
   }
 );
 
-export const SignedIn = StackNavigator(
+export default StackNavigator(
   {
     Tabs: {
       screen: Tabs

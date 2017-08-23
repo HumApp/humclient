@@ -3,7 +3,7 @@ import { StackNavigator } from 'react-navigation';
 import Friends from '../components/friends';
 import FriendRequests from '../components/friends/friendRequests';
 
-export const FriendsStack = StackNavigator({
+export default StackNavigator({
   Friends: {
     screen: Friends,
     navigationOptions: {

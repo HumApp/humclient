@@ -5,7 +5,7 @@ import Signup from '../components/signup';
 import Home from '../components/home';
 import { Platform, StatusBar } from 'react-native';
 
-export const SignedOut = StackNavigator(
+export default StackNavigator(
   {
     Home: {
       screen: Home,
