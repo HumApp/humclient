@@ -45,9 +45,9 @@ export default class SignUp extends Component {
         buttonText: 'Okay',
         duration: 2000
       });
-      if (firebase.auth().currentUser.emailVerified)
-        this.props.navigation.navigate('SignedIn');
-      else throw 'Your email has to be verified! Check your email!';
+      // if (firebase.auth().currentUser.emailVerified)
+      //   this.props.navigation.navigate('SignedIn');
+      // else throw 'Your email has to be verified! Check your email!';
     } catch (err) {
       Toast.show({
         text: `${err}`,
