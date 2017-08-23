@@ -55,23 +55,24 @@ export default class SignUp extends Component {
       newUser.updateProfile({
         displayName: this.state.userName
       });
+      const newUserId = newUser.uid;
       await firebase
         .database()
         .ref(`usernames/${this.state.userName}`)
-        .set(`${newUser.uid}`);
-      await firebase.database().ref(`users/${newUser.uid}`).set({
+        .set(`${newUserId}`);
+      await firebase.database().ref(`users/${newUserId}`).set({
         fullname: this.state.firstName + ' ' + this.state.lastName,
         username: this.state.userName,
         email: this.state.email
       });
       // await newUser.sendEmailVerification();
-      this.props.navigation.navigate('SignedOut');
-// Toast.show({
-//   text: `Verification email sent to ${this.state.email}`,
-//   position: 'top',
-//   buttonText: 'Okay',
-//   duration: 3500
-// });
+      this.props.navigation.navigate('Home');
+      // Toast.show({
+      //   text: `Verification email sent to ${this.state.email}`,
+      //   position: 'top',
+      //   buttonText: 'Okay',
+      //   duration: 3500
+      // });
     } catch (err) {
       if (err.code === 'PERMISSION_DENIED') {
         newUser.delete();

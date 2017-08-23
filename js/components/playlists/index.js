@@ -38,7 +38,7 @@ export default class Playlists extends Component {
     this.props.navigation.navigate('SinglePlaylist', playlist);
   };
 
-   goToSharedPlaylist = playlist => {
+  goToSharedPlaylist = playlist => {
     this.props.navigation.navigate('SingleSharedPlaylist', playlist);
   };
 
