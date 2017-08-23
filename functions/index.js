@@ -57,7 +57,9 @@ exports.sentPendingWatch = functions.database.ref(`/users/{uid}/pending`).onWrit
     let matches = _.intersection(sent, pending);
     if (matches.length > 0) {
       matches.forEach(match => {
-        admin.database().ref(`/users/${uid}/friends/${match}`).set(true);
+        admin.database().ref(`/users/${match}/username`).once('value', function (snap) {
+          admin.database().ref(`/users/${uid}/friends/${match}`).set(snap.val());
+        });
         admin.database().ref(`/users/${uid}/pending/${match}`).remove();
         admin.database().ref(`/users/${uid}/sent/${match}`).remove();
       });
@@ -74,6 +76,8 @@ exports.cascadePlaylistDelete = functions.database.ref(`/playlists/{PID}`).onDel
   if (affectedUsers) {
     for (let uid in affectedUsers) {
       admin.database().ref(`/users/${uid}/playlists/${PID}`).remove();
+      admin.database().ref(`/users/${uid}/sharedPlaylists/${PID}`).remove();
+
     }
   }
 });
