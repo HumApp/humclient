@@ -47,5 +47,5 @@ export function rejectFriendFromPending(friend) {
 export function deleteFriend(friend) {
   let user = firebase.auth().currentUser;
   firebase.database().ref(`/users/${user.uid}/friends/${friend}`).remove();
-  firebase.database().ref(`/users/${friend}/friends/${user.uid}`).remove();
+  firebase.database().ref(`/users/${friend}/pending/${user.uid}`).set(false);
 }
