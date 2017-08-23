@@ -46,7 +46,7 @@ RCT_EXPORT_METHOD(authenticate:(RCTResponseSenderBlock)callback)
   [[SPTAuth defaultInstance] setRequestedScopes:@[SPTAuthUserReadPrivateScope, SPTAuthUserReadEmailScope, SPTAuthUserFollowReadScope, SPTAuthPlaylistReadPrivateScope, SPTAuthPlaylistReadCollaborativeScope, SPTAuthPlaylistModifyPublicScope, SPTAuthPlaylistModifyPrivateScope, SPTAuthUserLibraryReadScope, SPTAuthUserLibraryModifyScope]];
 
   // OPTIONAL. Allows retrieval of refresheable tokens. If not specified, it uses the 'Implicit Grant' auth workflow
-  //[[SPTAuth defaultInstance] setTokenSwapURL: [NSURL URLWithString:@"http://my-token-swap-service.tld/swap.php"]];
+  [[SPTAuth defaultInstance] setTokenSwapURL: [NSURL URLWithString:@"https://us-central1-hum-app.cloudfunctions.net/swap"]];
   
   /*
    * Creates and opens a Spotify Auth Webview
@@ -62,8 +62,6 @@ RCT_EXPORT_METHOD(authenticate:(RCTResponseSenderBlock)callback)
   //setup event dispatcher
   spotifyModule.eventDispatcher = [[RCTEventDispatcher alloc] init];
   [spotifyModule.eventDispatcher setValue:self.bridge forKey:@"bridge"];
-  
-  RCTLogInfo(@"%@", loginURL);
   
   // Opening a URL in Safari close to application launch may trigger
   // an iOS bug, so we wait a bit before doing so.
@@ -86,8 +84,8 @@ RCT_EXPORT_METHOD(authenticate:(RCTResponseSenderBlock)callback)
       
       // If anything failed, logs the error then returns
       if (error != nil) {
-        NSLog(@"*** Auth error: %@", error);
-        return;
+       RCTLogInfo(@"*** Auth error: %@", error);
+       return;
       }
       
       RCTLogInfo(@"Login Successful");
@@ -129,7 +127,7 @@ RCT_EXPORT_METHOD(authenticate:(RCTResponseSenderBlock)callback)
     
     return YES;
   }
-  
+    
   return NO;
 }
 

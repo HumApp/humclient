@@ -23,6 +23,9 @@ import axios from 'axios';
 import * as Database from '../../../utils/database';
 import Prompt from 'react-native-prompt';
 import * as firebase from 'firebase';
+const Buffer = require('buffer/').Buffer;
+const querystring = require('querystring');
+
 const SpotifyModule = NativeModules.SpotifyModule;
 
 export default class Profile extends Component {
@@ -36,7 +39,8 @@ export default class Profile extends Component {
       usersPlaylists: {},
       appleAuth: false,
       name: '',
-      username: ''
+      username: '',
+      refreshToken: ''
     };
   }
 
@@ -51,7 +55,8 @@ export default class Profile extends Component {
           name: snapshot.val().fullname,
           id: snapshot.val().spotifyId,
           token: snapshot.val().accessToken,
-          appleAuth: snapshot.val().appleAuth
+          appleAuth: snapshot.val().appleAuth,
+          refreshToken: snapshot.val().refreshToken
         });
       })
       .catch(error => console.log('Profile ', error));
@@ -74,7 +79,8 @@ export default class Profile extends Component {
   authSpotify = () => {
     try {
       SpotifyModule.authenticate(data => {
-        this.setState({ token: data.accessToken }, this.whoamI);
+        console.log(data);
+        this.setState({ token: data.accessToken, refreshToken: data.refreshToken }, this.whoamI);
       });
     } catch (err) {
       console.error('Spotify authentication failed: ', err);
@@ -109,11 +115,13 @@ export default class Profile extends Component {
   saveUserInfoToDatabase = () => {
     let accessToken = this.state.token;
     let spotifyId = this.state.id;
+    let refreshToken = this.state.refreshToken;
     firebase.auth().onAuthStateChanged(function(user) {
       if (user) {
         firebase.database().ref('users/' + user.uid).update({
           accessToken,
-          spotifyId
+          spotifyId,
+          refreshToken
         });
       } else {
       }
@@ -223,6 +231,15 @@ export default class Profile extends Component {
       }
     });
   };
+
+  newToken = () => {
+    var data = querystring.stringify({ 'refresh_token': `${this.state.refreshToken}` });
+    axios
+      .post('https://us-central1-hum-app.cloudfunctions.net/refresh',
+      data)
+      .then(response => console.log(response.data.access_token))
+      .catch(error => console.log('error: ', error))
+  }
 
   render() {
     return (
