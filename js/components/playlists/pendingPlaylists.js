@@ -44,8 +44,18 @@ export default class PendingPlaylists extends Component {
   }
 
   goToPlaylist = playlist => {
-    this.props.navigation.navigate('ViewPlaylistRequest', playlist);
+    this.props.navigation.navigate('ViewPlaylistRequest', {playlist: playlist, goBackToAll: this.goBackAllPlaylists, requests: this.state.requests, filterRequests: this.filterRequests});
   };
+
+  goBackAllPlaylists = () => {
+    this.props.navigation.goBack()
+  };
+
+  filterRequests = playlistId => {
+    this.setState({requests: this.state.requests.filter(playlist => {
+        return playlist.playlistId != playlistId
+    })})
+  }
 
   componentDidMount() {
     firebase
@@ -214,7 +224,7 @@ export default class PendingPlaylists extends Component {
                       onPress={() => {
                         this.goToPlaylist(playlist);
                       }}
-                      bordered
+
                     >
                       <Body>
                         <Text>

@@ -58,8 +58,14 @@ export default class SinglePlaylist extends Component {
       duration: 1500,
       type: 'danger'
     });
-    //this adds to the stack, need it to go back to the initial tab
-    this.props.navigation.navigate('Playlists');
+    //need it to go back
+    //if last one in pending
+    if (this.props.navigation.state.params.requests.length === 1)
+      this.props.navigation.state.params.goBackToAll();
+    else {
+      this.props.navigation.state.params.filterRequests(playlistId);
+      this.props.navigation.goBack();
+    }
   };
 
   spotify = playlistId => {
@@ -81,7 +87,12 @@ export default class SinglePlaylist extends Component {
         duration: 1500,
         type: 'success'
       });
-      //need to navigate back to playlists home
+      if (this.props.navigation.state.params.requests.length === 1)
+        this.props.navigation.state.params.goBackToAll();
+      else {
+        this.props.navigation.state.params.filterRequests(playlistId);
+        this.props.navigation.goBack();
+      }
     });
   };
 
@@ -128,14 +139,14 @@ export default class SinglePlaylist extends Component {
       playlistObj.songs = songArr;
       let applePlaylist = JSON.stringify(playlistObj);
       NativeModules.MediaLibraryManager.createPlaylist(applePlaylist, str => {
-        this.appleComplete();
+        this.appleComplete(playlistId);
       });
     } catch (err) {
-      this.appleFailed();
+      this.appleFailed()
     }
   };
 
-  appleComplete = () => {
+  appleComplete = (playlistId) => {
     this.setState({ appleDownloading: false }, () => {
       Toast.show({
         text: 'Playlist downloaded to apple music!',
@@ -143,7 +154,12 @@ export default class SinglePlaylist extends Component {
         duration: 1500,
         type: 'success'
       });
-      //need to navigate back to home playlists
+      if (this.props.navigation.state.params.requests.length === 1)
+        this.props.navigation.state.params.goBackToAll();
+      else {
+        this.props.navigation.state.params.filterRequests(playlistId);
+        this.props.navigation.goBack();
+      }
     });
   };
 
@@ -159,7 +175,7 @@ export default class SinglePlaylist extends Component {
   };
 
   render() {
-    const playlist = this.props.navigation.state.params;
+    const playlist = this.props.navigation.state.params.playlist;
     return (
       <Container>
         <Content>
@@ -173,7 +189,7 @@ export default class SinglePlaylist extends Component {
                   Playlist by {playlist.displayName}
                 </Text>
               </Body>
-              {this.state.spotifyAuth && playlist.type === 'appleId'
+              {this.state.spotifyAuth
                 ? !this.state.spotifyDownloading
                   ? <Button
                       small
@@ -187,13 +203,13 @@ export default class SinglePlaylist extends Component {
                       <Spinner color="#1db954" />
                     </Button>
                 : null}
-              {this.state.appleAuth && playlist.type === 'spotifyId'
+              {this.state.appleAuth
                 ? !this.state.appleDownloading
                   ? <Button
                       small
                       light
                       style={{ margin: 5 }}
-                      onPress={() => this.apple(playlist)}
+                      onPress={() => this.apple(playlist.playlistId)}
                     >
                       <FAIcon name="apple" size={25} color="#FF4B63" />
                     </Button>
