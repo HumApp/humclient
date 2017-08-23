@@ -42,9 +42,11 @@ export default class MyPlaylists extends Component {
     console.log(playlists)
     let temp = [];
     for (let playlistId in playlists) {
-      const tempPlaylist = await Database.getPlaylistFromId(playlistId);
-      const playlist = Object.assign({}, tempPlaylist.val(), { playlistId });
-      temp.push(playlist);
+      if (playlists[playlistId] === 'original') {
+        const tempPlaylist = await Database.getPlaylistFromId(playlistId);
+        const playlist = Object.assign({}, tempPlaylist.val(), { playlistId });
+        temp.push(playlist);
+      }
     }
     this.setState({ playlists: [] }, () => {
       this.setState({
@@ -93,22 +95,22 @@ export default class MyPlaylists extends Component {
         <Content>
           {this.props.pendingPlaylists.length
             ? <Card>
-                <CardItem
-                  button
-                  onPress={() => this.props.goToPending()}
-                  header
-                >
-                  <Badge style={{ backgroundColor: '#FC642D' }}>
-                    <Text>
-                      {this.props.pendingPlaylists.length}
-                    </Text>
-                  </Badge>
-                  <Text style={styles.header}> Pending Playlists</Text>
-                  <Right>
-                    <Icon name="arrow-forward" style={styles.arrow} />
-                  </Right>
-                </CardItem>
-              </Card>
+              <CardItem
+                button
+                onPress={() => this.props.goToPending()}
+                header
+              >
+                <Badge style={{ backgroundColor: '#FC642D' }}>
+                  <Text>
+                    {this.props.pendingPlaylists.length}
+                  </Text>
+                </Badge>
+                <Text style={styles.header}> Pending Playlists</Text>
+                <Right>
+                  <Icon name="arrow-forward" style={styles.arrow} />
+                </Right>
+              </CardItem>
+            </Card>
             : null}
           <Card>
             <CardItem header>
@@ -119,10 +121,10 @@ export default class MyPlaylists extends Component {
             {this.state.isLoading
               ? <Spinner color="#FC642D" />
               : <View>
-                  {!this.state.playlists.length
-                    ? <CardItem>
-                        <Text style={styles.header}>
-                          Connect a music streaming service to view playlists!
+                {!this.state.playlists.length
+                  ? <CardItem>
+                    <Text style={styles.header}>
+                      Connect a music streaming service to view playlists!
                         </Text>
                       </CardItem>
                     : <View>
