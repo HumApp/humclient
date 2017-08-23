@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export async function savePlaylistToDatabase(playlists, providerId) {
   try {
-    if (providerId === 'appleId') {
+    // if (providerId === 'appleId') {
       const appleToken = await axios.get(
         'https://us-central1-hum-app.cloudfunctions.net/getJWT',
         {
@@ -12,7 +12,7 @@ export async function savePlaylistToDatabase(playlists, providerId) {
           }
         }
       );
-    }
+    // }
     const currentUser = firebase.auth().currentUser;
     for (const playlist of playlists) {
       let newSong = {};

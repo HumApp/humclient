@@ -109,13 +109,13 @@ class AuthorizationManager: NSObject {
     
     // MARK: Authorization Request Methods
     
-  @objc func requestCloudServiceAuthorization(_ callback: RCTResponseSenderBlock) {
+  @objc func requestCloudServiceAuthorization(_ callback: @escaping RCTResponseSenderBlock) {
         /*
          An application should only ever call `SKCloudServiceController.requestAuthorization(_:)` when their
          current authorization is `SKCloudServiceAuthorizationStatusNotDetermined`
          */
         let status = SKCloudServiceController.authorizationStatus()
-        guard SKCloudServiceController.authorizationStatus() == .notDetermined else { return }
+        guard SKCloudServiceController.authorizationStatus() == .notDetermined else { callback(["cloud service"]); return }
         
         /*
          `SKCloudServiceController.requestAuthorization(_:)` triggers a prompt for the user asking if they wish to allow the application
@@ -137,8 +137,8 @@ class AuthorizationManager: NSObject {
             }
             
             NotificationCenter.default.post(name: AuthorizationManager.authorizationDidUpdateNotification, object: nil)
+            callback(["cloud service"])
         }
-        callback(["cloud service"])
     }
     
   @objc func requestMediaLibraryAuthorization(_ callback: @escaping RCTResponseSenderBlock) {
@@ -174,7 +174,7 @@ class AuthorizationManager: NSObject {
     func fetchDeveloperToken() -> String? {
       
       // MARK: ADAPT: YOU MUST IMPLEMENT THIS METHOD
-      let developerAuthenticationToken: String? = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ikw4RE05UjJDWVYifQ.eyJpc3MiOiJMTlEyMllGOFVCIiwiaWF0IjoxNTAyNzMwNTIxLCJleHAiOjE1MDI3NzM3MjF9.EGXZJbw1W-oeVbRoLeMxwHYcHYCeot9IzzuB-8MUQj7tjAjCMCl-SFV6MLKPoEype4UkHbKz6uDQrv9gZF0s4w"
+      let developerAuthenticationToken: String? = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ikw4RE05UjJDWVYifQ.eyJpc3MiOiJMTlEyMllGOFVCIiwiaWF0IjoxNTAzNDUyNjg1LCJleHAiOjE1MTA2NTYyODV9.XjtoG3EY03cxVPjDwNSTfUlvm0TJspVyzcgekr7CTEixNu9fXs3ZvcjnWxMnJCnjM9RYghmSBaoZ38apkkJQmw"
       return developerAuthenticationToken
     }
   

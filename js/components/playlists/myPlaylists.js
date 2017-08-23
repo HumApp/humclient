@@ -39,6 +39,7 @@ export default class MyPlaylists extends Component {
 
   userPlaylistCallback = async snapshot => {
     let playlists = snapshot.val();
+    console.log(playlists)
     let temp = [];
     for (let playlistId in playlists) {
       const tempPlaylist = await Database.getPlaylistFromId(playlistId);

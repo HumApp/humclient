@@ -225,7 +225,7 @@ class MediaLibraryManager: NSObject {
         guard let mediaPlaylist = mediaPlaylist else {
             fatalError("Playlist has not been created")
         }
-        
+        print(identifier)
         mediaPlaylist.addItem(withProductID: identifier, completionHandler: { (error) in
             guard error == nil else {
                 fatalError("An error occurred while adding an item to the playlist: \(error!.localizedDescription)")

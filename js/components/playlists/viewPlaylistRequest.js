@@ -58,8 +58,6 @@ export default class SinglePlaylist extends Component {
       duration: 1500,
       type: 'danger'
     });
-    //need it to go back
-    //if last one in pending
     if (this.props.navigation.state.params.requests.length === 1)
       this.props.navigation.state.params.goBackToAll();
     else {
@@ -69,7 +67,6 @@ export default class SinglePlaylist extends Component {
   };
 
   spotify = playlistId => {
-    Database.addPlaylistFromPending(playlistId);
     this.setState({ spotifyDownloading: true }, () => {
       Database.databasePlaylistToSpotify(
         playlistId,
@@ -80,6 +77,7 @@ export default class SinglePlaylist extends Component {
   };
 
   spotifyComplete = () => {
+    Database.addPlaylistFromPending(playlistId);
     this.setState({ spotifyDownloading: false }, () => {
       Toast.show({
         text: 'Playlist downloaded to spotify!',
@@ -112,7 +110,6 @@ export default class SinglePlaylist extends Component {
     try {
       let playlistObj = null;
       let songArr = [];
-      Database.addPlaylistFromPending(playlistId);
       let result = await Database.getPlaylistFromId(playlistId);
       playlistObj = {
         name: result.val().title,
@@ -134,7 +131,7 @@ export default class SinglePlaylist extends Component {
             }
           )
           .catch(error => console.log('Pending Playlists ', error));
-        songArr.push(songNum.data.toString());
+        if (songNum.data.toString() !== 'ERROR') songArr.push(songNum.data.toString());
       }
       playlistObj.songs = songArr;
       let applePlaylist = JSON.stringify(playlistObj);
@@ -147,6 +144,7 @@ export default class SinglePlaylist extends Component {
   };
 
   appleComplete = (playlistId) => {
+    Database.addPlaylistFromPending(playlistId);
     this.setState({ appleDownloading: false }, () => {
       Toast.show({
         text: 'Playlist downloaded to apple music!',
@@ -179,6 +177,9 @@ export default class SinglePlaylist extends Component {
     return (
       <Container>
         <Content>
+        {this.state.spotifyDownloading || this.state.appleDownloading
+                ? <Spinner color="#FC642D" />
+                : null}
           <Card>
             <CardItem header bordered>
               <Body>
@@ -190,8 +191,16 @@ export default class SinglePlaylist extends Component {
                 </Text>
               </Body>
               {this.state.spotifyAuth
-                ? !this.state.spotifyDownloading
+                ? this.state.spotifyDownloading || this.state.appleDownloading
                   ? <Button
+                      small
+                      light
+                      style={{ margin: 5 }}
+                     disabled
+                    >
+                      <FAIcon name="spotify" size={25} color="#1db954" />
+                    </Button>
+                  : <Button
                       small
                       light
                       style={{ margin: 5 }}
@@ -199,13 +208,18 @@ export default class SinglePlaylist extends Component {
                     >
                       <FAIcon name="spotify" size={25} color="#1db954" />
                     </Button>
-                  : <Button small light style={{ margin: 5 }}>
-                      <Spinner color="#1db954" />
-                    </Button>
                 : null}
               {this.state.appleAuth
-                ? !this.state.appleDownloading
+                ? this.state.appleDownloading || this.state.spotifyDownloading
                   ? <Button
+                      small
+                      light
+                      style={{ margin: 5 }}
+                      disabled
+                    >
+                      <FAIcon name="apple" size={25} color="#FF4B63" />
+                    </Button>
+                  : <Button
                       small
                       light
                       style={{ margin: 5 }}
@@ -213,14 +227,12 @@ export default class SinglePlaylist extends Component {
                     >
                       <FAIcon name="apple" size={25} color="#FF4B63" />
                     </Button>
-                  : <Button small light style={{ margin: 5 }}>
-                      <Spinner color="#FF4B63" />
-                    </Button>
                 : null}
               <Button
                 danger
                 style={{ margin: 5 }}
                 small
+                disabled={this.state.spotifyDownloading || this.state.appleDownloading}
                 onPress={() => this.deleteRequest(playlist.playlistId)}
               >
                 <Icon name="md-close-circle" />
