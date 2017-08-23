@@ -201,12 +201,14 @@ export function databasePlaylistToSpotify(databasePlaylistId, success, fail) {
                 }
               }
             )
-            .catch(error => fail())
+            .catch(error => "ERROR")
         );
         Promise.all(promises).then(values => {
+          console.log(values)
           let final = values
-            .filter(value => value !== 'Not found')
-            .map(value => value.data);
+            .map(value => value.data)
+            .filter(value => value !== 'ERROR');
+          console.log("FINALLLLLL", final)
           axios
             .post(
               `https://api.spotify.com/v1/users/${id}/playlists`,
