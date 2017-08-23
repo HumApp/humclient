@@ -36,8 +36,7 @@ export default class App extends Component {
       landingPage = <Spinner color="#FC642D" />;
     } else {
       let AppNavigator = createRootNavigator(
-        this.state.currentUser
-        // this.state.currentUser && firebase.auth().currentUser.emailVerified
+        this.state.currentUser && firebase.auth().currentUser.emailVerified
       );
       landingPage = <AppNavigator />;
     }
