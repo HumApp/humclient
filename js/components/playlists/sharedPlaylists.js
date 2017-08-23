@@ -37,7 +37,6 @@ export default class SharedPlaylists extends Component {
     };
   }
 
-
   getSharedPlaylists = async userId => {
     let playlistArr = [];
     const playlists = await firebase
@@ -122,37 +121,38 @@ export default class SharedPlaylists extends Component {
                         </Text>
                       </CardItem>
                     : <View>
-                        {this.state.sharedPlaylists
-                          .filter((playlist, index) =>
-                            playlist.title
-                              .toLowerCase()
-                              .match(this.state.searchPlaylist)
-                          )
-                          .map((playlist, index) => {
-                            return (
-                              <CardItem
-                                button
-                                key={index}
-                                onPress={() =>
-                                  this.props.goToPlaylist(playlist)}
-                              >
-                                <Body>
-                                  <Text style={styles.bodytxt}>
-                                    {playlist.title}
-                                  </Text>
-                                  <Text note style={styles.bodytxt}>
-                                    Playlist by {playlist.displayName}
-                                  </Text>
-                                </Body>
-                                <Right>
-                                  <Icon
-                                    name="arrow-forward"
-                                    style={styles.arrow}
-                                  />
-                                </Right>
-                              </CardItem>
-                            );
-                          })}
+                        {this.state.sharedPlaylists.length !== 0 &&
+                          this.state.sharedPlaylists
+                            .filter((playlist, index) =>
+                              playlist.title
+                                .toLowerCase()
+                                .match(this.state.searchPlaylist)
+                            )
+                            .map((playlist, index) => {
+                              return (
+                                <CardItem
+                                  button
+                                  key={index}
+                                  onPress={() =>
+                                    this.props.goToPlaylist(playlist)}
+                                >
+                                  <Body>
+                                    <Text style={styles.bodytxt}>
+                                      {playlist.title}
+                                    </Text>
+                                    <Text note style={styles.bodytxt}>
+                                      Playlist by {playlist.displayName}
+                                    </Text>
+                                  </Body>
+                                  <Right>
+                                    <Icon
+                                      name="arrow-forward"
+                                      style={styles.arrow}
+                                    />
+                                  </Right>
+                                </CardItem>
+                              );
+                            })}
                       </View>}
                 </View>}
           </Card>

@@ -9,14 +9,13 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     Firebase.initialize();
-    this.getInitialView();
     this.state = {
       currentUser: null
     };
+    this.getInitialView();
   }
 
   getInitialView = () => {
-
     firebase.auth().onAuthStateChanged(currentUser => {
       if (currentUser) {
         this.setState({
@@ -31,6 +30,7 @@ export default class App extends Component {
   };
 
   render() {
+    console.log('what is currentUser??????', this.state.currentUser);
     let landingPage;
     if (this.state.currentUser === null) {
       landingPage = <Spinner color="#FC642D" />;
