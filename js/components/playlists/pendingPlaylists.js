@@ -44,18 +44,25 @@ export default class PendingPlaylists extends Component {
   }
 
   goToPlaylist = playlist => {
-    this.props.navigation.navigate('ViewPlaylistRequest', {playlist: playlist, goBackToAll: this.goBackAllPlaylists, requests: this.state.requests, filterRequests: this.filterRequests});
+    this.props.navigation.navigate('ViewPlaylistRequest', {
+      playlist: playlist,
+      goBackToAll: this.goBackAllPlaylists,
+      requests: this.state.requests,
+      filterRequests: this.filterRequests
+    });
   };
 
   goBackAllPlaylists = () => {
-    this.props.navigation.goBack()
+    this.props.navigation.goBack();
   };
 
   filterRequests = playlistId => {
-    this.setState({requests: this.state.requests.filter(playlist => {
-        return playlist.playlistId != playlistId
-    })})
-  }
+    this.setState({
+      requests: this.state.requests.filter(playlist => {
+        return playlist.playlistId != playlistId;
+      })
+    });
+  };
 
   componentDidMount() {
     firebase
@@ -91,7 +98,6 @@ export default class PendingPlaylists extends Component {
   };
 
   spotify = playlistId => {
-    Database.addPlaylistFromPending(playlistId);
     this.setState({ spotifyDownloading: true }, () => {
       Database.databasePlaylistToSpotify(
         playlistId,
@@ -102,6 +108,7 @@ export default class PendingPlaylists extends Component {
   };
 
   spotifyComplete = playlistId => {
+    Database.addPlaylistFromPending(playlistId);
     this.setState({ spotifyDownloading: false }, () => {
       Toast.show({
         text: 'Playlist downloaded to spotify!',
@@ -138,7 +145,6 @@ export default class PendingPlaylists extends Component {
     try {
       let playlistObj = null;
       let songArr = [];
-      Database.addPlaylistFromPending(playlistId);
       let result = await Database.getPlaylistFromId(playlistId);
       playlistObj = {
         name: result.val().title,
@@ -160,7 +166,7 @@ export default class PendingPlaylists extends Component {
             }
           )
           .catch(error => console.log('Pending Playlists ', error));
-        songArr.push(songNum.data.toString());
+        if (songNum.data.toString() !== 'ERROR') songArr.push(songNum.data.toString());
       }
       playlistObj.songs = songArr;
       let applePlaylist = JSON.stringify(playlistObj);
@@ -168,11 +174,12 @@ export default class PendingPlaylists extends Component {
         this.appleComplete(playlistId);
       });
     } catch (err) {
-      this.appleFailed()
+      this.appleFailed();
     }
   };
 
   appleComplete = playlistId => {
+    Database.addPlaylistFromPending(playlistId);
     this.setState({ appleDownloading: false }, () => {
       Toast.show({
         text: 'Playlist downloaded to apple music!',
@@ -208,9 +215,13 @@ export default class PendingPlaylists extends Component {
     return (
       <Container>
         <Content>
+        {this.state.spotifyDownloading || this.state.appleDownloading
+                ? <Spinner color="#FC642D" />
+                : null}
           <Card>
             <CardItem header>
               <Icon active name="ios-musical-notes" style={styles.headerIcon} />
+
               <Text style={styles.header}>Requests</Text>
             </CardItem>
             {this.state.requests.map(playlist => {
@@ -221,10 +232,13 @@ export default class PendingPlaylists extends Component {
                   body={
                     <CardItem
                       button
+                      disabled={
+                        this.state.spotifyDownloading ||
+                        this.state.appleDownloading
+                      }
                       onPress={() => {
                         this.goToPlaylist(playlist);
                       }}
-
                     >
                       <Body>
                         <Text>
@@ -238,8 +252,16 @@ export default class PendingPlaylists extends Component {
                         </Text>
                       </Body>
                       {this.state.spotifyAuth
-                        ? !this.state.spotifyDownloading
-                          ? <Button
+                        ? this.state.spotifyDownloading ||
+                          this.state.appleDownloading
+                          ? <Button small light style={{ margin: 5 }} disabled>
+                              <FAIcon
+                                name="spotify"
+                                size={25}
+                                color="#1db954"
+                              />
+                            </Button>
+                          : <Button
                               small
                               light
                               style={{ margin: 5 }}
@@ -251,22 +273,20 @@ export default class PendingPlaylists extends Component {
                                 color="#1db954"
                               />
                             </Button>
-                          : <Button small light style={{ margin: 5 }}>
-                              <Spinner color="#1db954" />
-                            </Button>
                         : null}
                       {this.state.appleAuth
-                        ? !this.state.appleDownloading
-                          ? <Button
+                        ? this.state.appleDownloading ||
+                          this.state.spotifyDownloading
+                          ? <Button small light style={{ margin: 5 }} disabled>
+                              <FAIcon name="apple" size={25} color="#FF4B63" />
+                            </Button>
+                          : <Button
                               small
                               light
                               style={{ margin: 5 }}
                               onPress={() => this.apple(playlist.playlistId)}
                             >
                               <FAIcon name="apple" size={25} color="#FF4B63" />
-                            </Button>
-                          : <Button small light style={{ margin: 5 }}>
-                              <Spinner color="#FF4B63" />
                             </Button>
                         : null}
                     </CardItem>
