@@ -4,25 +4,33 @@ import SignedIn from './signedin';
 import SignedOut from './signedout';
 
 export const createRootNavigator = signedIn => {
-  return StackNavigator(
-    {
-      SignedIn: {
-        screen: SignedIn,
-        navigationOptions: {
-          gesturesEnabled: false
+  return signedIn
+    ? StackNavigator(
+        {
+          SignedIn: {
+            screen: SignedIn,
+            navigationOptions: {
+              gesturesEnabled: false
+            }
+          }
+        },
+        {
+          headerMode: 'none',
+          mode: 'modal'
         }
-      },
-      SignedOut: {
-        screen: SignedOut,
-        navigationOptions: {
-          gesturesEnabled: false
+      )
+    : StackNavigator(
+        {
+          SignedOut: {
+            screen: SignedOut,
+            navigationOptions: {
+              gesturesEnabled: false
+            }
+          }
+        },
+        {
+          headerMode: 'none',
+          mode: 'modal'
         }
-      }
-    },
-    {
-      headerMode: 'none',
-      mode: 'modal',
-      initialRouteName: signedIn ? 'SignedIn' : 'SignedOut'
-    }
-  );
+      );
 };
