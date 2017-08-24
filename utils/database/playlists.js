@@ -1,17 +1,18 @@
 import * as firebase from 'firebase';
 import axios from 'axios';
+import { NativeModules } from 'react-native';
 
 export async function savePlaylistToDatabase(playlists, providerId) {
   try {
     // if (providerId === 'appleId') {
-      const appleToken = await axios.get(
-        'https://us-central1-hum-app.cloudfunctions.net/getJWT',
-        {
-          headers: {
-            pass: "lol this isn't secure"
-          }
+    const appleToken = await axios.get(
+      'https://us-central1-hum-app.cloudfunctions.net/getJWT',
+      {
+        headers: {
+          pass: "lol this isn't secure"
         }
-      );
+      }
+    );
     // }
     const currentUser = firebase.auth().currentUser;
     for (const playlist of playlists) {
@@ -37,10 +38,11 @@ export async function savePlaylistToDatabase(playlists, providerId) {
                 .replace('{w}', '100')
                 .replace('{h}', '100');
               findOrCreateSong(playlist.songs[index], providerId);
-              newSong[index] = {};
-              newSong[index].artist = playlist.songs[index].artist;
-              newSong[index].title = playlist.songs[index].title;
-              newSong[index].image = playlist.songs[index].image;
+              let appleSongId = playlist.songs[index].id
+              newSong[appleSongId] = {};
+              newSong[appleSongId].artist = playlist.songs[index].artist;
+              newSong[appleSongId].title = playlist.songs[index].title;
+              newSong[appleSongId].image = playlist.songs[index].image;
             })
             .catch(error => {
               console.log(error);
@@ -54,13 +56,15 @@ export async function savePlaylistToDatabase(playlists, providerId) {
         }
       }
       const newPlaylistId = firebase.database().ref('playlists').push().key;
-      this.addPlaylistToUser(newPlaylistId);
+
+      addPlaylistToUser(newPlaylistId);
       firebase.database().ref(`playlists/${newPlaylistId}`).set({
         title: playlist.name,
         creator: currentUser.uid,
         songs: newSong,
         displayName: currentUser.displayName,
-        type: providerId
+        type: providerId,
+        serviceId: playlist.id.toString() || '1425631'
       });
     }
   } catch (error) {
@@ -201,14 +205,14 @@ export function databasePlaylistToSpotify(databasePlaylistId, success, fail) {
                 }
               }
             )
-            .catch(error => "ERROR")
+            .catch(error => 'ERROR')
         );
         Promise.all(promises).then(values => {
-          console.log(values)
+          console.log(values);
           let final = values
             .map(value => value.data)
             .filter(value => value !== 'ERROR');
-          console.log("FINALLLLLL", final)
+          console.log('FINALLLLLL', final);
           axios
             .post(
               `https://api.spotify.com/v1/users/${id}/playlists`,
@@ -234,16 +238,45 @@ export function databasePlaylistToSpotify(databasePlaylistId, success, fail) {
                   }
                 )
                 .then(response => success(databasePlaylistId))
-                .catch(error =>
-                  fail()
-                );
+                .catch(error => fail());
             })
-            .catch(error =>
-              fail()
-            );
+            .catch(error => fail());
         });
       });
     });
+}
+
+export function updateAppleMusic(oldPlaylists, done) {
+  NativeModules.MediaLibraryManager.getPlaylists(playlists => {
+    // if a playlist id comes back that is not contained in the old playlist array, send it to save to database
+    //oldPlaylists [{serviceId: appleId, id: databaseID, songs: []}, {serviceId: appleId, id: databaseID}]
+    //refreshed playlists = [{playlistId: playlist.id, songs: playlist.songs}]
+    const newPlaylists = [];
+    const refreshedPlaylists = [];
+    const oldPlaylistServiceIds = [];
+    let parsedPlaylists = JSON.parse(playlists);
+
+    for (playlist of parsedPlaylists) {
+      const id = playlist.id
+      refreshedPlaylists.push({id: playlist.songs});
+    }
+    for (playlist of oldPlaylists) {
+      oldPlaylistServiceIds.push(playlist.serviceId);
+      let playlistKeyArr = Object.keys(refreshedPlaylists)
+      if (playlistKeyArr.indexOf(playlist.serviceId) === -1) {firebase.database().ref(`playlists/${playlist.id}`).remove();}
+      else {
+        for(song of playlist.songs){
+          // if refreshed playlist songs doesn't contain this song, delete playlists/playlis.id/songs/song
+          if(refreshedPlaylists[playlistKeyArr].indexOf(song) === -1) firebase.database().ref(`playlists/${playlist.id}/songs/${song}`).remove();
+        }
+      }
+    }
+    for (playlist of parsedPlaylists) {
+      if (oldPlaylistServiceIds.indexOf(playlist.id.toString()) === -1) newPlaylists.push(playlist);
+    }
+    savePlaylistToDatabase(newPlaylists, 'appleId');
+    done();
+  });
 }
 
 function getUrlPath(str) {
