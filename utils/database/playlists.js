@@ -254,6 +254,7 @@ export async function updateAppleMusic(oldPlaylists, done) {
     //refreshed playlists = [{playlistId: playlist.id, songs: playlist.songs}]
     const newPlaylists = [];
     const refreshedPlaylists = {};
+    const alteredPlaylists = [];
     let old = {};
     const serviceToId = {};
     let parsedPlaylists = JSON.parse(playlists);
@@ -277,11 +278,15 @@ export async function updateAppleMusic(oldPlaylists, done) {
       } else {
         for (song of playlist.songs) {
           // if refreshed playlist songs doesn't contain this song, delete playlists/playlis.id/songs/song
-            if (refreshedPlaylists[playlist.serviceId].indexOf(song) === -1)
+            if (refreshedPlaylists[playlist.serviceId].indexOf(song) === -1) {
               firebase
                 .database()
                 .ref(`playlists/${playlist.id}/songs/${song}`)
                 .remove();
+              //should remove the songs from the local playlist object
+
+            }
+            //then add the playlist to the altered playlists
         }
       }
     }
@@ -290,17 +295,21 @@ export async function updateAppleMusic(oldPlaylists, done) {
       else{
         for(song of playlist.songs){
           if(old[playlist.id].indexOf(song.id) === -1) {
+            // should add the new songs to the old local playlist object and
+            // alteredPlaylists.push(playlist)
             let image = await getImage(song.id)
-            console.log("IMAGEGEG ADTER", image)
             firebase
                 .database()
                 .ref(`playlists/${serviceToId[playlist.id]}/songs/${song.id}`)
                 .set({artist: song.artist, image: image, title: song.title});}
         }
+        //add the playlist to the altered playlist array
       }
       // if old playlist array doesn't contain a song from the refreshed playlists add it
     }
     if(newPlaylists.length) savePlaylistToDatabase(newPlaylists, 'appleId');
+    // need to send back modified playlists to update the state on the front end, the front end is only listening for adding/removing to a user's playlists
+
     done();
   });
 }
