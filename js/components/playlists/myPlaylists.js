@@ -47,8 +47,8 @@ export default class MyPlaylists extends Component {
       if (playlists[playlistId] === 'original') {
         const tempPlaylist = await Database.getPlaylistFromId(playlistId);
         const playlist = Object.assign({}, tempPlaylist.val(), { playlistId });
-        console.log("PLAYLIST", Object.keys(playlist.songs))
-        serviceIdArray.push({serviceId: playlist.serviceId, id: playlistId, songs: Object.keys(playlist.songs)});
+        let songArr = Object.keys(tempPlaylist.val().songs)
+        serviceIdArray.push({serviceId: playlist.serviceId, id: playlistId, songs: songArr});
         temp.push(playlist);
       }
     }
@@ -77,6 +77,7 @@ export default class MyPlaylists extends Component {
   };
 
   _onRefresh() {
+    console.log("ARRAYYY TO REFRESH", serviceIdArray)
     this.setState({ refreshing: true }, () => {
       Database.updateAppleMusic(this.state.compareForRefresh, this.appleUpdateDone);
     });

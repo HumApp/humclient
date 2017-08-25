@@ -38,7 +38,7 @@ export async function savePlaylistToDatabase(playlists, providerId) {
                 .replace('{w}', '100')
                 .replace('{h}', '100');
               findOrCreateSong(playlist.songs[index], providerId);
-              let appleSongId = playlist.songs[index].id
+              let appleSongId = playlist.songs[index].id;
               newSong[appleSongId] = {};
               newSong[appleSongId].artist = playlist.songs[index].artist;
               newSong[appleSongId].title = playlist.songs[index].title;
@@ -247,34 +247,47 @@ export function databasePlaylistToSpotify(databasePlaylistId, success, fail) {
 }
 
 export function updateAppleMusic(oldPlaylists, done) {
+  //only let if they are apple auth
   NativeModules.MediaLibraryManager.getPlaylists(playlists => {
     // if a playlist id comes back that is not contained in the old playlist array, send it to save to database
     //oldPlaylists [{serviceId: appleId, id: databaseID, songs: []}, {serviceId: appleId, id: databaseID}]
     //refreshed playlists = [{playlistId: playlist.id, songs: playlist.songs}]
     const newPlaylists = [];
-    const refreshedPlaylists = [];
+    const refreshedPlaylists = {};
     const oldPlaylistServiceIds = [];
     let parsedPlaylists = JSON.parse(playlists);
 
     for (playlist of parsedPlaylists) {
-      const id = playlist.id
-      refreshedPlaylists.push({id: playlist.songs});
+      let id = playlist.id;
+      const songs = []
+      for(song of playlist.songs){
+        songs.push(song.id.toString())
+      }
+      refreshedPlaylists[id] = songs
     }
     for (playlist of oldPlaylists) {
       oldPlaylistServiceIds.push(playlist.serviceId);
-      let playlistKeyArr = Object.keys(refreshedPlaylists)
-      if (playlistKeyArr.indexOf(playlist.serviceId) === -1) {firebase.database().ref(`playlists/${playlist.id}`).remove();}
-      else {
-        for(song of playlist.songs){
+      console.log("REFREsH", refreshedPlaylists)
+      console.log("OLDDD", oldPlaylists)
+      let playlistKeyArr = Object.keys(refreshedPlaylists);
+      if (playlistKeyArr.indexOf(playlist.serviceId) === -1) {
+        firebase.database().ref(`playlists/${playlist.id}`).remove();
+      } else {
+        for (song of playlist.songs) {
           // if refreshed playlist songs doesn't contain this song, delete playlists/playlis.id/songs/song
-          if(refreshedPlaylists[playlistKeyArr].indexOf(song) === -1) firebase.database().ref(`playlists/${playlist.id}/songs/${song}`).remove();
+            if (refreshedPlaylists[playlist.serviceId].indexOf(song) === -1)
+              firebase
+                .database()
+                .ref(`playlists/${playlist.id}/songs/${song}`)
+                .remove();
         }
       }
     }
     for (playlist of parsedPlaylists) {
-      if (oldPlaylistServiceIds.indexOf(playlist.id.toString()) === -1) newPlaylists.push(playlist);
+      if (oldPlaylistServiceIds.indexOf(playlist.id.toString()) === -1)
+        newPlaylists.push(playlist);
     }
-    savePlaylistToDatabase(newPlaylists, 'appleId');
+    if(newPlaylists.length) savePlaylistToDatabase(newPlaylists, 'appleId');
     done();
   });
 }
