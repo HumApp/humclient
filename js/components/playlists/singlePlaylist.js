@@ -139,6 +139,7 @@ export default class SinglePlaylist extends Component {
 
   render() {
     const playlist = this.props.navigation.state.params;
+    console.log("SINGLE PLAYLIST", playlist)
     return (
       <Container>
         <Content>
@@ -224,22 +225,22 @@ export default class SinglePlaylist extends Component {
                   </Body>
                 </ListItem>
               : <View>
-                  {playlist.songs.map((song, index) => {
+                  {Object.keys(playlist.songs).map((song, index) => {
                     return (
                       <ListItem key={index} avatar bordered key={index}>
                         <Left>
                           <Thumbnail
                             square
                             size={80}
-                            source={{ uri: `${song.image}` }}
+                            source={{ uri: `${playlist.songs[song].image}` }}
                           />
                         </Left>
                         <Body>
                           <Text style={styles.bodytxt}>
-                            {song.title}
+                            {playlist.songs[song].title}
                           </Text>
                           <Text note style={styles.bodytxt}>
-                            {song.artist}
+                            {playlist.songs[song].artist}
                           </Text>
                         </Body>
                       </ListItem>
