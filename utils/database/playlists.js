@@ -268,6 +268,7 @@ export async function updateAppleMusic(oldPlaylists, done) {
       refreshedPlaylists[id] = songs
     }
     for (playlist of oldPlaylists) {
+      console.log(playlist, "THE ONE I SENT")
       let id = playlist.serviceId;
       old[id] = playlist.songs
       serviceToId[playlist.serviceId] = playlist.id
@@ -276,41 +277,124 @@ export async function updateAppleMusic(oldPlaylists, done) {
       if (playlistKeyArr.indexOf(playlist.serviceId) === -1) {
         firebase.database().ref(`playlists/${playlist.id}`).remove();
       } else {
+        let changed = false;
         for (song of playlist.songs) {
           // if refreshed playlist songs doesn't contain this song, delete playlists/playlis.id/songs/song
             if (refreshedPlaylists[playlist.serviceId].indexOf(song) === -1) {
+              changed = true
               firebase
                 .database()
                 .ref(`playlists/${playlist.id}/songs/${song}`)
                 .remove();
               //should remove the songs from the local playlist object
 
+
             }
             //then add the playlist to the altered playlists
         }
+        if(changed && alteredPlaylists.indexOf(playlist.id) === -1) alteredPlaylists.push(playlist.id);
       }
     }
     for (playlist of parsedPlaylists) {
       if (Object.keys(old).indexOf(playlist.id.toString()) === -1) newPlaylists.push(playlist);
       else{
+        let changed = false;
         for(song of playlist.songs){
           if(old[playlist.id].indexOf(song.id) === -1) {
             // should add the new songs to the old local playlist object and
-            // alteredPlaylists.push(playlist)
+            changed = true;
             let image = await getImage(song.id)
             firebase
                 .database()
                 .ref(`playlists/${serviceToId[playlist.id]}/songs/${song.id}`)
                 .set({artist: song.artist, image: image, title: song.title});}
         }
+         // alteredPlaylists.push(playlist)
         //add the playlist to the altered playlist array
+        if(changed && alteredPlaylists.indexOf(serviceToId[playlist.id]) === -1) alteredPlaylists.push(serviceToId[playlist.id]);
       }
       // if old playlist array doesn't contain a song from the refreshed playlists add it
     }
     if(newPlaylists.length) savePlaylistToDatabase(newPlaylists, 'appleId');
     // need to send back modified playlists to update the state on the front end, the front end is only listening for adding/removing to a user's playlists
 
-    done();
+    done(alteredPlaylists);
+  });
+}
+
+export async function updateOneAppleMusic(oldPlaylist, done) {
+  //only let if they are apple auth
+  NativeModules.MediaLibraryManager.getPlaylist(oldPlaylist.serviceId, async playlist => {
+    // if a playlist id comes back that is not contained in the old playlist array, send it to save to database
+    //oldPlaylists [{serviceId: appleId, id: databaseID, songs: []}, {serviceId: appleId, id: databaseID}]
+    //refreshed playlists = [{playlistId: playlist.id, songs: playlist.songs}]
+    const newPlaylists = [];
+    const refreshedPlaylists = {};
+    const alteredPlaylists = [];
+    let old = {};
+    const serviceToId = {};
+    let parsedPlaylists = JSON.parse(playlist);
+
+    for (playlist of parsedPlaylists) {
+      let id = playlist.id;
+      const songs = []
+      for(song of playlist.songs){
+        songs.push(song.id.toString())
+      }
+      refreshedPlaylists[id] = songs
+    }
+    for (playlist of oldPlaylists) {
+      console.log(playlist, "THE ONE I SENT")
+      let id = playlist.serviceId;
+      old[id] = playlist.songs
+      serviceToId[playlist.serviceId] = playlist.id
+      // oldPlaylistServiceIds.push(playlist.serviceId);
+      let playlistKeyArr = Object.keys(refreshedPlaylists);
+      if (playlistKeyArr.indexOf(playlist.serviceId) === -1) {
+        firebase.database().ref(`playlists/${playlist.id}`).remove();
+      } else {
+        let changed = false;
+        for (song of playlist.songs) {
+          // if refreshed playlist songs doesn't contain this song, delete playlists/playlis.id/songs/song
+            if (refreshedPlaylists[playlist.serviceId].indexOf(song) === -1) {
+              changed = true
+              firebase
+                .database()
+                .ref(`playlists/${playlist.id}/songs/${song}`)
+                .remove();
+              //should remove the songs from the local playlist object
+
+
+            }
+            //then add the playlist to the altered playlists
+        }
+        if(changed && alteredPlaylists.indexOf(playlist.id) === -1) alteredPlaylists.push(playlist.id);
+      }
+    }
+    for (playlist of parsedPlaylists) {
+      if (Object.keys(old).indexOf(playlist.id.toString()) === -1) newPlaylists.push(playlist);
+      else{
+        let changed = false;
+        for(song of playlist.songs){
+          if(old[playlist.id].indexOf(song.id) === -1) {
+            // should add the new songs to the old local playlist object and
+            changed = true;
+            let image = await getImage(song.id)
+            firebase
+                .database()
+                .ref(`playlists/${serviceToId[playlist.id]}/songs/${song.id}`)
+                .set({artist: song.artist, image: image, title: song.title});}
+        }
+         // alteredPlaylists.push(playlist)
+        //add the playlist to the altered playlist array
+        if(changed && alteredPlaylists.indexOf(serviceToId[playlist.id]) === -1) alteredPlaylists.push(serviceToId[playlist.id]);
+      }
+      // if old playlist array doesn't contain a song from the refreshed playlists add it
+    }
+    if(newPlaylists.length) savePlaylistToDatabase(newPlaylists, 'appleId');
+    // need to send back modified playlists to update the state on the front end, the front end is only listening for adding/removing to a user's playlists
+
+    done(alteredPlaylists);
   });
 }
 

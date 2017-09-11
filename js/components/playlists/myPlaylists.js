@@ -47,7 +47,8 @@ export default class MyPlaylists extends Component {
       if (playlists[playlistId] === 'original') {
         const tempPlaylist = await Database.getPlaylistFromId(playlistId);
         const playlist = Object.assign({}, tempPlaylist.val(), { playlistId });
-        let songArr = Object.keys(tempPlaylist.val().songs)
+        let songArr = []
+        if(tempPlaylist.val().songs) songArr = Object.keys(tempPlaylist.val().songs)
         serviceIdArray.push({serviceId: playlist.serviceId, id: playlistId, songs: songArr});
         temp.push(playlist);
       }
@@ -77,14 +78,30 @@ export default class MyPlaylists extends Component {
   };
 
   _onRefresh() {
-    console.log("ARRAYYY TO REFRESH", serviceIdArray)
     this.setState({ refreshing: true }, () => {
       Database.updateAppleMusic(this.state.compareForRefresh, this.appleUpdateDone);
     });
   }
 
-  appleUpdateDone = () => {
-    this.setState({ refreshing: false });
+  appleUpdateDone =  async playlistsIds => {
+    const idArr = playlistsIds
+    this.setState({ refreshing: false}, async () => {
+      for(playlistId of idArr){
+        const tempPlaylist = await Database.getPlaylistFromId(playlistId);
+        const playlist = Object.assign({}, tempPlaylist.val(), { playlistId });
+        let songArr = []
+        if(tempPlaylist.val().songs) songArr = Object.keys(tempPlaylist.val().songs)
+        let service = {serviceId: playlist.serviceId, id: playlistId, songs: songArr};
+        this.setState({playlists: this.state.playlists.map(oldPlaylist => {
+          if(oldPlaylist.playlistId === playlist.playlistId) return playlist;
+          else return oldPlaylist
+        }), compareForRefresh: this.state.compareForRefresh.map(oldPlaylist => {
+          console.log(oldPlaylist.id, service.id)
+          if(oldPlaylist.id === service.id) return service;
+          else return oldPlaylist
+        })})
+      }
+    });
   }
 
   async componentDidMount() {
@@ -163,7 +180,7 @@ export default class MyPlaylists extends Component {
                                 button
                                 key={index}
                                 onPress={() =>
-                                  this.props.goToPlaylist(playlist)}
+                                  this.props.goToPlaylist(playlist, {serviceId: playlist.serviceId, id: playlist.playlistId, songs: Object.keys(playlist.songs)})}
                               >
                                 <Body>
                                   <Text style={styles.bodytxt}>
