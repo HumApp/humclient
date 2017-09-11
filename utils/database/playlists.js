@@ -1,17 +1,18 @@
 import * as firebase from 'firebase';
 import axios from 'axios';
+import { NativeModules } from 'react-native';
 
 export async function savePlaylistToDatabase(playlists, providerId) {
   try {
     // if (providerId === 'appleId') {
-      const appleToken = await axios.get(
-        'https://us-central1-hum-app.cloudfunctions.net/getJWT',
-        {
-          headers: {
-            pass: "lol this isn't secure"
-          }
+    const appleToken = await axios.get(
+      'https://us-central1-hum-app.cloudfunctions.net/getJWT',
+      {
+        headers: {
+          pass: "lol this isn't secure"
         }
-      );
+      }
+    );
     // }
     const currentUser = firebase.auth().currentUser;
     for (const playlist of playlists) {
@@ -37,10 +38,11 @@ export async function savePlaylistToDatabase(playlists, providerId) {
                 .replace('{w}', '100')
                 .replace('{h}', '100');
               findOrCreateSong(playlist.songs[index], providerId);
-              newSong[index] = {};
-              newSong[index].artist = playlist.songs[index].artist;
-              newSong[index].title = playlist.songs[index].title;
-              newSong[index].image = playlist.songs[index].image;
+              let appleSongId = playlist.songs[index].id;
+              newSong[appleSongId] = {};
+              newSong[appleSongId].artist = playlist.songs[index].artist;
+              newSong[appleSongId].title = playlist.songs[index].title;
+              newSong[appleSongId].image = playlist.songs[index].image;
             })
             .catch(error => {
               console.log(error);
@@ -54,13 +56,15 @@ export async function savePlaylistToDatabase(playlists, providerId) {
         }
       }
       const newPlaylistId = firebase.database().ref('playlists').push().key;
-      this.addPlaylistToUser(newPlaylistId);
+
+      addPlaylistToUser(newPlaylistId);
       firebase.database().ref(`playlists/${newPlaylistId}`).set({
         title: playlist.name,
         creator: currentUser.uid,
         songs: newSong,
         displayName: currentUser.displayName,
-        type: providerId
+        type: providerId,
+        serviceId: playlist.id.toString() || '1425631'
       });
     }
   } catch (error) {
@@ -201,14 +205,14 @@ export function databasePlaylistToSpotify(databasePlaylistId, success, fail) {
                 }
               }
             )
-            .catch(error => "ERROR")
+            .catch(error => 'ERROR')
         );
         Promise.all(promises).then(values => {
-          console.log(values)
+          console.log(values);
           let final = values
             .map(value => value.data)
             .filter(value => value !== 'ERROR');
-          console.log("FINALLLLLL", final)
+          console.log('FINALLLLLL', final);
           axios
             .post(
               `https://api.spotify.com/v1/users/${id}/playlists`,
@@ -234,16 +238,191 @@ export function databasePlaylistToSpotify(databasePlaylistId, success, fail) {
                   }
                 )
                 .then(response => success(databasePlaylistId))
-                .catch(error =>
-                  fail()
-                );
+                .catch(error => fail());
             })
-            .catch(error =>
-              fail()
-            );
+            .catch(error => fail());
         });
       });
     });
+}
+
+export async function updateAppleMusic(oldPlaylists, done) {
+  //only let if they are apple auth
+  NativeModules.MediaLibraryManager.getPlaylists(async playlists => {
+    // if a playlist id comes back that is not contained in the old playlist array, send it to save to database
+    //oldPlaylists [{serviceId: appleId, id: databaseID, songs: []}, {serviceId: appleId, id: databaseID}]
+    //refreshed playlists = [{playlistId: playlist.id, songs: playlist.songs}]
+    const newPlaylists = [];
+    const refreshedPlaylists = {};
+    const alteredPlaylists = [];
+    let old = {};
+    const serviceToId = {};
+    let parsedPlaylists = JSON.parse(playlists);
+
+    for (playlist of parsedPlaylists) {
+      let id = playlist.id;
+      const songs = []
+      for(song of playlist.songs){
+        songs.push(song.id.toString())
+      }
+      refreshedPlaylists[id] = songs
+    }
+    for (playlist of oldPlaylists) {
+      console.log(playlist, "THE ONE I SENT")
+      let id = playlist.serviceId;
+      old[id] = playlist.songs
+      serviceToId[playlist.serviceId] = playlist.id
+      // oldPlaylistServiceIds.push(playlist.serviceId);
+      let playlistKeyArr = Object.keys(refreshedPlaylists);
+      if (playlistKeyArr.indexOf(playlist.serviceId) === -1) {
+        firebase.database().ref(`playlists/${playlist.id}`).remove();
+      } else {
+        let changed = false;
+        for (song of playlist.songs) {
+          // if refreshed playlist songs doesn't contain this song, delete playlists/playlis.id/songs/song
+            if (refreshedPlaylists[playlist.serviceId].indexOf(song) === -1) {
+              changed = true
+              firebase
+                .database()
+                .ref(`playlists/${playlist.id}/songs/${song}`)
+                .remove();
+              //should remove the songs from the local playlist object
+
+
+            }
+            //then add the playlist to the altered playlists
+        }
+        if(changed && alteredPlaylists.indexOf(playlist.id) === -1) alteredPlaylists.push(playlist.id);
+      }
+    }
+    for (playlist of parsedPlaylists) {
+      if (Object.keys(old).indexOf(playlist.id.toString()) === -1) newPlaylists.push(playlist);
+      else{
+        let changed = false;
+        for(song of playlist.songs){
+          if(old[playlist.id].indexOf(song.id) === -1) {
+            // should add the new songs to the old local playlist object and
+            changed = true;
+            let image = await getImage(song.id)
+            firebase
+                .database()
+                .ref(`playlists/${serviceToId[playlist.id]}/songs/${song.id}`)
+                .set({artist: song.artist, image: image, title: song.title});}
+        }
+         // alteredPlaylists.push(playlist)
+        //add the playlist to the altered playlist array
+        if(changed && alteredPlaylists.indexOf(serviceToId[playlist.id]) === -1) alteredPlaylists.push(serviceToId[playlist.id]);
+      }
+      // if old playlist array doesn't contain a song from the refreshed playlists add it
+    }
+    if(newPlaylists.length) savePlaylistToDatabase(newPlaylists, 'appleId');
+    // need to send back modified playlists to update the state on the front end, the front end is only listening for adding/removing to a user's playlists
+
+    done(alteredPlaylists);
+  });
+}
+
+export async function updateOneAppleMusic(oldPlaylist, done) {
+  //only let if they are apple auth
+  NativeModules.MediaLibraryManager.getPlaylist(oldPlaylist.serviceId, async playlist => {
+    // if a playlist id comes back that is not contained in the old playlist array, send it to save to database
+    //oldPlaylists [{serviceId: appleId, id: databaseID, songs: []}, {serviceId: appleId, id: databaseID}]
+    //refreshed playlists = [{playlistId: playlist.id, songs: playlist.songs}]
+    const newPlaylists = [];
+    const refreshedPlaylists = {};
+    const alteredPlaylists = [];
+    let old = {};
+    const serviceToId = {};
+    let parsedPlaylists = JSON.parse(playlist);
+
+    for (playlist of parsedPlaylists) {
+      let id = playlist.id;
+      const songs = []
+      for(song of playlist.songs){
+        songs.push(song.id.toString())
+      }
+      refreshedPlaylists[id] = songs
+    }
+    for (playlist of oldPlaylists) {
+      console.log(playlist, "THE ONE I SENT")
+      let id = playlist.serviceId;
+      old[id] = playlist.songs
+      serviceToId[playlist.serviceId] = playlist.id
+      // oldPlaylistServiceIds.push(playlist.serviceId);
+      let playlistKeyArr = Object.keys(refreshedPlaylists);
+      if (playlistKeyArr.indexOf(playlist.serviceId) === -1) {
+        firebase.database().ref(`playlists/${playlist.id}`).remove();
+      } else {
+        let changed = false;
+        for (song of playlist.songs) {
+          // if refreshed playlist songs doesn't contain this song, delete playlists/playlis.id/songs/song
+            if (refreshedPlaylists[playlist.serviceId].indexOf(song) === -1) {
+              changed = true
+              firebase
+                .database()
+                .ref(`playlists/${playlist.id}/songs/${song}`)
+                .remove();
+              //should remove the songs from the local playlist object
+
+
+            }
+            //then add the playlist to the altered playlists
+        }
+        if(changed && alteredPlaylists.indexOf(playlist.id) === -1) alteredPlaylists.push(playlist.id);
+      }
+    }
+    for (playlist of parsedPlaylists) {
+      if (Object.keys(old).indexOf(playlist.id.toString()) === -1) newPlaylists.push(playlist);
+      else{
+        let changed = false;
+        for(song of playlist.songs){
+          if(old[playlist.id].indexOf(song.id) === -1) {
+            // should add the new songs to the old local playlist object and
+            changed = true;
+            let image = await getImage(song.id)
+            firebase
+                .database()
+                .ref(`playlists/${serviceToId[playlist.id]}/songs/${song.id}`)
+                .set({artist: song.artist, image: image, title: song.title});}
+        }
+         // alteredPlaylists.push(playlist)
+        //add the playlist to the altered playlist array
+        if(changed && alteredPlaylists.indexOf(serviceToId[playlist.id]) === -1) alteredPlaylists.push(serviceToId[playlist.id]);
+      }
+      // if old playlist array doesn't contain a song from the refreshed playlists add it
+    }
+    if(newPlaylists.length) savePlaylistToDatabase(newPlaylists, 'appleId');
+    // need to send back modified playlists to update the state on the front end, the front end is only listening for adding/removing to a user's playlists
+
+    done(alteredPlaylists);
+  });
+}
+
+async function getImage(id){
+  const appleToken = await axios.get(
+      'https://us-central1-hum-app.cloudfunctions.net/getJWT',
+      {
+        headers: {
+          pass: "lol this isn't secure"
+        }
+      }
+    );
+
+    response =
+          await axios
+            .get(
+              'https://api.music.apple.com/v1/catalog/us/songs/' +
+                id,
+              {
+                headers: {
+                  Authorization: `Bearer ${appleToken.data}`
+                }
+              }
+            )
+  const image = response.data.data[0].attributes.artwork.url .replace('{w}', '100')
+                .replace('{h}', '100');
+  console.log(image)
+  return image
 }
 
 function getUrlPath(str) {

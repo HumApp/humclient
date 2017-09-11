@@ -174,6 +174,7 @@ class MediaLibraryManager: NSObject {
       struct Playlist: Codable {
         var name: String
         var songs: [Song]
+        var id: String
         
       }
       
@@ -184,6 +185,7 @@ class MediaLibraryManager: NSObject {
       let playlists = myPlaylistQuery.collections
       
       for playlist in playlists! {
+        let playlistId = String(describing: playlist.value(forProperty: MPMediaItemPropertyPersistentID)!)
         let songs = playlist.items
         var songsInPlaylist: [Song] = []
         for song in songs {
@@ -207,7 +209,7 @@ class MediaLibraryManager: NSObject {
 //          task.resume()
         }
         let playlistName = String(describing: playlist.value(forProperty: MPMediaPlaylistPropertyName)!)
-        allPlaylists.append(Playlist(name: playlistName, songs: songsInPlaylist))
+        allPlaylists.append(Playlist(name: playlistName, songs: songsInPlaylist, id: playlistId))
       }
       
       let jsonEncoder = JSONEncoder()
