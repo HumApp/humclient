@@ -24,8 +24,9 @@ import styles from './styles';
 import axios from 'axios';
 import * as Database from '../../../utils/database';
 import { default as FAIcon } from 'react-native-vector-icons/FontAwesome';
-import { NativeModules } from 'react-native';
+import { NativeModules, RefreshControl } from 'react-native';
 import firebase from 'firebase';
+
 export default class SinglePlaylist extends Component {
   constructor(props) {
     super(props);
@@ -33,7 +34,9 @@ export default class SinglePlaylist extends Component {
       appleAuth: false,
       spotifyAuth: '',
       spotifyDownloading: false,
-      appleDownloading: false
+      appleDownloading: false,
+      refreshing: false,
+      playlist: []
     };
   }
   componentDidMount() {
@@ -48,7 +51,35 @@ export default class SinglePlaylist extends Component {
         });
       })
       .catch(error => console.log('Single Playlist ', error));
+    this.setState({playlist: this.props.navigation.state.params.playlist})
   }
+
+  _onRefresh() {
+    // this.setState({ refreshing: true }, () => {
+    //   Database.updateOneAppleMusic(this.props.navigation.state.params.compare, this.appleUpdateDone);
+    // });
+    console.log("COMPARE", [this.props.navigation.state.params.compare])
+    console.log("playlist", this.props.navigation.state.params.playlist)
+
+    // this.setState({ refreshing: true }, () => {
+    //   Database.updateAppleMusic(this.state.compareForRefresh, this.appleUpdateDone);
+    // });
+  }
+
+  appleUpdateDone =  async playlistsId => {
+    console.log("UPDATE PLAYLIST", playlistsId)
+    const playlistId = playlistsId
+    if(playlistsId.length){
+        this.setState({ refreshing: false}, async () => {
+        const tempPlaylist = await Database.getPlaylistFromId(playlistId);
+        const playlist = Object.assign({}, tempPlaylist.val(), { playlistId });
+        this.setState({playlist: playlist});
+    });
+    }
+    else this.setState({ refreshing: false})
+
+  }
+
 
   goToShare = playlistId => {
     this.props.navigation.navigate('SharePlaylist', playlistId);
@@ -138,10 +169,16 @@ export default class SinglePlaylist extends Component {
   };
 
   render() {
-    const playlist = this.props.navigation.state.params;
+    const playlist = this.state.playlist
+    // console.log("SINGLE PLAYLIST", playlist)
     return (
       <Container>
-        <Content>
+        <Content refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh.bind(this)}
+            />
+          }>
         {this.state.spotifyDownloading || this.state.appleDownloading
                 ? <Spinner color="#FC642D" />
                 : null}
@@ -224,22 +261,22 @@ export default class SinglePlaylist extends Component {
                   </Body>
                 </ListItem>
               : <View>
-                  {playlist.songs.map((song, index) => {
+                  {Object.keys(playlist.songs).map((song, index) => {
                     return (
                       <ListItem key={index} avatar bordered key={index}>
                         <Left>
                           <Thumbnail
                             square
                             size={80}
-                            source={{ uri: `${song.image}` }}
+                            source={{ uri: `${playlist.songs[song].image}` }}
                           />
                         </Left>
                         <Body>
                           <Text style={styles.bodytxt}>
-                            {song.title}
+                            {playlist.songs[song].title}
                           </Text>
                           <Text note style={styles.bodytxt}>
-                            {song.artist}
+                            {playlist.songs[song].artist}
                           </Text>
                         </Body>
                       </ListItem>

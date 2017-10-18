@@ -34,8 +34,8 @@ export default class Playlists extends Component {
     Database.getSharedPlaylists().on('value', this.pendingCallback);
   }
 
-  goToPlaylist = playlist => {
-    this.props.navigation.navigate('SinglePlaylist', playlist);
+  goToPlaylist = (playlist, compare) => {
+    this.props.navigation.navigate('SinglePlaylist', {playlist: playlist, compare: compare});
   };
 
   goToSharedPlaylist = playlist => {

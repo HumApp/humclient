@@ -24,7 +24,7 @@ import {
 } from 'native-base';
 import styles from './styles';
 import * as Database from '../../../utils/database';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, RefreshControl } from 'react-native';
 
 export default class MyPlaylists extends Component {
   constructor(props) {
@@ -32,25 +32,31 @@ export default class MyPlaylists extends Component {
     this.state = {
       playlists: [],
       pendingPlaylists: [], //refered to as SharedPlaylists
+      compareForRefresh: [],
       isLoading: true,
-      searchPlaylist: ''
+      searchPlaylist: '',
+      refreshing: false
     };
   }
 
   userPlaylistCallback = async snapshot => {
     let playlists = snapshot.val();
-    console.log(playlists)
     let temp = [];
+    serviceIdArray = [];
     for (let playlistId in playlists) {
       if (playlists[playlistId] === 'original') {
         const tempPlaylist = await Database.getPlaylistFromId(playlistId);
         const playlist = Object.assign({}, tempPlaylist.val(), { playlistId });
+        let songArr = []
+        if(tempPlaylist.val().songs) songArr = Object.keys(tempPlaylist.val().songs)
+        serviceIdArray.push({serviceId: playlist.serviceId, id: playlistId, songs: songArr});
         temp.push(playlist);
       }
     }
-    this.setState({ playlists: [] }, () => {
+    this.setState({ playlists: [], compareForRefresh: [] }, () => {
       this.setState({
         playlists: this.state.playlists.concat(temp),
+        compareForRefresh: this.state.compareForRefresh.concat(serviceIdArray),
         isLoading: false
       });
     });
@@ -70,6 +76,33 @@ export default class MyPlaylists extends Component {
       });
     });
   };
+
+  _onRefresh() {
+    this.setState({ refreshing: true }, () => {
+      Database.updateAppleMusic(this.state.compareForRefresh, this.appleUpdateDone);
+    });
+  }
+
+  appleUpdateDone =  async playlistsIds => {
+    const idArr = playlistsIds
+    this.setState({ refreshing: false}, async () => {
+      for(playlistId of idArr){
+        const tempPlaylist = await Database.getPlaylistFromId(playlistId);
+        const playlist = Object.assign({}, tempPlaylist.val(), { playlistId });
+        let songArr = []
+        if(tempPlaylist.val().songs) songArr = Object.keys(tempPlaylist.val().songs)
+        let service = {serviceId: playlist.serviceId, id: playlistId, songs: songArr};
+        this.setState({playlists: this.state.playlists.map(oldPlaylist => {
+          if(oldPlaylist.playlistId === playlist.playlistId) return playlist;
+          else return oldPlaylist
+        }), compareForRefresh: this.state.compareForRefresh.map(oldPlaylist => {
+          console.log(oldPlaylist.id, service.id)
+          if(oldPlaylist.id === service.id) return service;
+          else return oldPlaylist
+        })})
+      }
+    });
+  }
 
   async componentDidMount() {
     Database.getUserPlaylists().on('value', this.userPlaylistCallback);
@@ -92,25 +125,32 @@ export default class MyPlaylists extends Component {
             <Icon name="ios-musical-notes" />
           </Item>
         </Header>
-        <Content>
+        <Content
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh.bind(this)}
+            />
+          }
+        >
           {this.props.pendingPlaylists.length
             ? <Card>
-              <CardItem
-                button
-                onPress={() => this.props.goToPending()}
-                header
-              >
-                <Badge style={{ backgroundColor: '#FC642D' }}>
-                  <Text>
-                    {this.props.pendingPlaylists.length}
-                  </Text>
-                </Badge>
-                <Text style={styles.header}> Pending Playlists</Text>
-                <Right>
-                  <Icon name="arrow-forward" style={styles.arrow} />
-                </Right>
-              </CardItem>
-            </Card>
+                <CardItem
+                  button
+                  onPress={() => this.props.goToPending()}
+                  header
+                >
+                  <Badge style={{ backgroundColor: '#FC642D' }}>
+                    <Text>
+                      {this.props.pendingPlaylists.length}
+                    </Text>
+                  </Badge>
+                  <Text style={styles.header}> Pending Playlists</Text>
+                  <Right>
+                    <Icon name="arrow-forward" style={styles.arrow} />
+                  </Right>
+                </CardItem>
+              </Card>
             : null}
           <Card>
             <CardItem header>
@@ -121,10 +161,10 @@ export default class MyPlaylists extends Component {
             {this.state.isLoading
               ? <Spinner color="#FC642D" />
               : <View>
-                {!this.state.playlists.length
-                  ? <CardItem>
-                    <Text style={styles.header}>
-                      Connect a music streaming service to view playlists!
+                  {!this.state.playlists.length
+                    ? <CardItem>
+                        <Text style={styles.header}>
+                          Connect a music streaming service to view playlists!
                         </Text>
                       </CardItem>
                     : <View>
@@ -140,7 +180,7 @@ export default class MyPlaylists extends Component {
                                 button
                                 key={index}
                                 onPress={() =>
-                                  this.props.goToPlaylist(playlist)}
+                                  this.props.goToPlaylist(playlist, {serviceId: playlist.serviceId, id: playlist.playlistId, songs: Object.keys(playlist.songs)})}
                               >
                                 <Body>
                                   <Text style={styles.bodytxt}>

@@ -13,7 +13,7 @@ export default StyleSheet.create({
     marginTop: 60
   },
   title: {
-    fontSize: 65,
+    fontSize: 70,
     textAlign: 'center',
     color: '#fff',
     fontFamily: "PingFangTC-Light",
