@@ -6,4 +6,6 @@ Humm is an app for sharing playlists across multiple streaming services, both fo
 - Collaborative Playlists
 - In-App music streaming
 
-Video: https://www.youtube.com/watch?v=J0Ua_ZlNbcs
+Hum Video: https://www.youtube.com/watch?v=J0Ua_ZlNbcs
+Ask Alvin Video: https://www.youtube.com/watch?v=Hkn6ScliFfI
+Serverless Architecture(Tech Talk Video): https://www.youtube.com/watch?v=AispyOPaD2w
